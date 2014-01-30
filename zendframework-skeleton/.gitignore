@@ -9,3 +9,5 @@ nbproject
 .settings
 composer.lock
 vendor/bin
+config/autoload/local.php.dist
+public/.htaccess
