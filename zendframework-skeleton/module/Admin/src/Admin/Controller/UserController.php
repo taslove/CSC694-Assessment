@@ -18,7 +18,7 @@ class UserController extends AbstractActionController
 
    public function indexAction()
    {
-      echo "In User Controller";  
+      echo "List all users here";  
    }
    public function addAction()
    {
