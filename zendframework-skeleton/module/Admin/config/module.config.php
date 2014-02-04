@@ -30,7 +30,8 @@
                          'id'     => '[0-9]+',
                      ),
                      'defaults' => array(
-                         'controller' => 'Admin\Controller\Admin',
+                         '__NAMESPACE__' => 'Admin\Controller',
+                         'controller' => 'Admin',
                          'action'     => 'index',
                      ),
                  ),
@@ -44,17 +45,12 @@
                          'id'     => '[0-9]+',
                      ),
                      'defaults' => array(
-                         'controller' => 'Admin\Controller\User',
+                         '__NAMESPACE__' => 'Admin\Controller',
+                         'controller' => 'User',
                          'action'     => 'index',
                      ),
                  ),
              ),
-         ),
-     ),
-
-     'view_manager' => array(
-         'template_path_stack' => array(
-             'album' => __DIR__ . '/../view',
          ),
      ),
  );

@@ -1,7 +1,15 @@
-<div class="jumbotron">
-    <h1><?php echo sprintf($this->translate('Assessment System'), '<span class="zf-green">', '</span>') ?></h1>
-</div>
+<?php
+// module/Album/view/album/album/add.phtml:
 
-<div class="row">
+$title = 'Add new User';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php
+$form = $this->form;
+$form->setAttribute('action', $this->url('user', array('action' => 'add')));
+$form->prepare();
 
-</div>
+echo $this->form()->openTag($form);
+echo $this->formCollection($form);
+echo $this->form()->closeTag();

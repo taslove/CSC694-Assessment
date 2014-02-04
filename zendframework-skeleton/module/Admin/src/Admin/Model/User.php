@@ -1,57 +1,112 @@
 <?php
 
-namespace User\Model;
+namespace Admin\Model;
 
-use Zend\Db\TableGateway\TableGateway;
+use Zend\InputFilter\Factory as InputFactory;
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterAwareInterface;
+use Zend\InputFilter\InputFilterInterface;
 
-class UserTable
+class User implements InputFilterAwareInterface
 {
-    protected $tableGateway;
+    public $id;
+    public $last_name;
+    public $first_name;
+    public $middle_init;
+    protected $inputFilter;
 
-    public function __construct(TableGateway $tableGateway)
+    public function exchangeArray($data)
     {
-        $this->tableGateway = $tableGateway;
+        $this->id = (isset($data['id'])) ? $data['id'] : null;
+        $this->first_name = (isset($data['first_name'])) ? $data['first_name'] : null;
+        $this->last_name = (isset($data['last_name'])) ? $data['last_name'] : null;
+        $this->middle_init = (isset($data['middle_init'])) ? $data['middle_init'] : null;
     }
 
-    public function fetchAll()
+     // Add the following method:
+    public function getArrayCopy()
     {
-        $resultSet = $this->tableGateway->select();
-        return $resultSet;
+        return get_object_vars($this);
     }
 
-    public function getUser($id)
+    public function setInputFilter(InputFilterInterface $inputFilter)
     {
-        $id = (int) $id;
-        $rowset = $this->tableGateway->select(array('sid' => $id));
-        $row = $rowset->current();
-        if (!$row) {
-            throw new \Exception("Could not find row $id");
+        throw new \Exception("Not used");
+    }
+
+    public function getInputFilter()
+    {
+        if (!$this->inputFilter) {
+            $inputFilter = new InputFilter();
+            $factory = new InputFactory();
+
+            $inputFilter->add($factory->createInput(array(
+                'name' => 'id',
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'Int'),
+                ),
+            )));
+
+            $inputFilter->add($factory->createInput(array(
+                'name' => 'last_name',
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min' => 1,
+                            'max' => 50,
+                        ),
+                    ),
+                ),
+            )));
+
+            $inputFilter->add($factory->createInput(array(
+                'name' => 'first_name',
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min' => 1,
+                            'max' => 50,
+                        ),
+                    ),
+                ),
+            )));
+            $inputFilter->add($factory->createInput(array(
+                'name' => 'middle_init',
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min' => 1,
+                            'max' => 1,
+                        ),
+                    ),
+                ),
+            )));
+
+            $this->inputFilter = $inputFilter;
         }
-        return $row;
-    }
 
-    public function saveUser(User $user)
-    {
-        $data = array(
-            'last_name' => $user->lname,
-            'first_name' => $user->fname,
-            'middle_init' => $user->mname,
-        );
-
-        $id = (int)$user->id;
-        if ($id == 0) {
-            $this->tableGateway->insert($data);
-        } else {
-            if ($this->getStudent($id)) {
-                $this->tableGateway->update($data, array('sid' => $id));
-            } else {
-                throw new \Exception('Form id does not exist');
-            }
-        }
-    }
-
-    public function deleteStudent($id)
-    {
-        $this->tableGateway->delete(array('sid' => $id));
+        return $this->inputFilter;
     }
 }

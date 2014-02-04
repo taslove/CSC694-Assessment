@@ -1,7 +1,24 @@
-<div class="jumbotron">
-    <h1><?php echo sprintf($this->translate('Assessment System'), '<span class="zf-green">', '</span>') ?></h1>
-</div>
+<?php
+// module/Admin/view/admin/user/index.phtml:
+$title = 'Users';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php echo $this->url();?>
 
-<div class="row">
 
-</div>
+<table class="table">
+<tr>
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>Middle Int.</th>
+</tr>
+<?php foreach ($users as $user) : ?>
+<tr>
+    <td><?php echo $this->escapeHtml($user->first_name);?></td>
+    <td><?php echo $this->escapeHtml($user->last_name);?></td>
+    <td><?php echo $this->escapeHtml($user->middle_init);?></td>
+
+</tr>
+<?php endforeach; ?>
+</table>
