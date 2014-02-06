@@ -11,6 +11,7 @@
      'controllers' => array(
          'invokables' => array(
              'Admin\Controller\Admin' => 'Admin\Controller\AdminController',
+             'Admin\Controller\User' => 'Admin\Controller\UserController',
          ),
      ),
      'view_manager' => array(
@@ -30,6 +31,20 @@
                      ),
                      'defaults' => array(
                          'controller' => 'Admin\Controller\Admin',
+                         'action'     => 'index',
+                     ),
+                 ),
+             ),
+             'admin/user' => array(
+                 'type'    => 'segment',
+                 'options' => array(
+                     'route'    => '/admin/user[/][:action][/:id]',
+                     'constraints' => array(
+                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                         'id'     => '[0-9]+',
+                     ),
+                     'defaults' => array(
+                         'controller' => 'Admin\Controller\User',
                          'action'     => 'index',
                      ),
                  ),
