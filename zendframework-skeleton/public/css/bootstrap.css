@@ -21,6 +21,7 @@ hgroup,
 main,
 nav,
 section,
+myButt,
 summary {
   display: block;
 }
@@ -2004,6 +2005,7 @@ textarea.input-lg {
       -ms-user-select: none;
        -o-user-select: none;
           user-select: none;
+          
 }
 
 .btn:focus {
@@ -4490,7 +4492,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
 }
 
 .navbar-inverse {
-  background-color: #222222;
+  background-color: #880000;
   border-color: #080808;
 }
 

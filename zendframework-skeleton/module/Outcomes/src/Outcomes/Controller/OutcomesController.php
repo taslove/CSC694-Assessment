@@ -11,14 +11,31 @@ namespace Outcomes\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\Db\Sql\Select;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Adapter\Adapter;
 
 class OutcomesController extends AbstractActionController
 {
-   protected $studentTable;
-
-   public function indexAction()
-   {
-      echo "In Outcomes Controller";  
-   }
-
+    protected $tableResults;
+    
+    public function indexAction()
+    {
+        return new ViewModel(array(
+            'outcomes' => $this->getStudentEnrollTable()->fetchAll(),
+        ));
+    }
+    
+    public function getStudentEnrollTable()
+    {
+          
+        if (!$this->tableResults) {
+            $this->tableResults = $this->getServiceLocator()
+                       ->get('Outcomes\Model\StudentTable');
+                    
+        }
+       
+        return $this->tableResults;
+    }
+    
 }

@@ -11,6 +11,7 @@ namespace Application;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
+use Zend\Db\Adapter\Adapter as DbAdapter;
 
 class Module
 {
@@ -33,6 +34,21 @@ class Module
                 'namespaces' => array(
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
                 ),
+            ),
+        );
+    }
+    public function getServiceConfig()
+    {
+        // this creates dbAdapter to be used in all models
+        // db defined in global.php
+        return array(
+            'factories' => array(
+                'dbAdapter' => function($sm) {
+                    $config = $sm->get('config');
+                    $config = $config['db'];
+                    $dbAdapter = new DbAdapter($config);
+                    return $dbAdapter;
+                },
             ),
         );
     }
