@@ -6,6 +6,8 @@ use Reports\Model\Reports;
 use Reports\Model\ReportsTable;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Adapter\Adapter as DbAdapter;
+use Reports\Model\UnitTable;
 
 class Module
 {
@@ -25,22 +27,16 @@ class Module
 
     public function getServiceConfig()
     {
-        /*return array(
-            'factories' => array(
-                'Reports\Model\ReportsTable' => function($sm) {
-                    $tableGateway = $sm->get('AdminTableGateway');
-                    $table = new AdminTable($tableGateway);
-                    return $table;
-                },
-                'AdminTableGateway' => function ($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new Admin());
-                    return new TableGateway('Admin', $dbAdapter, null, $resultSetPrototype);
-                },
-            ),
+        return array(
+                        
+                'factories' =>  array(
+                    'UnitTable' => function($sm) {
+                        $dbAdapter = $sm->get('dbAdapter');
+                        $table = new UnitTable($dbAdapter);
+                        return $table;
+                    },
+                ),
         );
-        */
     }
 
     public function getConfig()
