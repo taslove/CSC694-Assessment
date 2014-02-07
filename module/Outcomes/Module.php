@@ -2,10 +2,6 @@
 
 namespace Outcomes;
 
-use Outcomes\Model\Enroll;
-use Outcomes\Model\EnrollTable;
-use Outcomes\Model\Student;
-use Outcomes\Model\StudentTable;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -24,7 +20,7 @@ class Module
             ),
         );
     }
-
+/*
     public function getServiceConfig()
     {
         return array(
@@ -38,7 +34,7 @@ class Module
       
         );
     }
-
+*/
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
