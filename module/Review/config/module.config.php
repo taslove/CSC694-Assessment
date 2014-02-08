@@ -39,7 +39,7 @@
 
      'view_manager' => array(
          'template_path_stack' => array(
-             'outcomes' => __DIR__ . '/../view',
+             'review' => __DIR__ . '/../view',
          ),
      ),
  );
