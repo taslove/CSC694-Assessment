@@ -17,5 +17,11 @@ use Zend\Db\Adapter\Adapter;
 
 class OutcomesController extends AbstractActionController
 {
+
+public function indexAction()
+{
+   echo "In outcomes controller";
+}
+
    
 }

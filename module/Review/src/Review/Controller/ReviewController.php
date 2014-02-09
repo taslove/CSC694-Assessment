@@ -22,18 +22,27 @@ class ReviewController extends AbstractActionController
     public function indexAction()
     {
         return new ViewModel(array(
-            'reviews' => $this->getModelReviewTable()->getAllStudentEnroll(),
+            //'units' => $this->getGenericQueries()->getUnits(),
+            'units' => $this->getGenericQueries()->getProgramsByUnitId('CSC'),
         ));
     }
     
-    public function getModelReviewTable()
+    public function getGenericQueries()
     {
         if (!$this->tableResults) {
             $this->tableResults = $this->getServiceLocator()
-                       ->get('Review\Model\StudentTable');
+                                       ->get('Application\Model\AllTables');
                     
         }
         return $this->tableResults;
     }
-    
+    public function getReviewQueries()
+    {
+        if (!$this->tableResults) {
+            $this->tableResults = $this->getServiceLocator()
+                                       ->get('Review\Model\ReviewTables');
+                    
+        }
+        return $this->tableResults;
+    }
 }

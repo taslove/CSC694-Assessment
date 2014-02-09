@@ -1,10 +1,9 @@
 <?php
 
-namespace Review\Model;
+namespace Reports\Model;
 
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
-
 
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
@@ -19,10 +18,10 @@ use Zend\Db\Sql\Where;
 // to be used in all database calls.  For example, the from clause could
 // explicitly reference a table (->from('student')).
 
-class StudentTable extends AbstractTableGateway
+class UnitTable extends AbstractTableGateway
 {
   
-    protected $table = 'student';
+    protected $table = 'units';
     public $adapter;
     
     public function __construct(Adapter $adapter)
@@ -31,12 +30,11 @@ class StudentTable extends AbstractTableGateway
         $this->initialize();
     }
     
-    public function getAllStudentEnroll()
+    public function getAllUnits()
     {   
         $sql = new Sql($this->adapter);
         $select = $sql->select()
-                      ->from($this->table)
-                      ->join('enroll', 'enroll.sid = student.sid');
+                      ->from($this->table);
                       
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

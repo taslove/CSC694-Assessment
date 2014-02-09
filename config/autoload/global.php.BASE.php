@@ -10,10 +10,11 @@
  * control, so do not include passwords or other sensitive information in this
  * file.
  */
+
 return array(
-    'db' => array(
+      'db' => array(
          'driver'         => 'Pdo',
-         'dsn'            => 'mysql:dbname=assessment;host=localhost',
+         'dsn'            => 'mysql:dbname=csc694;host=localhost',
          'driver_options' => array(
              PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
          ),

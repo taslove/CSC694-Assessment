@@ -11,14 +11,27 @@ namespace Reports\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Reports\Model\UnitTable;
+
 
 class ReportsController extends AbstractActionController
 {
-   protected $studentTable;
+   protected $tableResults;
 
    public function indexAction()
-   {
-      echo "In Reports Controller";  
-   }
-
+    {
+        return new ViewModel(array(
+            'reports' => $this->getUnitTable()->getAllUnits(),
+        ));
+    }
+    
+    public function getUnitTable()
+    {
+        if (!$this->tableResults) {
+            $this->tableResults = $this->getServiceLocator()
+                       ->get('UnitTable');
+                    
+        }
+        return $this->tableResults;
+    }
 }
