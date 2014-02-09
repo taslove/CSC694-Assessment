@@ -2,6 +2,8 @@
 
 namespace Outcomes;
 
+use Outcomes\Model\Outcomes;
+use Outcomes\Model\OutcomesTable;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 

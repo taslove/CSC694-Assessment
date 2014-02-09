@@ -28,12 +28,12 @@ class ReviewController extends AbstractActionController
     
     public function getModelReviewTable()
     {
-        if (!$this->tableResults) {
+      /*  if (!$this->tableResults) {
             $this->tableResults = $this->getServiceLocator()
                        ->get('Review\Model\StudentTable');
                     
         }
-        return $this->tableResults;
+        return $this->tableResults;*/
     }
     
 }
