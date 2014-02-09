@@ -2,9 +2,6 @@
 
 namespace Review;
 
-use Review\Model\Enroll;
-use Review\Model\EnrollTable;
-use Review\Model\Student;
 use Review\Model\StudentTable;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;

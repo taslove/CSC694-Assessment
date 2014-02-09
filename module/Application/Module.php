@@ -9,6 +9,7 @@
 
 namespace Application;
 
+use Application\Model\AllTables;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\Db\Adapter\Adapter as DbAdapter;
@@ -49,6 +50,11 @@ class Module
                     $dbAdapter = new DbAdapter($config);
                     return $dbAdapter;
                 },
+                'Application\Model\AllTables' => function($sm) {
+                        $dbAdapter = $sm->get('dbAdapter');
+                        $table = new AllTables($dbAdapter);
+                        return $table;
+                    },
             ),
         );
     }

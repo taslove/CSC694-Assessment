@@ -30,7 +30,7 @@ class ReviewController extends AbstractActionController
     {
         if (!$this->tableResults) {
             $this->tableResults = $this->getServiceLocator()
-                       ->get('Review\Model\StudentTable');
+                       ->get('Application\Model\AllTables');
                     
         }
         return $this->tableResults;
