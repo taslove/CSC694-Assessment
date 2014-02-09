@@ -4,8 +4,6 @@ namespace Review\Model;
 
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
-
-
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 
@@ -19,10 +17,9 @@ use Zend\Db\Sql\Where;
 // to be used in all database calls.  For example, the from clause could
 // explicitly reference a table (->from('student')).
 
-class StudentTable extends AbstractTableGateway
+class ReviewTables extends AbstractTableGateway
 {
   
-    protected $table = 'student';
     public $adapter;
     
     public function __construct(Adapter $adapter)
@@ -31,7 +28,7 @@ class StudentTable extends AbstractTableGateway
         $this->initialize();
     }
     
-    public function getAllStudentEnroll()
+    public function getPlansById()
     {   
         $sql = new Sql($this->adapter);
         $select = $sql->select()

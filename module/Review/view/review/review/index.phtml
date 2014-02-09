@@ -77,18 +77,14 @@ $this->headTitle($title);
   </div>
         <table class="table">
 <tr>
-    <th>Student ID</th>
-    <th>Student Name</th>
-    <th>Course ID</th>
-    <th>Course Name</th>
-    <th>&nbsp;</th>
+    <th>Unit ID</th>
+    <th>Program ID</th>
 </tr>
-<?php foreach ($reviews as $review) : ?>
+
+<?php foreach ($units as $unit) : ?>
 <tr>
-    <td><?php echo $this->escapeHtml($review['sid']);?></td>
-    <td><?php echo $this->escapeHtml($review['sname']);?></td>
-    <td><?php echo $this->escapeHtml($review['cid']);?></td>
-    <td><?php echo $this->escapeHtml($review['grade']);?></td>
+    <td><?php echo $this->escapeHtml($unit['unit_id']);?></td>
+    <td><?php echo $this->escapeHtml($unit['name']);?></td>
 </tr>
 <?php endforeach; ?>
 </table>                         
@@ -102,4 +98,13 @@ $this->headTitle($title);
          document.getElementById("ta_sample").value = "testing";
             $.rta(); // The simplest initialization... default button set on all class="rta" textarea's
         });
-    </script>
+        function getYears(){
+             var startYear = 2006;
+             var currentYear = new Date().getFullYear();
+             var years = new Array();
+             for (var yr=startYear, i=0; yr<=currentYear; yr++, i++){
+                  years[i] = yr;
+             }
+             return years;
+        }
+  </script>

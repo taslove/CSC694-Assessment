@@ -4,8 +4,6 @@ namespace Application\Model;
 
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
-
-
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 
@@ -21,22 +19,20 @@ use Zend\Db\Sql\Where;
 
 class AllTables extends AbstractTableGateway
 {
-  
-    protected $table = 'student';
     public $adapter;
     
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
-        $this->initialize();
     }
-    
-    public function getAllStudentEnroll()
+  
+    // Retrieves all active units
+    public function getUnits()
     {   
         $sql = new Sql($this->adapter);
         $select = $sql->select()
-                      ->from($this->table)
-                      ->join('enroll', 'enroll.sid = student.sid');
+                      ->from('units')
+                      ->where(array('active' => 1));
                       
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -46,4 +42,23 @@ class AllTables extends AbstractTableGateway
         
         return $result;
     }
+    
+    // Retrieves all active programs for a given unit id
+    public function getProgramsByUnitId($unitid)
+    {   
+        $sql = new Sql($this->adapter);
+        $select = $sql->select()
+                      ->from('programs')
+                      ->where(array('unit_id' => $unitid))
+                      ->where(array('active' => 1));
+                      
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        
+        // dumping $result will not show any rows returned
+        // you must iterate over $result to retrieve query results
+        
+        return $result;
+    }
+  
 }

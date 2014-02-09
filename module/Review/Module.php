@@ -28,9 +28,9 @@ class Module
         return array(
                         
                 'factories' =>  array(
-                    'Review\Model\StudentTable' => function($sm) {
+                    'Review\Model\ReviewTables' => function($sm) {
                         $dbAdapter = $sm->get('dbAdapter');
-                        $table = new StudentTable($dbAdapter);
+                        $table = new ReviewTables($dbAdapter);
                         return $table;
                     },
                 ),
