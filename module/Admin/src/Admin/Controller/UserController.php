@@ -16,15 +16,15 @@ use Zend\View\Model\ViewModel;
 
 class UserController extends AbstractActionController
 {
-   protected $userTable;
+    protected $tableResults;
 
    public function indexAction()
     {
         return new ViewModel(array(
-            'users' => $this->getUserTable()->fetchAll(),
+            'users' => $this->getUserQueries()->fetchAll(),
         ));
     }
-   public function addAction()
+  /* public function addAction()
    {
         $form = new UserForm();
         $form->get('submit')->setValue('Add');
@@ -101,14 +101,16 @@ class UserController extends AbstractActionController
             'id' => $id,
             'user' => $this->getUserTable()->getUser($id)
         );
-   }
-    public function getUserTable()
+   }*/
+   public function getUserQueries()
     {
-        if (!$this->userTable) {
-            $sm = $this->getServiceLocator();
-            $this->userTable = $sm->get('Admin\Model\UserTable');
+        if (!$this->tableResults) {
+            $this->tableResults = $this->getServiceLocator()
+                                       ->get('Admin\Model\UserTable');
+                    
         }
-        return $this->userTable;
+        return $this->tableResults;
     }
+
 
 }

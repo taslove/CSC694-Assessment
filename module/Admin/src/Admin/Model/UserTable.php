@@ -2,23 +2,31 @@
 
 namespace Admin\Model;
 
-use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\TableGateway\AbstractTableGateway;
+use Zend\Db\Adapter\Adapter;
+use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Where;
 
-class UserTable
+class UserTable extends AbstractTableGateway
 {
-    protected $tableGateway;
+    public $adapter;
 
-    public function __construct(TableGateway $tableGateway)
+    public function __construct(Adapter $adapter)
     {
-        $this->tableGateway = $tableGateway;
+        $this->adapter = $adapter;
+        $this->initialize();
     }
 
     public function fetchAll()
     {
-        $resultSet = $this->tableGateway->select();
-        return $resultSet;
+        $sql = new Sql($this->adapter);
+        $select = $sql->select()
+                      ->from($this->table);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result;
     }
-
+/*
     public function getUser($id)
     {
         $id = (int) $id;
@@ -53,5 +61,5 @@ class UserTable
     public function deleteUser($id)
     {
         $this->tableGateway->delete(array('id' => $id));
-    }
+    }*/
 }

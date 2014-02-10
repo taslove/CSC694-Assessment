@@ -30,8 +30,8 @@ class Module
         return array(
             'factories' => array(
                 'Admin\Model\UserTable' => function($sm) {
-                    $tableGateway = $sm->get('UserTableGateway');
-                    $table = new UserTable($tableGateway);
+                    $dbAdapter = $sm->get('dbAdapter');
+                    $table = new UserTable($dbAdapter);
                     return $table;
                 },
                 'UserTableGateway' => function ($sm) {
