@@ -28,7 +28,7 @@ class UserController extends AbstractActionController
             'users' => $this->getUserQueries()->fetchAll(),
         ));
     }
-  /* public function addAction()
+   public function addAction()
    {
         $form = new UserForm();
         $form->get('submit')->setValue('Add');
@@ -41,10 +41,10 @@ class UserController extends AbstractActionController
 
             if ($form->isValid()) {
                 $user->exchangeArray($form->getData());
-                $this->getUserTable()->saveUser($user);
+                $this->getUserQueries()->saveUser($user);
 
                 // Redirect to list of user
-                return $this->redirect()->toRoute('admin/user');
+                return $this->redirect()->toRoute('user');
             }
         }
         return array('form' => $form);  
@@ -57,7 +57,7 @@ class UserController extends AbstractActionController
                 'action' => 'add'
             ));
         }
-        $album = $this->getUserTable()->getUser($id);
+        $user = $this->getUserQueries()->getUser($id);
 
         $form = new UserForm();
         $form->bind($user);
@@ -69,9 +69,9 @@ class UserController extends AbstractActionController
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $this->getAlbumTable()->saveAlbum($form->getData());
+                $this->getUserQueries()->saveUser($form->getData());
 
-                // Redirect to list of albums
+                // Redirect to list of users
                 return $this->redirect()->toRoute('user');
             }
         }
@@ -85,7 +85,7 @@ class UserController extends AbstractActionController
    {
        $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            return $this->redirect()->toRoute('admin/user');
+            return $this->redirect()->toRoute('user');
         }
 
         $request = $this->getRequest();
@@ -94,18 +94,18 @@ class UserController extends AbstractActionController
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $this->getUserTable()->deleteUser($id);
+                $this->getUserQueries()->deleteUser($id);
             }
 
             // Redirect to list of albums
-            return $this->redirect()->toRoute('admin/user');
+            return $this->redirect()->toRoute('user');
+            
+        }else{
+            $this->getUserQueries()->deleteUser($id);
+            return $this->redirect()->toRoute('user');
         }
 
-        return array(
-            'id' => $id,
-            'user' => $this->getUserTable()->getUser($id)
-        );
-   }*/
+   }
     
     public function getGenericQueries()
     {

@@ -14,30 +14,34 @@ class UserTable extends AbstractTableGateway
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
-        $this->initialize();
         $this->table = 'users';
+        $this->initialize();
     }
 
     public function fetchAll()
     {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select()
-                      ->from($this->table);
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        return $result;
+        $resultSet = $this->select();
+        return $resultSet;
     }
 
-/*
+
     public function getUser($id)
     {
         $id = (int) $id;
-        $rowset = $this->tableGateway->select(array('id' => $id));
+        $rowset = $this->select(array('id' => $id));
         $row = $rowset->current();
         if (!$row) {
             throw new \Exception("Could not find row $id");
         }
-        return $row;
+        $arr = array(
+          'id' =>'137',
+          'last_name' => 'Gregory',
+          'first_name' => 'Jack',
+          'middle_init' =>'D',
+        );  
+        $user = new User($arr);
+        $user->exchangeArray($arr);
+        return $user;
     }
 
     public function saveUser(User $user)
@@ -50,10 +54,10 @@ class UserTable extends AbstractTableGateway
 
         $id = (int)$user->id;
         if ($id == 0) {
-            $this->tableGateway->insert($data);
+            $this->insert($data);
         } else {
             if ($this->getUser($id)) {
-                $this->tableGateway->update($data, array('id' => $id));
+                $this->update($data, array('id' => $id));
             } else {
                 throw new \Exception('Form id does not exist');
             }
@@ -62,6 +66,6 @@ class UserTable extends AbstractTableGateway
 
     public function deleteUser($id)
     {
-        $this->tableGateway->delete(array('id' => $id));
-    }*/
+        $this->delete(array('id' => $id));
+    }
 }

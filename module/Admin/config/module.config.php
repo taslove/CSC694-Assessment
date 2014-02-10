@@ -22,13 +22,9 @@
        'router' => array(
          'routes' => array(
              'admin' => array(
-                 'type'    => 'segment',
+                 'type'    => 'literal',
                  'options' => array(
-                     'route'    => '/admin[/][:action][/:id]',
-                     'constraints' => array(
-                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                         'id'     => '[0-9]+',
-                     ),
+                     'route'    => '/admin',
                      'defaults' => array(
                          '__NAMESPACE__' => 'Admin\Controller',
                          'controller' => 'Admin',
@@ -36,7 +32,7 @@
                      ),
                  ),
              ),
-             'admin/user' => array(
+             'user' => array(
                  'type'    => 'segment',
                  'options' => array(
                      'route'    => '/admin/user[/][:action][/:id]',
