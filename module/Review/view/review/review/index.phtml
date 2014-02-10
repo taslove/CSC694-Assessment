@@ -15,9 +15,6 @@
          <span class="caret"></span>
          </button>
          <ul class="dropdown-menu" id="unit-menu">
-            <li><a href="#"></a></li>
-            <li><a href="#"></a></li>
-            <li><a href="#"></a></li>
          </ul>
       </div>
       <input type="text" class="form-control" placeholder="Department">
@@ -31,9 +28,6 @@
          <span class="caret"></span>
          </button>
          <ul class="dropdown-menu">
-            <li><a href="#">Computer Science/BS</a></li>
-            <li><a href="#">Computer Science/MS</a></li>
-            <li><a href="#">Computer Science/BS</a></li>
          </ul>
       </div>
       <input type="text" class="form-control" placeholder="Program/Degree">
@@ -47,9 +41,7 @@
          <span class="caret"></span>
          </button>
          <ul class="dropdown-menu" >
-            <li><a href="#">2015-16</a></li>
-            <li><a href="#">2016-17</a></li>
-            <li><a href="#">2017-18</a></li>
+        
          </ul>
       </div>
       <input type="text" class="form-control" placeholder="Year">
@@ -84,13 +76,26 @@
 <script src="js/bootstrap-rta.min.js"></script>
 <script>
 $(document).ready(function() {
-   <?php foreach ($units as $unit) : 
-            $unitarray[] = $unit;
-         endforeach;
-   ?>
-   var units = <?php print json_encode($unitarray); ?>;
-   document.getElementById("ta_sample").value = units[0].id;
+   loadUnits();
    $.rta(); // The simplest initialization... default button set on all class="rta" textarea's
 });
+function loadUnits(){
+    <?php
+       // iterate over database results forming a php array
+       foreach ($units as $unit) : 
+           $unitarray[] = $unit;
+       endforeach;
+   ?>
+   // convert php array into javascript array
+   var units = <?php print json_encode($unitarray); ?>;
+   // assign unit ids to html dropdown
+   //$('ul').append('<li><a>hello</a></li>').listview('refresh');
+  // for (var i = 0; i < units.length; i++){
+      // $("#unit-menu").append('<li>' + units[0].id + '</li>');
+      $('ul').append('<li>' + units[1].id + '</li>');
+   }
+   //$('unit-menu').listview('refresh');
+   
+}
 </script>
 
