@@ -15,6 +15,7 @@ class UserTable extends AbstractTableGateway
     {
         $this->adapter = $adapter;
         $this->initialize();
+        $this->table = 'users';
     }
 
     public function fetchAll()
@@ -26,6 +27,7 @@ class UserTable extends AbstractTableGateway
         $result = $statement->execute();
         return $result;
     }
+
 /*
     public function getUser($id)
     {

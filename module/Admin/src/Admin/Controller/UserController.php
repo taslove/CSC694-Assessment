@@ -9,10 +9,14 @@
 
 namespace Admin\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Admin\Model\User;
 use Admin\Form\UserForm;
+use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\Db\Sql\Select;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Adapter\Adapter;
+
 
 class UserController extends AbstractActionController
 {
@@ -102,15 +106,22 @@ class UserController extends AbstractActionController
             'user' => $this->getUserTable()->getUser($id)
         );
    }*/
-   public function getUserQueries()
+    
+    public function getGenericQueries()
     {
         if (!$this->tableResults) {
             $this->tableResults = $this->getServiceLocator()
-                                       ->get('Admin\Model\UserTable');
+                                       ->get('Application\Model\AllTables');
                     
         }
         return $this->tableResults;
     }
-
-
+   public function getUserQueries()
+    {
+        if (!$this->tableResults) {
+            $this->tableResults = $this->getServiceLocator()
+                                       ->get('Admin\Model\UserTable');             
+        }
+        return $this->tableResults;
+    }
 }
