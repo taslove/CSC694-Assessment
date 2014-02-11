@@ -14,11 +14,10 @@ use Zend\View\Model\ViewModel;
 
 class AdminController extends AbstractActionController
 {
-   protected $studentTable;
+   protected $adminTable;
 
    public function indexAction()
    {
-      echo "In Admin Controller";  
    }
 
 }
