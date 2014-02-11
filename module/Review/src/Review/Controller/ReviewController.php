@@ -22,10 +22,14 @@ class ReviewController extends AbstractActionController
     public function indexAction()
     {
         return new ViewModel(array(
-            'test' => 5,
             'units' => $this->getGenericQueries()->getUnits(),
-            'programs' => $this->getGenericQueries()->getProgramsByUnitId('CSC'),
         ));
+    }
+    
+    public function getAction($unitChosen)
+    {var_dump("hello");
+    exit();
+        return json_encode($this->getGenericQueries()->getProgramsByUnitId($unitChosen));
     }
     
     public function getGenericQueries()

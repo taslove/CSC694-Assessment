@@ -1,5 +1,7 @@
+
 <?php
-    $title = 'Review Assessment Plans and Reports';
+
+   $title = 'Review Assessment Plans and Reports';
     $this->headTitle($title);
 ?>      
 <center><h3>Review Assessment Plans or Reports</h3>
@@ -17,7 +19,7 @@
          <ul class="dropdown-menu" id="unit-menu">
          </ul>
       </div>
-      <input type="text" class="form-control" placeholder="Department">
+      <input type="text" id="unit-input" class="form-control" placeholder="Department">
       </div><!-- /input-group -->
    
       <!-- Prog/Degree dropdown -->
@@ -27,10 +29,10 @@
          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Select
          <span class="caret"></span>
          </button>
-         <ul class="dropdown-menu">
+         <ul class="dropdown-menu" id="prog-menu">
          </ul>
       </div>
-      <input type="text" class="form-control" placeholder="Program/Degree">
+      <input type="text" id="prog-input" class="form-control" placeholder="Program/Degree">
       </div><!-- /input-group -->
    
       <!-- Year  -->
@@ -75,10 +77,20 @@
 <script src="js/bootstrap.min.js"></script>
 <script src="js/bootstrap-rta.min.js"></script>
 <script>
+
+// on page load
 $(document).ready(function() {
+   $.rta(); // load rta features - simplest implementation
    loadUnits();
-   $.rta(); // The simplest initialization... default button set on all class="rta" textarea's
 });
+
+// populate units
+$(document).on('click', '#unit-menu li a', function () {
+   $('#unit-input').val($(this).text());
+   loadPrograms();
+});
+
+// function to create unit options
 function loadUnits(){
     <?php
        // iterate over database results forming a php array
@@ -89,13 +101,28 @@ function loadUnits(){
    // convert php array into javascript array
    var units = <?php print json_encode($unitarray); ?>;
    // assign unit ids to html dropdown
-   //$('ul').append('<li><a>hello</a></li>').listview('refresh');
-  // for (var i = 0; i < units.length; i++){
-      // $("#unit-menu").append('<li>' + units[0].id + '</li>');
-      $('ul').append('<li>' + units[1].id + '</li>');
+   for (var i = 0; i < units.length; i++){
+      $('#unit-menu').append('<li><a>' + units[i].id + '</a></li>');
    }
-   //$('unit-menu').listview('refresh');
-   
+     //$('unit-menu').listview('refresh');
+}
+
+function loadPrograms(){
+   // asynchronous ajax code to populate program
+   // do we need to return the redirect?
+   var urlform = '<?php echo $this->url('review',  array('controller'=>'application', 'action'=>'get')); ?>';
+   var urlform = '<?php echo $this->redirect()->toRoute('Application');
+ ?>';
+   alert(urlform);
+   $.ajax({
+      url: urlform,
+      data: {id:'CSC'},
+      type: "GET",
+      dataType: "json",
+      success: function(json){
+         $('#prog-menu').append('<li><a>' + program[i].name + '</a></li>');
+      }
+   });
 }
 </script>
 
