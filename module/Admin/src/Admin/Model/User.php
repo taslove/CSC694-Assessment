@@ -21,6 +21,7 @@ class User implements InputFilterAwareInterface
         $this->first_name = (isset($data['first_name'])) ? $data['first_name'] : null;
         $this->last_name = (isset($data['last_name'])) ? $data['last_name'] : null;
         $this->middle_init = (isset($data['middle_init'])) ? $data['middle_init'] : null;
+        $this->role = (isset($data['user_role'])) ? $data['user_role'] : null;
     }
 
      // Add the following method:

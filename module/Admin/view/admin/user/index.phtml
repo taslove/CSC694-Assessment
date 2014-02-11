@@ -34,16 +34,16 @@ $this->headTitle($title);
                     <tbody>
                         <?php foreach ($users as $user) : ?>
                         <tr class="active">
-                                    <td><?php echo $this->escapeHtml($user['id']);?></td>
-                                   <td><?php echo $this->escapeHtml($user['first_name']);?></td>
-                                    <td><?php echo $this->escapeHtml($user['last_name']);?></td>
-                                    <td><?php echo $this->escapeHtml($user['middle_init']);?></td>
-                                    <td><?php echo $this->escapeHtml($user['middle_init']);?></td>
+                                    <td><?php echo $this->escapeHtml($user->id);?></td>
+                                   <td><?php echo $this->escapeHtml($user->first_name);?></td>
+                                    <td><?php echo $this->escapeHtml($user->last_name);?></td>
+                                    <td><?php echo $this->escapeHtml($user->middle_init);?></td>
+                                    <td><?php echo $this->escapeHtml($user->middle_init);?></td>
                                     <td>
                                         <a class="btn btn-primary btn-xs" href="<?php echo $this->url('user',
-                                            array('action'=>'edit', 'id' => $user['id']));?>"><?php echo $this->translate ('Edit') ?> &raquo;</a>
+                                            array('action'=>'edit', 'id' => $user->id));?>"><?php echo $this->translate ('Edit') ?> &raquo;</a>
                                         <a class="btn btn-warning btn-xs" href="<?php echo $this->url('user',
-                                            array('action'=>'delete', 'id' => $user['id']));?>"><?php echo $this->translate ('Delete') ?> &raquo;</a>
+                                            array('action'=>'delete', 'id' => $user->id));?>"><?php echo $this->translate ('Delete') ?> &raquo;</a>
                                     </td>
                         </tr>
                         <?php endforeach; ?>

@@ -28,7 +28,7 @@ echo $this->form()->openTag($form);
     </div>
     <div class="form-group">
         <?php echo $this->formLabel($form->get('user_role')->setLabelAttributes(array('class'=>'control-label'))); ?>
-        <?php echo $this->formSelect($form->get('user_role')); ?>
+        <?php echo $this->formMultiCheckbox($form->get('user_role')); ?>
     </div>
     <div class="form-group">
         <?php echo $this->formInput($form->get('id')); ?>
