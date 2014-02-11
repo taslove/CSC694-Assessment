@@ -43,7 +43,7 @@ class UserController extends AbstractActionController
                 $user->exchangeArray($form->getData());
                 $this->getUserQueries()->saveUser($user);
 
-                // Redirect to list of user
+                // Redirect to list of users
                 return $this->redirect()->toRoute('user');
             }
         }
@@ -97,7 +97,7 @@ class UserController extends AbstractActionController
                 $this->getUserQueries()->deleteUser($id);
             }
 
-            // Redirect to list of albums
+            // Redirect to list of users
             return $this->redirect()->toRoute('user');
             
         }else{

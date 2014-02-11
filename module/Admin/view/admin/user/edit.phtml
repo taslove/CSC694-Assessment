@@ -1,7 +1,3 @@
-<div class="jumbotron">
-    <h1><?php echo sprintf($this->translate('Assessment System'), '<span class="zf-green">', '</span>') ?></h1>
-</div>
-
 <div class="row">
 <?php
 // module/Admin/view/user/edit.phtml:
@@ -23,7 +19,27 @@ $form->setAttribute('action', $this->url(
 $form->prepare();
 
 echo $this->form()->openTag($form);
-echo $this->formCollection($form);
-echo $this->form()->closeTag();
 ?>
+<div class="control-group">  
+    <div class="form-group">
+        <?php echo $this->formLabel($form->get('first_name')->setLabelAttributes(array('class'=>'control-label'))); ?>
+        <?php echo $this->formInput($form->get('first_name')); ?>
+    </div>
+    <div class="form-group">
+        <?php echo $this->formLabel($form->get('last_name')->setLabelAttributes(array('class'=>'control-label'))); ?>
+        <?php echo $this->formInput($form->get('last_name')); ?>
+    </div>
+    <div class="form-group">
+        <?php echo $this->formLabel($form->get('middle_init')->setLabelAttributes(array('class'=>'control-label'))); ?>
+        <?php echo $this->formInput($form->get('middle_init')); ?>
+    </div>
+    <div class="form-group">
+        <?php echo $this->formInput($form->get('id')); ?>
+    </div>
+</div>
+<div class="control-group">
+    <div class="form-group"><?php echo $this->formSubmit($form->get('submit')); ?></div>
+</div>
+
+<?php echo $this->form()->closeTag(); ?>
 </div>

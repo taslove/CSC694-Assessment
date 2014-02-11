@@ -33,14 +33,8 @@ class UserTable extends AbstractTableGateway
         if (!$row) {
             throw new \Exception("Could not find row $id");
         }
-        $arr = array(
-          'id' =>'137',
-          'last_name' => 'Gregory',
-          'first_name' => 'Jack',
-          'middle_init' =>'D',
-        );  
-        $user = new User($arr);
-        $user->exchangeArray($arr);
+        $user = new User();
+        $user->exchangeArray($row);
         return $user;
     }
 
