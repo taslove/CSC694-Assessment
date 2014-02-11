@@ -22,7 +22,7 @@ use Zend\Db\Sql\Where;
 class OutcomesTable extends AbstractTableGateway
 {
   
-    protected $table = 'outcome';
+    protected $table = 'outcomes';
     public $adapter;
     
     public function __construct(Adapter $adapter)
@@ -48,16 +48,48 @@ class OutcomesTable extends AbstractTableGateway
         return $result;
     }
     */
+    
+    // returns the outcome table ordered active first
     public function getAllOutcomes()
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select()
-                      ->from($this->table);
-                      
+                      ->from($this->table)
+                    //  ->where('id = 1')
+                      ->order('active DESC');
+                     
+         
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         
         return $result;
+    }
+    
+    public function getAllUnits(){
+        
+        $sql = new Sql($this->adapter);
+        $select = $sql->select()
+                      ->from('units');
+                     
+         
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        
+        return $result;   
+    }
+    
+        public function getAllProgramsForUnit($unitId){
+        
+        $sql = new Sql($this->adapter);
+        $select = $sql->select()
+                      ->from('programs')
+                      ->where('unit_id = $unitId');
+                     
+         
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        
+        return $result;   
     }
     
 }

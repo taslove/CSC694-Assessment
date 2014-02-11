@@ -22,21 +22,21 @@ class Module
             ),
         );
     }
-/*
+
     public function getServiceConfig()
     {
         return array(
                 'factories' =>  array(
-                    'Outcomes\Model\StudentTable' => function($sm) {
+                    'Outcomes\Model\OutcomesTable' => function($sm) {
                         $dbAdapter = $sm->get('dbAdapter');
-                        $table = new StudentTable($dbAdapter);
+                        $table = new OutcomesTable($dbAdapter);
                         return $table;
                     },
                 ),
       
         );
     }
-*/
+
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';

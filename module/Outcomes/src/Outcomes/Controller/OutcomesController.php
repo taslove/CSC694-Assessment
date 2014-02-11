@@ -23,6 +23,7 @@ class OutcomesController extends AbstractActionController
     {
         return new ViewModel(array(
             'outcomes' => $this->getModelOutcomesTable()->getAllOutcomes(),
+            'units' => $this->getModelOutcomesTable()->getAllUnits(),
         ));
     }
     
