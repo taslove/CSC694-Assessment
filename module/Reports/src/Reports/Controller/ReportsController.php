@@ -20,5 +20,14 @@ class ReportsController extends AbstractActionController
    {
       echo "In Reports Controller";  
    }
+public function addreportAction()
+    {
+     
 
+    }
+    public function modifyreportAction()
+    {
+     
+
+    }
 }

@@ -6,31 +6,54 @@ $this->headTitle($title);
 ?>
 
 <html>
-        <body>
-    <div class="container">
-      
+    <body>
+	<a class="btn btn-primary btn-md" href="./plans">&laquo;<?php echo
+	    $this->translate ('Back to Plans Home') ?> </a>
+	<p></p>
+	    <div class="container">
             <center><h3>Modify Plan</h3>
                 <p><h6>Instructions for use...</h6></p></center>
-            
                    <div class="col-md-12">
 			<center>
-<div class="control-group">
+			    <div class="control-group">
+				<div class="container">   
+				</div>
+				<div class="controls">
+ 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/bootstrap-rta.min.css">
+    <style>
+        textarea {
+            width: 500px;
+        }
+    </style>
     <div class="container">
+        <h3>Modify TextArea</h3>
+        <form class="form-horizontal" name="rtaform" id="rtaform" method="GET" action="#">
+            <div class="control-group">
+                <label class="control-label" for="ta_sample"></label>
+                <div class="controls">
+                    <textarea rows="6" cols="60" class="rta" id="ta_sample" name="ta_sample" placeholder="Sample TextArea"></textarea>
+                </div> <!-- controls -->
+            </div> <!-- control-group -->
+        </form>
     </div>
-            <div class="controls">
-               <img src="../img/rtabox.png" alt="..." class="img-rounded">
-          <div class="form-actions">  
-            <button type="submit" class="btn btn-primary">Save changes</button>  
+    <button type="submit" class="btn btn-primary">Save changes</button>  
             <button class="btn">Cancel</button>  
           </div>  
- </div>  
-                    </div>
-                </div>
-    </div>
+ </div></div></div>
+ 
                     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
                     <script src="https://code.jquery.com/jquery.js"></script>
-                    <!-- Include all compiled plugins (below), or include individual files as needed -->
-                    <script src="js/bootstrap.min.js"></script>
-		    </center>
-        </body>
+                    <script src="../js/bootstrap.min.js"></script>
+		    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="../js/bootstrap-rta.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $.rta(); // The simplest initialization... default button set on all class="rta" textarea's
+        });
+    </script>
+</center>
+</body>
 </html>
