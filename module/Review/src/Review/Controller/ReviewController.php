@@ -21,14 +21,20 @@ class ReviewController extends AbstractActionController
     
     public function indexAction()
     {
+        // get units
+        $results = $this->getGenericQueries()->getUnits();
+        // iterate over database results forming a php array
+        foreach ($results as $result) : 
+            $unitarray[] = $result;
+        endforeach;
+        // pass array to view
         return new ViewModel(array(
-            'units' => $this->getGenericQueries()->getUnits(),
+            'units' => $unitarray,
         ));
     }
     
-    public function getAction($unitChosen)
-    {var_dump("hello");
-    exit();
+    public function getAction()
+    {
         return json_encode($this->getGenericQueries()->getProgramsByUnitId($unitChosen));
     }
     

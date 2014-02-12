@@ -92,28 +92,23 @@ $(document).on('click', '#unit-menu li a', function () {
 
 // function to create unit options
 function loadUnits(){
-    <?php
-       // iterate over database results forming a php array
-       foreach ($units as $unit) : 
-           $unitarray[] = $unit;
-       endforeach;
-   ?>
+    
    // convert php array into javascript array
-   var units = <?php print json_encode($unitarray); ?>;
+   var units = <?php print json_encode($units); ?>;
    // assign unit ids to html dropdown
    for (var i = 0; i < units.length; i++){
       $('#unit-menu').append('<li><a>' + units[i].id + '</a></li>');
    }
-     //$('unit-menu').listview('refresh');
+   //$('unit-menu').listview('refresh');
 }
 
 function loadPrograms(){
    // asynchronous ajax code to populate program
    // do we need to return the redirect?
-   var urlform = '<?php echo $this->url('review',  array('controller'=>'application', 'action'=>'get')); ?>';
-   var urlform = '<?php echo $this->redirect()->toRoute('Application');
- ?>';
-   alert(urlform);
+  
+   var urlform = '<?php echo $this->url('review',  array('controller'=>'review', 'action'=>'get')); ?>';
+
+  alert(urlform);
    $.ajax({
       url: urlform,
       data: {id:'CSC'},
@@ -123,6 +118,7 @@ function loadPrograms(){
          $('#prog-menu').append('<li><a>' + program[i].name + '</a></li>');
       }
    });
+   alert(urlform);
 }
 </script>
 
