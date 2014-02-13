@@ -4,6 +4,8 @@ namespace Admin;
 
 use Admin\Model\Admin;
 use Admin\Model\AdminTable;
+use Admin\Model\User;
+use Admin\Model\UserTable;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -25,22 +27,21 @@ class Module
 
     public function getServiceConfig()
     {
-      /*  return array(
+        return array(
             'factories' => array(
-                'Admin\Model\AdminTable' => function($sm) {
-                    $tableGateway = $sm->get('AdminTableGateway');
-                    $table = new AdminTable($tableGateway);
+                'Admin\Model\UserTable' => function($sm) {
+                    $dbAdapter = $sm->get('dbAdapter');
+                    $table = new UserTable($dbAdapter);
                     return $table;
                 },
-                'AdminTableGateway' => function ($sm) {
+                'UserTableGateway' => function ($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new Admin());
-                    return new TableGateway('Admin', $dbAdapter, null, $resultSetPrototype);
+                    $resultSetPrototype->setArrayObjectPrototype(new User());
+                    return new TableGateway('users', $dbAdapter, null, $resultSetPrototype);
                 },
             ),
-        );
-      */
+        ); 
     }
 
     public function getConfig()
