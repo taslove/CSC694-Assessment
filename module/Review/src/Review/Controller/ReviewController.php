@@ -35,7 +35,13 @@ class ReviewController extends AbstractActionController
     
     public function getAction()
     {
-        return json_encode($this->getGenericQueries()->getProgramsByUnitId($unitChosen));
+        var_dump("hello");
+        exit();
+
+        $unitChosen = (int) $this->params()->fromRoute('id', 0);
+        $data = json_encode($this->getGenericQueries()->getProgramsByUnitId($unitChosen));
+        
+        return $data;
     }
     
     public function getGenericQueries()

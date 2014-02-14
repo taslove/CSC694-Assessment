@@ -106,19 +106,24 @@ function loadPrograms(){
    // asynchronous ajax code to populate program
    // do we need to return the redirect?
   
-   var urlform = '<?php echo $this->url('review',  array('controller'=>'review', 'action'=>'get')); ?>';
+   var urlform = '<?php echo $this->url('review', array(
+                                    'controller'=>'review',
+                                    'action'=>'get',
+                                    'id'=>'CSC')); ?>';
 
-  alert(urlform);
    $.ajax({
       url: urlform,
-      data: {id:'CSC'},
       type: "GET",
       dataType: "json",
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
       success: function(json){
+         alert("here");
          $('#prog-menu').append('<li><a>' + program[i].name + '</a></li>');
       }
    });
-   alert(urlform);
+   
 }
 </script>
 
