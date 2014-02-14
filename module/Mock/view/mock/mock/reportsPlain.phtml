@@ -1,7 +1,7 @@
 <?php
 // module/Mock/view/mock/mock/add.phtml:
 
-$title = 'Add New Assessment Plan';
+$title = 'Add New Assessment Report';
 $this->headTitle($title);
 ?>	
 <html>
@@ -13,7 +13,7 @@ $this->headTitle($title);
             width: 300px;
         }</style>
 	<div class="container">
-	<center><h3>Assessment Plans</h3>
+	<center><h3>Assessment Reports</h3>
             
 	    </center>
 	    
@@ -22,9 +22,7 @@ $this->headTitle($title);
             <div class="row">
                 <div class="col-md-4">
                     <!-- Dept typeahead --> <div class="container">
-                        <input type="checkbox">View &nbsp;
-		    <input type="checkbox">Add &nbsp;
-		    <input type="checkbox">Modify
+                       
 	<p></p>
                         <h6>Department Name</h6>
                        
@@ -82,10 +80,10 @@ $this->headTitle($title);
                         </div><p></p>
 			
 	  <!-- Get Button trigger modal -->
-<a class="btn btn-primary btn-md" href="./plans">
-  View Plans &raquo;
+<a class="btn btn-primary btn-md" href="./reports">
+  View Reports &raquo;
 </a>
-<a class="btn btn-primary btn-md btn" href="./addplan">
+<a class="btn btn-primary btn-md btn" href="./addreport">
   Add New &raquo;
 </a>
 <p></p>
@@ -95,89 +93,7 @@ $this->headTitle($title);
                 </div><!--close column-->
 		
 		<!--column 2-->
-		<p></p>
-                    <div class="col-md-6">
-                        <h6>Add New Plan</h6>
-			<p></p>
-			   
-			    <div class="input-group">
-      <span class="input-group-addon"> <h6>Are you conducting Meta Assessment?</h6>
-        <input type="radio">Yes &nbsp;&nbsp; <input type="radio">No
-      </span></div>
-                        <div class="panel-group" id="accordion">
-			    <div class="panel panel-success">
-				<div class="panel-heading">
-				    <h4 class="panel-title">
-					<a data-toggle="collapse" data-parent="#accordion"
-					   href="#collapseOne">Select Outcome&#40s&#41</a>
-				    </h4>
-				</div>
-				<div id="collapseOne" class="panel-collapse collapse in">
-				    <div class="panel-body">
-					<div class="control-group">
-					    <div class="controls">
-						
-						<div class="bs-example">
-    <table class="table">
-	<tr>
-	  <th> <input type="radio"></th> <td>1. Students should understand and apply generally accepted accounting principles appropriate for introductory level courses. </td>
-	</tr> <tr class="active">
-	  <td> <input type="radio"></td> <td>2. Students should be able to evaluate and communicate basic accounting information effectively, sometimes using technology. </td>
-	</tr>
-    </table>
-    <p></p>
-						</div>
-					    </div>
-					</div>
-				    </div>
-				</div>
-				<div class="panel panel-success">
-				    <div class="panel-heading">
-					<h4 class="panel-title">
-					    <a data-toggle="collapse" data-parent="#accordion"
-					       href="#collapseTwo"> 1. Describe assessment method.</a>
-					</h4>
-				    </div>
-				    <div id="collapseTwo" class="panel-collapse collapse">
-					<div class="panel-body">
-					    <div class="control-group">
-						<div class="controls">
-						       <textarea rows="6" cols="60" class="rta" id="ta_sample" name="ta_sample" placeholder=""></textarea>
-                                            </div>
-					    </div>
-					</div>
-				    </div>
-				    <div class="panel panel-success">
-					<div class="panel-heading">
-					    <h4 class="panel-title">
-						<a data-toggle="collapse" data-parent="#accordion"
-						   href="#collapseThree">2. Describe population assessed.</a>
-					    </h4>
-					</div>
-					<div id="collapseThree" class="panel-collapse collapse">
-					    <div class="panel-body">
-						<div class="control-group">
-						    <div class="controls">
-							    <textarea rows="6" cols="60" class="rta" id="ta_sample" name="ta_sample" placeholder=""></textarea>
-                                            </div>
-						</div>
-					    </div>
-					</div>
-				    </div>
-				</div>
-			    </div>
-			</div>
-			<button type="submit" class="btn btn-success pull-right">Submit</button>
-			<button type="submit" class="btn btn-primary pull-right">Save Draft</button>
-<a class="btn btn-primary btn-md pull-right" href="../img/userguide.pdf"><?php echo $this->translate
-            ('Preview') ?> &raquo;</a>
-
-
-
-<input class="input-file " id="fileInput" type="file" >
-	<button type="submit" class="btn btn-primary btn-xs ">Upload</button>
-	<button type="submit" class="btn btn-warning btn-xs btn ">Cancel</button>
-	    </div>
+		
 	</div>
 	 <script src="../js/bootstrap.min.js"></script>
                         <script src="../js/jquery.min.js"></script>
@@ -193,3 +109,12 @@ $this->headTitle($title);
                         </script>
     </body>
 </html>
+
+
+
+
+
+
+
+
+
