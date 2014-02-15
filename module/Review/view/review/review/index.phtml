@@ -35,7 +35,16 @@
       <input type="text" id="prog-input" class="form-control" placeholder="Program/Degree">
       </div><!-- /input-group -->
    
-      <!-- Year  -->
+      <!-- Prog/Degree dropdown -->
+      <h6>Select Program/Degree</h6>
+        <select class="selectpicker" data-style="btn-primary" multiple>
+         <option>stuff</option>
+         <option>thisstuff</option>
+        </select>
+        
+      </div>
+   
+   <!-- Year  -->
       <h6>Select Academic year</h6>
       <div class="input-group">
       <div class="input-group-btn">
@@ -80,6 +89,7 @@
 
 // on page load
 $(document).ready(function() {
+ //   $('.selectpicker').selectpicker();
    $.rta(); // load rta features - simplest implementation
    loadUnits();
 });
@@ -87,7 +97,7 @@ $(document).ready(function() {
 // populate units
 $(document).on('click', '#unit-menu li a', function () {
    $('#unit-input').val($(this).text());
-   loadPrograms();
+   loadPrograms($(this).text());
 });
 
 // function to create unit options
@@ -102,15 +112,15 @@ function loadUnits(){
    //$('unit-menu').listview('refresh');
 }
 
-function loadPrograms(){
+function loadPrograms($unit){
    // asynchronous ajax code to populate program
    // do we need to return the redirect?
-  
-   var urlform = '<?php echo $this->url('review', array(
+   var urlform = "<?php echo $this->url('review', array(
                                     'controller'=>'review',
-                                    'action'=>'get',
-                                    'id'=>'CSC')); ?>';
-
+                                    'action'=>'get')); ?>";
+                            
+   urlform = urlform + '/' + $unit;
+   alert(urlform);
    $.ajax({
       url: urlform,
       type: "GET",
@@ -118,10 +128,11 @@ function loadPrograms(){
       error : function(xhr, status, error) {
          console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
       },
-      success: function(json){
-         alert("here");
-         $('#prog-menu').append('<li><a>' + program[i].name + '</a></li>');
-      }
+      success: function(programsJson){
+         for (var i = 0; i < programsJson.length; i++){
+            $('#prog-menu').append('<li><a>' + programsJson[i].name + '</a></li>');
+         }
+      },
    });
    
 }

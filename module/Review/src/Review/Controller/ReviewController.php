@@ -14,6 +14,7 @@ use Zend\View\Model\ViewModel;
 use Zend\Db\Sql\Select;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Adapter;
+use Zend\View\Model\JsonModel;
 
 class ReviewController extends AbstractActionController
 {
@@ -24,9 +25,9 @@ class ReviewController extends AbstractActionController
         // get units
         $results = $this->getGenericQueries()->getUnits();
         // iterate over database results forming a php array
-        foreach ($results as $result) : 
+        foreach ($results as $result){
             $unitarray[] = $result;
-        endforeach;
+        }
         // pass array to view
         return new ViewModel(array(
             'units' => $unitarray,
@@ -35,13 +36,22 @@ class ReviewController extends AbstractActionController
     
     public function getAction()
     {
-        var_dump("hello");
-        exit();
-
-        $unitChosen = (int) $this->params()->fromRoute('id', 0);
-        $data = json_encode($this->getGenericQueries()->getProgramsByUnitId($unitChosen));
-        
-        return $data;
+        // get unit from id in url
+        $unitChosen = $this->params()->fromRoute('id', 0);
+        // get programs for that unit
+        $results = $this->getGenericQueries()->getProgramsByUnitId($unitChosen);
+        // iterate through results forming a php array
+        foreach ($results as $result){
+            $programData[] = $result;
+        }
+        // encode results as json object
+        $jsonData = new JsonModel($programData);
+        return $jsonData;
+     
+   // $arr = new JsonModel(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5));
+    
+ //return $arr;
+     
     }
     
     public function getGenericQueries()
