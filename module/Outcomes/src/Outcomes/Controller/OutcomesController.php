@@ -16,12 +16,25 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Adapter;
 
 class OutcomesController extends AbstractActionController
-{
-
-public function indexAction()
-{
-   echo "In outcomes controller";
-}
-
-   
+{ 
+    protected $tableResults;
+    
+    public function indexAction()
+    {
+        return new ViewModel(array(
+            'outcomes' => $this->getModelOutcomesTable()->getAllOutcomes(),
+            'units' => $this->getModelOutcomesTable()->getAllUnits(),
+        ));
+    }
+    
+    public function getModelOutcomesTable()
+    {
+        if (!$this->tableResults) {
+            $this->tableResults = $this->getServiceLocator()
+                       ->get('Outcomes\Model\OutcomesTable');
+                    
+        }
+        return $this->tableResults;
+    }
+    
 }
