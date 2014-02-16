@@ -23,10 +23,13 @@
              'plans' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/plans[/][:action][/:id]',
+                     'route'    => '/plans[/][:action][/:planId][/:department][/:program][/:year]',
                      'constraints' => array(
                          'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                         'id'     => '[0-9]+',
+                         'planId'     => '[0-9]+',
+                         'department' => '[a-zA-Z][a-zA-Z0-9_-\s\%]*',
+                         'program' => '[a-zA-Z][a-zA-Z0-9_-\s\%]*',
+                         'year'     => '[0-9]*',
                      ),
                      'defaults' => array(
                          'controller' => 'Plans\Controller\Plans',
