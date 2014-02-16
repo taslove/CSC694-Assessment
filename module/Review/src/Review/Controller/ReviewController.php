@@ -48,15 +48,11 @@ class ReviewController extends AbstractActionController
         $jsonData = new JsonModel($programData);
         return $jsonData;
      
-   // $arr = new JsonModel(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5));
-    
- //return $arr;
-     
     }
     
     public function getGenericQueries()
     {
-      /*  if (!$this->tableResults) {
+        if (!$this->tableResults) {
             $this->tableResults = $this->getServiceLocator()
                                        ->get('Application\Model\AllTables');
                     
@@ -70,6 +66,6 @@ class ReviewController extends AbstractActionController
                                        ->get('Review\Model\ReviewTables');
                     
         }
-        return $this->tableResults;*/
+        return $this->tableResults;
     }
 }

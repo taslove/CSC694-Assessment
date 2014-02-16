@@ -2,62 +2,52 @@
 <?php
 
    $title = 'Review Assessment Plans and Reports';
-    $this->headTitle($title);
+   $this->headTitle($title);
 ?>      
 <center><h3>Review Assessment Plans or Reports</h3>
 <div class="row">
    <div class="col-md-4">
    <div class="container">
    
-      <!-- Dept typeahead -->
+     <br />
+     <br />
+      <!-- Choose Action -->
+      <select class="selectpicker" id="action-menu" data-style="btn-primary" title='Choose Action'>
+         <option data-hidden="true"></option>
+         <option>View</option>
+         <option>Add</option>
+         <option>Modify</option>
+      </select>  
+     <br />
+     <br />
+      <!-- Choose Department/Unit -->
+      <select class="selectpicker" id="unit-menu" data-style="btn-primary" title='Choose Department/Unit'>
+         <option data-hidden="true"></option>
+      </select>  
+     <br />
+     <br />
+   
+   <!--
       <h6>Enter Department Name</h6>
       <div class="input-group">
       <div class="input-group-btn">
          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Select
          <span class="caret"></span>
          </button>
-         <ul class="dropdown-menu" id="unit-menu">
+         <ul class="dropdown-menu" id='unit-menu2' >
          </ul>
       </div>
       <input type="text" id="unit-input" class="form-control" placeholder="Department">
-      </div><!-- /input-group -->
-   
-      <!-- Prog/Degree dropdown -->
-      <h6>Select Program/Degree</h6>
-      <div class="input-group">
-      <div class="input-group-btn">
-         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Select
-         <span class="caret"></span>
-         </button>
-         <ul class="dropdown-menu" id="prog-menu">
-         </ul>
       </div>
-      <input type="text" id="prog-input" class="form-control" placeholder="Program/Degree">
-      </div><!-- /input-group -->
+   -->
+      <!-- Choose Program/Degree -->
+      <select class="selectpicker" id="prog-menu" data-style="btn-primary" title='Choose Program/Degree' multiple>
+         <option data-hidden="true"></option>
+      </select>
+     <br />
+     <br />
    
-      <!-- Prog/Degree dropdown -->
-      <h6>Select Program/Degree</h6>
-        <select class="selectpicker" data-style="btn-primary" multiple>
-         <option>stuff</option>
-         <option>thisstuff</option>
-        </select>
-        
-      </div>
-   
-   <!-- Year  -->
-      <h6>Select Academic year</h6>
-      <div class="input-group">
-      <div class="input-group-btn">
-         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">2014-15
-         <span class="caret"></span>
-         </button>
-         <ul class="dropdown-menu" >
-        
-         </ul>
-      </div>
-      <input type="text" class="form-control" placeholder="Year">
-      </div><!-- /input-group -->
-   
+     
       <p></p>
       <a class="btn btn-primary btn-lg" href="#"><?php echo $this->translate
       ('Find Plan') ?> &raquo;</a>
@@ -85,42 +75,52 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/bootstrap-rta.min.js"></script>
+<script src="js/bootstrap-select.js"></script>
 <script>
 
-// on page load
+// call loadDepts on page load
 $(document).ready(function() {
- //   $('.selectpicker').selectpicker();
    $.rta(); // load rta features - simplest implementation
    loadUnits();
 });
 
-// populate units
-$(document).on('click', '#unit-menu li a', function () {
-   $('#unit-input').val($(this).text());
-   loadPrograms($(this).text());
-});
-
-// function to create unit options
+// function to create department/unit options
 function loadUnits(){
-    
+   
    // convert php array into javascript array
    var units = <?php print json_encode($units); ?>;
    // assign unit ids to html dropdown
    for (var i = 0; i < units.length; i++){
-      $('#unit-menu').append('<li><a>' + units[i].id + '</a></li>');
+      //$('#unit-menu2').append('<li><a>' + units[i].id + '</a></li>');
+      $('#unit-menu').append('<option>' + units[i].id + '</option>');
    }
-   //$('unit-menu').listview('refresh');
+   // call code to initialize the selectpicker
+   // this must come after the options are ini
+   $('.selectpicker').selectpicker();
+   
 }
 
+// call loadPrograms when user chooses a department/unit
+$(document).on('change', '#unit-menu', function () {
+    loadPrograms($('#unit-menu option:selected').val());
+});
+
+// function to create program options based on department/unit chosen
 function loadPrograms($unit){
-   // asynchronous ajax code to populate program
-   // do we need to return the redirect?
+   // clear selectorlist before adding program/degree options
+   var oldSelections = $('#prog-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
+   }
+   $('#prog-menu').selectpicker('refresh');
+   
+   // create url for redirect
    var urlform = "<?php echo $this->url('review', array(
                                     'controller'=>'review',
                                     'action'=>'get')); ?>";
-                            
    urlform = urlform + '/' + $unit;
-   alert(urlform);
+   
+   // asynchronous ajax code to populate program/degree selector
    $.ajax({
       url: urlform,
       type: "GET",
@@ -130,11 +130,11 @@ function loadPrograms($unit){
       },
       success: function(programsJson){
          for (var i = 0; i < programsJson.length; i++){
-            $('#prog-menu').append('<li><a>' + programsJson[i].name + '</a></li>');
+            $('#prog-menu').append('<option>' + programsJson[i].name + '</option>');
          }
+         $('#prog-menu').selectpicker('refresh');
       },
    });
-   
 }
 </script>
 

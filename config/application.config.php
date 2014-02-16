@@ -1,6 +1,5 @@
 <?php
 return array(
-exit();    // This should be an array of module namespaces used in the application.
     'modules' => array(
         'Application',
         'Admin',
@@ -9,7 +8,6 @@ exit();    // This should be an array of module namespaces used in the applicati
         'Reports',
         'Review',
         'Mock',
-	   'Selections',
     ),
 
     // These are various options for the listeners attached to the ModuleManager
