@@ -1,9 +1,97 @@
+<?php
+$title = 'Review Assessment Plans and Reports';
+$this->headTitle($title);
+?>	
+<center><h3>Outcomes</h3>
+ <div class="row">
+ <div class="col-md-4">
+     <!-- Dept typeahead -->
+     <div class="container">
+         <div class="input-group" >
+             <p></p>
+         </div><!-- /input-group -->
+         <h6>Enter Department Name</h6>
+         <div class="input-group">
+             <input type="text" class="form-control" placeholder="Type ahead here...">
+                 <span class="input-group-btn">
+                     <button class="btn btn-primary" type="button">Enter</button>
+                 </span>
+         </div><!-- /input-group -->
+         
+     <!-- Prog/Degree dropdown -->
+     <h6>Select Program/Degree</h6>
+     <div class="input-group">
+         <div class="input-group-btn">
+             <button type="button" class="btn btn-primary dropdown-toggle"
+             data-toggle="dropdown">Select
+             <span class="caret"></span>
+             </button>
+             <ul class="dropdown-menu">
+                 <li><a href="#">Computer Science/BS</a></li>
+                 <li><a href="#">Computer Science/MS</a></li>
+                 <li><a href="#">Computer Science/BS</a></li>
+             </ul>
+         </div>
+         <input type="text" class="form-control" placeholder="Prog/Deg appears here">
+     </div>
+    <!-- Big bottom button-->
+     <p></p>
+    <a class="btn btn-primary btn-lg" href="#"><?php echo $this->translate
+     ('View Outcomes') ?> &raquo;</a>
+     </div><!--close container-->
+ </div><!--close column-->
+ 
+ <!--column 2-->
+ <p>This is a description I suppose.
+     <div class="col-md-8">
 
+ 
+ <!-- this is the table to display all the outcomes -->
+ <table class="table">
+<tr>
+    <th>Outcome ID</th>
+    <th>Program ID</th>
+    <th>Description</th>
+    <th>Active</th>
+    <th>&nbsp;</th>
+</tr>
+<?php foreach ($outcomes as $outcome) : ?>
+<tr>
+    <td><?php echo $this->escapeHtml($outcome['id']);?></td>
+    <td><?php echo $this->escapeHtml($outcome['program_id']);?></td>
+    <td><?php echo $this->escapeHtml($outcome['outcome_text']);?></td>
+    <td><?php echo $this->escapeHtml($outcome['active']);?></td>
+    <td>
+  <div class="btn-group-vertical btn-group-xs">
+        <button class="btn btn-primary" type="button">Edit</button>
+        <button class="btn btn-primary" type="button">Delete</button>
+  </div>
+    </td>
+</tr>
+<?php endforeach; ?>
+</table>
+ 
+  <table class="table">
+<tr>
+    <th>Id</th>
+    <th>Type</th>
 
-<div class="jumbotron">
-    <h1>test</h1>
-</div>
-
-<div class="row">
-
-</div>
+</tr>
+<?php foreach ($units as $unit) : ?>
+<tr>
+    <td><?php echo $this->escapeHtml($unit['id']);?></td>
+    <td><?php echo $this->escapeHtml($unit['type']);?></td>
+</tr>
+<?php endforeach; ?>
+</table>
+ 
+     </div>
+ 
+                                 
+                                         
+ <script src="js/jquery-1.8.3.min.js"></script>
+ <script src="js/bootstrap3-typeahead.js"></script>
+ <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+ <script src="https://code.jquery.com/jquery.js"></script>
+ <!-- Include all compiled plugins (below), or include individual files as needed -->
+ <script src="js/bootstrap.min.js"></script>

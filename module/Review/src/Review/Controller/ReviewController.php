@@ -56,7 +56,7 @@ class ReviewController extends AbstractActionController
     
     public function getGenericQueries()
     {
-        if (!$this->tableResults) {
+      /*  if (!$this->tableResults) {
             $this->tableResults = $this->getServiceLocator()
                                        ->get('Application\Model\AllTables');
                     
@@ -70,6 +70,6 @@ class ReviewController extends AbstractActionController
                                        ->get('Review\Model\ReviewTables');
                     
         }
-        return $this->tableResults;
+        return $this->tableResults;*/
     }
 }

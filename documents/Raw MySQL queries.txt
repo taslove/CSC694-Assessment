@@ -1,0 +1,66 @@
+-- 	SQL queries
+
+--
+-- List the ids for all active units
+--
+
+SELECT units.id 
+	FROM units
+	WHERE active = true;
+
+--
+-- List the ids for all active units that a particular user has access to.
+--
+
+SELECT units.id
+	FROM units
+INNER JOIN unit_privs
+	ON units.id = unit_privs.unit_id
+	WHERE active = true AND user_id = '19';
+
+--
+-- List the program names for all active programs for a particular unit id.
+--
+
+SELECT DISTINCT programs.name AS 'Programs Name'
+	FROM programs
+INNER JOIN units
+	ON units.id = programs.unit_id
+	WHERE programs.active = true AND units.id = 'BIO';
+
+--
+-- List the outcome ids and outcome text fields for all active outcomes given a particular program id.
+--
+
+SELECT outcomes.id, outcome_text
+	FROM outcomes
+	WHERE outcomes.active = true AND outcomes.program_id = 4;
+
+--
+-- List the plan ids and outcome ids for all plans for a particular year and particular program.
+--
+
+SELECT plan_id AS 'Plans ID', outcome_id AS 'Outcomes ID' 
+	FROM plan_outcomes
+INNER JOIN plans
+	ON plan_outcomes.plan_id = plans.id
+INNER JOIN outcomes
+	ON plan_outcomes.outcome_id = outcomes.id
+	WHERE plans.year = 2009 AND outcomes.program_id = 17;
+
+--
+-- List the report id for a particular plan id.
+--
+
+SELECT reports.id
+	FROM reports
+	WHERE plan_id = 1;
+
+
+
+
+
+
+
+ 
+
