@@ -1,110 +1,140 @@
-<?php
-$title = 'Review Assessment Plans and Reports';
-$this->headTitle($title);
-?>	
-<center><h3>Review Assessment Plans or Reports</h3>
- <div class="row">
- <div class="col-md-4">
-     <!-- Dept typeahead -->
-     <div class="container">
-         <div class="input-group" >
-             <p></p>
-         </div><!-- /input-group -->
-         <h6>Enter Department Name</h6>
-         <div class="input-group">
-             <input type="text" class="form-control" placeholder="Type ahead here...">
-                 <span class="input-group-btn">
-                     <button class="btn btn-primary" type="button">Enter</button>
-                 </span>
-         </div><!-- /input-group -->
-         
-     <!-- Prog/Degree dropdown -->
-     <h6>Select Program/Degree</h6>
-     <div class="input-group">
-         <div class="input-group-btn">
-             <button type="button" class="btn btn-primary dropdown-toggle"
-             data-toggle="dropdown">Select
-             <span class="caret"></span>
-             </button>
-             <ul class="dropdown-menu">
-                 <li><a href="#">Computer Science/BS</a></li>
-                 <li><a href="#">Computer Science/MS</a></li>
-                 <li><a href="#">Computer Science/BS</a></li>
-             </ul>
-         </div>
-         <input type="text" class="form-control" placeholder="Prog/Deg appears here">
-     </div>
-    <!-- Year  -->
-    <h6>Select Academic year</h6>
-    <div class="input-group">
-         <div class="input-group-btn">
-             <button type="button" class="btn btn-primary dropdown-toggle"
-                     data-toggle="dropdown">2014-15
-                 <span class="caret"></span>
-             </button>
-             <ul class="dropdown-menu" >
-                 <li><a href="#">2015-16</a></li>
-                 <li><a href="#">2016-17</a></li>
-                 <li><a href="#">2017-18</a></li>
-             </ul>
-         </div>
-         <input type="text" class="form-control" placeholder="Year appears here">
-    </div>
-     <p></p>
-    <a class="btn btn-primary btn-lg" href="#"><?php echo $this->translate
-     ('Find Plan') ?> &raquo;</a>
-     </div><!--close container-->
- </div><!--close column-->
- 
- <!--column 2-->
- <p>This is where the plan or report will pop up with a feedback box.</p>
- <style>
-   textarea {
-       width: 400px;
-   }
- </style>
-  <div class="container">
- <form class="form-horizontal" name="rtaform" id="rtaform" method="GET" action="#">
-     <div class="control-group">
-         <label class="control-label" for="ta_sample">Sample Text Area</label>
-         <div class="controls">
-             <textarea rows="8" cols="60" class="rta"
-             id="ta_sample" name="ta_sample" placeholder="Sample TextArea">
-             </textarea>
-         </div> <!-- controls -->
-     </div> <!-- control-group -->
- </form>
-  </div>
-        <table class="table">
-<tr>
-    <th>Unit ID</th>
-    <th>Program ID</th>
-</tr>
 
-<?php foreach ($units as $unit) : ?>
-<tr>
-    <td><?php echo $this->escapeHtml($unit['unit_id']);?></td>
-    <td><?php echo $this->escapeHtml($unit['name']);?></td>
-</tr>
-<?php endforeach; ?>
-</table>                         
-                                         
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/bootstrap-rta.min.js"></script>
-    
-  <script>
-        $(document).ready(function() {
-         document.getElementById("ta_sample").value = "testing";
-            $.rta(); // The simplest initialization... default button set on all class="rta" textarea's
-        });
-        function getYears(){
-             var startYear = 2006;
-             var currentYear = new Date().getFullYear();
-             var years = new Array();
-             for (var yr=startYear, i=0; yr<=currentYear; yr++, i++){
-                  years[i] = yr;
-             }
-             return years;
-        }
-  </script>
+<?php
+
+   $title = 'Review Assessment Plans and Reports';
+   $this->headTitle($title);
+?>      
+<center><h3>Review Assessment Plans or Reports</h3>
+<div class="row">
+   <div class="col-md-4">
+   <div class="container">
+   
+     <br />
+     <br />
+      <!-- Choose Action -->
+      <select class="selectpicker" id="action-menu" data-style="btn-primary" title='Choose Action'>
+         <option data-hidden="true"></option>
+         <option>View</option>
+         <option>Add</option>
+         <option>Modify</option>
+      </select>  
+     <br />
+     <br />
+      <!-- Choose Department/Unit -->
+      <select class="selectpicker" id="unit-menu" data-style="btn-primary" title='Choose Department/Unit'>
+         <option data-hidden="true"></option>
+      </select>  
+     <br />
+     <br />
+   
+   <!--
+      <h6>Enter Department Name</h6>
+      <div class="input-group">
+      <div class="input-group-btn">
+         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Select
+         <span class="caret"></span>
+         </button>
+         <ul class="dropdown-menu" id='unit-menu2' >
+         </ul>
+      </div>
+      <input type="text" id="unit-input" class="form-control" placeholder="Department">
+      </div>
+   -->
+      <!-- Choose Program/Degree -->
+      <select class="selectpicker" id="prog-menu" data-style="btn-primary" title='Choose Program/Degree' multiple>
+         <option data-hidden="true"></option>
+      </select>
+     <br />
+     <br />
+   
+     
+      <p></p>
+      <a class="btn btn-primary btn-lg" href="#"><?php echo $this->translate
+      ('Find Plan') ?> &raquo;</a>
+      </div><!--close container-->
+</div><!--close column-->
+
+<!--column 2-->
+<p>This is where the plan or report will pop up with a feedback box.</p>
+<style>
+   textarea {
+      width: 400px;
+   }
+</style>
+<div class="container">
+   <form class="form-horizontal" name="rtaform" id="rtaform" method="GET" action="#">
+      <div class="control-group">
+      <label class="control-label" for="ta_sample">Feedback Response</label>
+      <div class="controls">
+         <textarea rows="8" cols="60" class="rta" id="ta_sample" name="ta_sample"></textarea>
+      </div> <!-- controls -->
+      </div> <!-- control-group -->
+   </form>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap-rta.min.js"></script>
+<script src="js/bootstrap-select.js"></script>
+<script>
+
+// call loadDepts on page load
+$(document).ready(function() {
+   $.rta(); // load rta features - simplest implementation
+   loadUnits();
+});
+
+// function to create department/unit options
+function loadUnits(){
+   
+   // convert php array into javascript array
+   var units = <?php print json_encode($units); ?>;
+   // assign unit ids to html dropdown
+   for (var i = 0; i < units.length; i++){
+      //$('#unit-menu2').append('<li><a>' + units[i].id + '</a></li>');
+      $('#unit-menu').append('<option>' + units[i].id + '</option>');
+   }
+   // call code to initialize the selectpicker
+   // this must come after the options are ini
+   $('.selectpicker').selectpicker();
+   
+}
+
+// call loadPrograms when user chooses a department/unit
+$(document).on('change', '#unit-menu', function () {
+    loadPrograms($('#unit-menu option:selected').val());
+});
+
+// function to create program options based on department/unit chosen
+function loadPrograms($unit){
+   // clear selectorlist before adding program/degree options
+   var oldSelections = $('#prog-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
+   }
+   $('#prog-menu').selectpicker('refresh');
+   
+   // create url for redirect
+   var urlform = "<?php echo $this->url('review', array(
+                                    'controller'=>'review',
+                                    'action'=>'get')); ?>";
+   urlform = urlform + '/' + $unit;
+   
+   // asynchronous ajax code to populate program/degree selector
+   $.ajax({
+      url: urlform,
+      type: "GET",
+      dataType: "json",
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+      success: function(programsJson){
+         for (var i = 0; i < programsJson.length; i++){
+            $('#prog-menu').append('<option>' + programsJson[i].name + '</option>');
+         }
+         $('#prog-menu').selectpicker('refresh');
+      },
+   });
+}
+</script>
+
