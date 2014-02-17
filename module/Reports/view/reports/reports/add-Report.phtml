@@ -22,7 +22,9 @@ $this->headTitle($title);
             <div class="row">
                 <div class="col-md-4">
                     <!-- Dept typeahead --> <div class="container">
-                       
+                       <input type="checkbox">View &nbsp;
+		    <input type="checkbox">Add &nbsp;
+		    <input type="checkbox">Modify
 	<p></p>
                         <h6>Department Name</h6>
                        
@@ -80,22 +82,92 @@ $this->headTitle($title);
                         </div><p></p>
 			
 	  <!-- Get Button trigger modal -->
-<a class="btn btn-primary btn-md" href="./reports/viewAllReports">
-  View Reports &raquo;
+<a class="btn btn-success btn-md" href="./reports">
+  Submit &raquo;
 </a>
-<a class="btn btn-primary btn-md btn" href="./reports/addReport">
-  Add New &raquo;
-</a>
+
 <p></p>
 <a class="btn btn-primary btn-md" href="../mock">&laquo;<?php echo
 	    $this->translate ('Back to Main') ?> </a> <p></p>
                     </div><!--close container-->
                 </div><!--close column-->
-		
 		<!--column 2-->
-		
+		<p></p>
+                    <div class="col-md-6">
+                        <p><h6>Add Report for MS/Accounting in ACC:</h6></p>
+                        <div class="panel-group" id="accordion">
+			    <div class="panel panel-success">
+				<div class="panel-heading">
+				    <h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion"
+					   href="#collapseOne">Outcomes for Plan #1</a>
+				    </h4>
+				</div>
+				<div id="collapseOne" class="panel-collapse collapse in">
+				    <div class="panel-body">
+					<div class="control-group">
+					    <div class="controls">
+						
+						<div class="bs-example">
+    <table class="table">
+	<tr>
+	  <td>1. Students should understand and apply generally accepted accounting principles appropriate for introductory level courses. </td>
+	</tr> <tr>
+	 <td>2. Students should be able to evaluate and communicate basic accounting information effectively, sometimes using technology. </td>
+	</tr>
+    </table>
+    <p></p></div>
+					    </div>
+					</div>
+				    </div>
+				</div>
+				<div class="panel panel-success">
+				    <div class="panel-heading">
+					<h4 class="panel-title">
+					    <a data-toggle="collapse" data-parent="#accordion"
+					       href="#collapseTwo"> 1. Describe assessment method.</a>
+					</h4>
+				    </div>
+				    <div id="collapseTwo" class="panel-collapse collapse">
+					<div class="panel-body">
+					    <div class="control-group">
+						<div class="controls">
+	<textarea rows="6" cols="60" class="rta" id="ta_sample" name="ta_sample" placeholder=""></textarea>
+</div>
+					    </div>
+					</div>
+				    </div>
+				    <div class="panel panel-success">
+					<div class="panel-heading">
+					    <h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion"
+						   href="#collapseThree"> 2. Describe population assessed.</a>
+					    </h4>
+					</div>
+					<div id="collapseThree" class="panel-collapse collapse">
+					    <div class="panel-body">
+						<div class="control-group">
+						    <div class="controls">
+		<textarea rows="6" cols="60" class="rta" id="ta_sample" name="ta_sample" placeholder=""></textarea>
+</div>
+						</div>
+					    </div>
+					</div>
+				    </div>
+				</div>
+			    </div>
+			</div>
+			<button type="submit" class="btn btn-success pull-right">Submit</button>
+			<button type="submit" class="btn btn-primary pull-right">Save Draft</button>
+<a class="btn btn-primary btn-md pull-right" href="../img/userguide.pdf"><?php echo $this->translate
+            ('Preview') ?> &raquo;</a>
+<input class="input-file " id="fileInput" type="file" >
+	<button type="submit" class="btn btn-primary btn-xs ">Upload</button>
+	<button type="submit" class="btn btn-warning btn-xs btn ">Cancel</button>
+		    </div>
+	    </div>
 	</div>
-	 <script src="../js/bootstrap.min.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
                         <script src="../js/jquery.min.js"></script>
                         <script src="../js/bootstrap3-typeahead.js"></script>
                         <script src="https://code.jquery.com/jquery.js"></script>
@@ -109,12 +181,3 @@ $this->headTitle($title);
                         </script>
     </body>
 </html>
-
-
-
-
-
-
-
-
-
