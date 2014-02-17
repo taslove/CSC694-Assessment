@@ -60,11 +60,11 @@ class UserController extends AbstractActionController
         $user = $this->getUserQueries()->getUser($id);
 
 
-       /* $user->user_roles = array();
+        $user->dbroles = $user->user_roles;
 
-        foreach($user->rolesdb as $role){
-            $user->user_roles[] = $role['id'];
-        }*/
+        foreach($user->user_roles as $role => $value){
+            $user->user_roles[] = $role;
+        }
  
         
         $form = new UserForm();

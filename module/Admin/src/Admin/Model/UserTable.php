@@ -54,10 +54,35 @@ class UserTable extends AbstractTableGateway
         $result = $statement->execute();
         $roles = array();
         foreach($result as $row){
-            $roles[$row['id']]['id'] = $row['role'];
-            $roles[$row['id']]['term'] = $this->getRoleTerm($row['role']);
+            $roles[$row['role']]['id'] = $row['id'];
+            $roles[$row['role']]['term'] = $this->getRoleTerm($row['role']);
         }
         return $roles;
+    }
+    
+    public function deleteRoles($id)
+    {
+        $sql = new Sql($this->adapter);
+        $delete = $sql->delete()
+                      ->from('user_roles')
+                      ->where('owner_id', $id);
+        $deleteString = $sql->getSqlStringForSqlObject($delete);
+        $this->adapter->query($deleteString, Adapter::QUERY_MODE_EXECUTE);
+    }
+    function addRoles($userID,$roles)
+    {
+       //add role(s)
+       foreach($roles as $row => $value){
+            $role = array(
+                'owner_id' => $userID,
+                'role' => $value
+            );
+            $sql = new Sql($this->adapter);
+            $insert = $sql->insert('user_roles');
+            $insert->values($role);
+            $insertString = $sql->getSqlStringForSqlObject($insert);
+            $this->adapter->query($insertString, Adapter::QUERY_MODE_EXECUTE);
+       }
     }
     
     public function getRoleTerm($id){
@@ -85,7 +110,7 @@ class UserTable extends AbstractTableGateway
             throw new \Exception("Could not find row $id");
         }
         $roles = $this->getRoles($row['id']);
-        $row['rolesdb'] = $roles;
+        $row['user_roles'] = $roles;
         $user = new User();
         $user->exchangeArray($row);
         return $user;
@@ -99,7 +124,7 @@ class UserTable extends AbstractTableGateway
             'middle_init' => $user->middle_init,
         );
         
-        $role = $user->user_roles;
+        $roles = $user->user_roles;
         
         $id = (int)$user->id;
         if ($id == 0) {
@@ -107,30 +132,16 @@ class UserTable extends AbstractTableGateway
             $id = $this->adapter->getDriver()->getLastGeneratedValue();
 
             //add role(s)
-            foreach($role as $row => $value){
-                $role = array(
-                    'owner_id' => $id,
-                    'role' => $value
-                );
-                $sql = new Sql($this->adapter);
-                $insert = $sql->insert('user_roles');
-                $insert->values($role);
-                $insertString = $sql->getSqlStringForSqlObject($insert);
-                $this->adapter->query($insertString, Adapter::QUERY_MODE_EXECUTE);
-            }
+            $this->addRoles($id,$roles);
         } else {
             if ($this->getUser($id)) {
                 $this->update($data, array('id' => $id));
                 
-                //update role(s)
-                foreach($role as $row => $value){
-                    $sql = new Sql($this->adapter);
-                    $update = $sql->update('user_roles')
-                                  ->set(array('role' => $value))
-                                  ->where('id', $role_id);
-                    $updateString = $sql->getSqlStringForSqlObject($insert);
-                    $this->adapter->query($updateString, Adapter::QUERY_MODE_EXECUTE);
-                }
+                //delete old roles
+                $this->deleteRoles($user->id);
+                
+                //add role(s)
+                $this->addRoles($user->id,$roles);
   
             } else {
                 throw new \Exception('Form id does not exist');
