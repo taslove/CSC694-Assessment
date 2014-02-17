@@ -118,23 +118,33 @@ class UserTable extends AbstractTableGateway
 
     public function saveUser(User $user)
     {
+        //build the data array to add to users table
         $data = array(
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
             'middle_init' => $user->middle_init,
         );
         
+        //just put users roles into a new array
         $roles = $user->user_roles;
         
+        //get the user id
         $id = (int)$user->id;
+        
+        //if user doesn't exists
         if ($id == 0) {
+            //insert user
             $this->insert($data);
+            
+            //get the new user id
             $id = $this->adapter->getDriver()->getLastGeneratedValue();
 
             //add role(s)
             $this->addRoles($id,$roles);
         } else {
             if ($this->getUser($id)) {
+                
+                //update user information
                 $this->update($data, array('id' => $id));
                 
                 //delete old roles
