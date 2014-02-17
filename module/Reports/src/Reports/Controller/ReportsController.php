@@ -19,17 +19,25 @@ class ReportsController extends AbstractActionController
    protected $tableResults;
 
    public function indexAction()
-   {
-      echo "In Reports Controller";  
-   }
-public function addreportAction()
-    {
-     
-
     {
         return new ViewModel(array(
             'reports' => $this->getUnitTable()->getAllUnits(),
         ));
+    }
+    
+    public function viewAllReportsAction()
+    {
+        return new ViewModel();
+    }
+    
+    public function addReportAction()
+    {
+        return new ViewModel();
+    }
+    
+    public function viewReportAction()
+    {
+        return new ViewModel();
     }
     
     public function getUnitTable()
@@ -40,11 +48,5 @@ public function addreportAction()
                     
         }
         return $this->tableResults;
-    }
-    }
-    public function modifyreportAction()
-    {
-     
-
     }
 }
