@@ -68,7 +68,7 @@ group by pl.id
     public function getOutcomes($unit_id, $name, $year)
     {
 /*
-SELECT pl.id, o.outcome_text from assessment.units un
+SELECT o.id, pl.id, o.outcome_text from assessment.units un
 	inner join assessment.programs p
 		on p.unit_id = un.id
     inner join assessment.outcomes o
@@ -80,13 +80,14 @@ SELECT pl.id, o.outcome_text from assessment.units un
 where un.id = 'CSC'
 	and p.name = 'BS Computer Science'
 	and pl.year = 2011
-group by pl.id, o.outcome_text
+group by o.id, pl.id, o.outcome_text
 ;
 */	
 	
         $sql = new Sql($this->adapter);
         $select = $sql->select()
-                      ->columns(array('planId' => new Expression('plans.id'),
+                      ->columns(array('outcomeId' => new Expression('outcomes.id'),
+				      'planId' => new Expression('plans.id'),
 				      'outcomeText' => new Expression('outcomes.outcome_text'),
 				      ))
                       ->from('units')
@@ -95,7 +96,8 @@ group by pl.id, o.outcome_text
 		      ->join('plan_outcomes', 'plan_outcomes.outcome_id = outcomes.id')
 		      ->join('plans', 'plans.id = plan_outcomes.plan_id')		      
 		      ->where(array('units.id' => $unit_id, 'programs.name' => $name, 'plans.year' => $year))
-		      ->group (array('planId' => new Expression('plans.id'),
+		      ->group (array('outcomeId' => new Expression('outcomes.id'),
+				     'planId' => new Expression('plans.id'),
 				     'outcomeText' => new Expression('outcomes.outcome_text'),
 				      ))
 		   ;
@@ -105,7 +107,7 @@ group by pl.id, o.outcome_text
 
 	$entities = array();
         foreach ($resultSet as $row) {
-            $entity = new Entity\Outcome($row['planId'],$row['outcomeText']);
+            $entity = new Entity\Outcome($row['outcomeId'],$row['planId'],$row['outcomeText']);
             $entities[] = $entity;
         }
         return $entities;
@@ -127,14 +129,16 @@ group by pl.id, o.outcome_text
 	
         $sql = new Sql($this->adapter);
         $select = $sql->select()
-                      ->columns(array('planId' => new Expression('plans.id'),
+                      ->columns(array('outcomeId' => new Expression('outcomes.id'),
+				      'planId' => new Expression('plans.id'),
 				      'outcomeText' => new Expression('outcomes.outcome_text'),
 				      ))
                       ->from('outcomes')
 		      ->join('plan_outcomes', 'plan_outcomes.outcome_id = outcomes.id')
 		      ->join('plans', 'plans.id = plan_outcomes.plan_id')		      
 		      ->where(array('plans.id' => $planId))
-		      ->group (array('planId' => new Expression('plans.id'),
+		      ->group (array('outcomeId' => new Expression('outcomes.id'),
+				     'planId' => new Expression('plans.id'),
 				     'outcomeText' => new Expression('outcomes.outcome_text'),
 				      ))
 		   ;
@@ -144,7 +148,7 @@ group by pl.id, o.outcome_text
 
 	$entities = array();
         foreach ($resultSet as $row) {
-            $entity = new Entity\Outcome($row['planId'],$row['outcomeText']);
+            $entity = new Entity\Outcome($row['outcomeId'],$row['planId'],$row['outcomeText']);
             $entities[] = $entity;
         }
         return $entities;
@@ -173,7 +177,7 @@ where id = 1175
     }
     
     
-    public function savePlan($id,$assessmentMethod,$population,$sampleSize,$assessmentDate,$cost,$analysisType,$administrator,$analysisMethod,$scope,$feedback,$feedbackFlag,$planStatus)
+    public function updatePlan($id,$assessmentMethod,$population,$sampleSize,$assessmentDate,$cost,$analysisType,$administrator,$analysisMethod,$scope,$feedback,$feedbackFlag,$planStatus)
     {
 /*
 update assessment.plans
@@ -206,9 +210,56 @@ where id = 1175
         $statement->execute();
     }
     
+    public function insertPlan($year,$assessmentMethod,$population,$sampleSize,$assessmentDate,$cost,$analysisType,$administrator,$analysisMethod,$scope,$feedback,$feedbackFlag,$planStatus)
+    {	
+        $sql = new Sql($this->adapter);
+	$data = array('year' => $year,
+		      'assessment_method' => $assessmentMethod,
+		      'population' => $population,
+		      'sample_size' => $sampleSize,
+		      'assessment_date' => $assessmentDate,
+		      'cost' => $cost,
+		      'analysis_type' => $analysisType,
+		      'administrator' => $administrator,
+		      'analysis_method' => $analysisMethod,
+		      'scope' => $scope,
+		      'feedback' => $feedback,
+		      'feedback_flag' => $feedbackFlag,
+		      'plan_status' => $planStatus);
+	
+	$insert = $sql->insert('plans');
+	$insert->values($data);		    
+		    
+        $statement = $sql->prepareStatementForSqlObject($insert);
+        $statement->execute();
+	
+	
+	// get the primary key of the last insert
+        $select = $sql->select()
+		      ->columns(array('maxId' => new Expression('MAX(id)')))
+                      ->from('plans')
+		   ;
+		   
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+	
+	// create and return  a single row
+	$row = $result->current();   
+        return $row;
+    }
     
+    public function insertPlanOutcome($outcomeId, $planId)
+    {
+        $sql = new Sql($this->adapter);
+	$data = array('outcome_id' => $outcomeId,
+		      'plan_id' => $planId);
+
+	$insert = $sql->insert('plan_outcomes');
+	$insert->values($data);		    
     
-    
+        $statement = $sql->prepareStatementForSqlObject($insert);
+        $statement->execute();
+    }
     
     
     

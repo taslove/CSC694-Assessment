@@ -4,14 +4,20 @@ namespace Plans\Model\Entity;
 
 class Outcome {
 
+    protected $outcomeId;
     protected $planId;
     protected $outcomeText;
 
-    public function __construct($planId, $outcomeText) {
+    public function __construct($outcomeId, $planId, $outcomeText) {
+        $this->outcomeId = $outcomeId;
         $this->planId = $planId;
         $this->outcomeText = $outcomeText;
     }
 
+    public function getOutcomeId() {
+        return $this->outcomeId;
+    }
+    
     public function getPlanId() {
         return $this->planId;
     }

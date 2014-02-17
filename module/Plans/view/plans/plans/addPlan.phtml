@@ -6,28 +6,23 @@ $this->headTitle($title);
 ?>	
 <html>
     <body>  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <link rel="stylesheet" href="../css/bootstrap.min.css"> 
-    <link rel="stylesheet" href="../css/bootstrap-rta.min.css">
-    <style>
-        textarea {
-            width: 300px;
-        }</style>
+	<link rel="stylesheet" href="../css/bootstrap.min.css"> 
+	<link rel="stylesheet" href="../css/bootstrap-rta.min.css">
+	<style>
+	    textarea {
+		width: 300px;
+	    }
+	</style>
 	<div class="container">
-	<center><h3>Assessment Plans</h3>
-            
-	    </center>
-	    
-	    
+	    <center><h3>Assessment Plans</h3></center>
             <p></p>  
             <div class="row">
                 <div class="col-md-4">
-                    <!-- Dept typeahead --> <div class="container">
-                        <input type="checkbox">View &nbsp;
-		    <input type="checkbox">Add &nbsp;
-		    <input type="checkbox">Modify
-	<p></p>
+                    <div class="container">
+		    <p></p>
+		    
+			<!-- Department dropdown -->		    
                         <h6>Department Name</h6>
-                       
                         <div class="input-group">
                             <input type="text" class="form-control"
                                    placeholder="Accounting">
@@ -43,6 +38,7 @@ $this->headTitle($title);
                                 </ul>
                             </div>
                         </div>
+			
                         <!-- Prog/Degree dropdown -->
                         <h6>Degree/Program</h6>
                         <div class="input-group">
@@ -61,6 +57,7 @@ $this->headTitle($title);
                                 </ul>
                             </div>
                         </div>
+			
                         <!-- Year --> <h6>Academic Year</h6>
 			<div class="input-group">
                             <input type="text" class="form-control"
@@ -79,117 +76,293 @@ $this->headTitle($title);
                                     <li><a href="#">2017-18</a></li>
                                 </ul>
                             </div>			    
-                        </div><p></p>
+                        </div>
+			<p></p>
 			
-	  <!-- Get Button trigger modal -->
-<a class="btn btn-primary btn-md" href="./plans">
-  View Plans &raquo;
-</a>
-<a class="btn btn-primary btn-md btn" href="./addplan">
-  Add New &raquo;
-</a>
-<p></p>
-<a class="btn btn-primary btn-md" href="../mock">&laquo;<?php echo
-	    $this->translate ('Back to Main') ?> </a> <p></p>
+			<!-- Get Button trigger modal -->
+			<a class="btn btn-primary btn-md" href="./plans">View Plans &raquo;</a>
+			<a class="btn btn-primary btn-md btn" href="./addplan">Add New &raquo;</a>
+			<p></p>
+			<a class="btn btn-primary btn-md" href="../mock">&laquo;<?php echo $this->translate ('Back to Main') ?> </a> <p></p>
                     </div><!--close container-->
                 </div><!--close column-->
 		
+		
+		
+		
 		<!--column 2-->
 		<p></p>
+		<form action="<?php echo $this->url('plans', array('action'=>'addplan'));?>" method="post">
                     <div class="col-md-6">
+			<input type="hidden" name="year" value="<?php echo $year ?>">
+			<h4><?php echo $department . ", " . $program . ", " . $year ?></h4>
                         <h6>Add New Plan</h6>
 			<p></p>
-			   
-			    <div class="input-group">
-      <span class="input-group-addon"> <h6>Are you conducting Meta Assessment?</h6>
-        <input type="radio">Yes &nbsp;&nbsp; <input type="radio">No
-      </span></div>
-                        <div class="panel-group" id="accordion">
-			    <div class="panel panel-success">
-				<div class="panel-heading">
-				    <h4 class="panel-title">
-					<a data-toggle="collapse" data-parent="#accordion"
-					   href="#collapseOne">Select Outcome&#40s&#41</a>
-				    </h4>
-				</div>
-				<div id="collapseOne" class="panel-collapse collapse in">
-				    <div class="panel-body">
-					<div class="control-group">
-					    <div class="controls">
-						
-						<div class="bs-example">
-    <table class="table">
-	<tr>
-	  <th> <input type="radio"></th> <td>1. Students should understand and apply generally accepted accounting principles appropriate for introductory level courses. </td>
-	</tr> <tr class="active">
-	  <td> <input type="radio"></td> <td>2. Students should be able to evaluate and communicate basic accounting information effectively, sometimes using technology. </td>
-	</tr>
-    </table>
-    <p></p>
-						</div>
-					    </div>
-					</div>
-				    </div>
-				</div>
-				<div class="panel panel-success">
+			<div class="input-group">
+			    <span class="input-group-addon"> <h6>Are you conducting Meta Assessment?</h6>
+				<input type="radio">Yes &nbsp;&nbsp;
+				<input type="radio">No
+			    </span>
+			</div>
+
+			<div class="controls">
+			    <div class="panel-group" id="accordion">
+				<div class="panel panel-default">
 				    <div class="panel-heading">
 					<h4 class="panel-title">
-					    <a data-toggle="collapse" data-parent="#accordion"
-					       href="#collapseTwo"> 1. Describe assessment method.</a>
+					    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Outcomes</a>
 					</h4>
 				    </div>
-				    <div id="collapseTwo" class="panel-collapse collapse">
+			
+				    <div id="collapseOne" class="panel-collapse collapse in">
 					<div class="panel-body">
-					    <div class="control-group">
-						<div class="controls">
-						       <textarea rows="6" cols="60" class="rta" id="ta_sample" name="ta_sample" placeholder=""></textarea>
-                                            </div>
-					    </div>
-					</div>
-				    </div>
-				    <div class="panel panel-success">
-					<div class="panel-heading">
-					    <h4 class="panel-title">
-						<a data-toggle="collapse" data-parent="#accordion"
-						   href="#collapseThree">2. Describe population assessed.</a>
-					    </h4>
-					</div>
-					<div id="collapseThree" class="panel-collapse collapse">
-					    <div class="panel-body">
-						<div class="control-group">
-						    <div class="controls">
-							    <textarea rows="6" cols="60" class="rta" id="ta_sample" name="ta_sample" placeholder=""></textarea>
-                                            </div>
-						</div>
-					    </div>
+					    <?php
+						// loop through all the outcomes
+						$outcomeCount = 0;
+						    if (!empty($outcomes)) {
+							foreach ($outcomes as $outcome) :
+							    $outcomeCount++;
+					    ?>
+							    <p><input type="radio" id="radioOutcomes" name="radioOutcomes" value="<?php echo $outcome->getOutcomeId() ?>"> <?php getCount($outcomeCount) ?>. <?php echo $outcome->getOutcomeText() ?></td></p>
+					    <?php
+							endforeach;
+						    }
+					    ?>
 					</div>
 				    </div>
 				</div>
 			    </div>
-			</div>
-			<button type="submit" class="btn btn-success pull-right">Submit</button>
-			<button type="submit" class="btn btn-primary pull-right">Save Draft</button>
-<a class="btn btn-primary btn-md pull-right" href="../img/userguide.pdf"><?php echo $this->translate
-            ('Preview') ?> &raquo;</a>
+			
+			    <div class="panel panel-default">
+				<div class="panel-heading">
+				    <h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+					    1. Describe assessment method.
+					</a>
+				    </h4>
+				</div>
+			
+				<div id="collapseTwo" class="panel-collapse collapse">
+				    <div class="panel-body">
+					<textarea rows="6" cols="60" class="textbox" id="textAssessmentMethod" name="textAssessmentMethod">
+					</textarea>  
+				    </div>
+				</div>
+			
+				<div class="panel-heading">
+				    <h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+					    2. Describe population assessed.
+					</a>
+				    </h4>
+				</div>
+			
+				<div id="collapseThree" class="panel-collapse collapse">
+				    <div class="panel-body">
+					<textarea rows="6" cols="60" class="textbox" id="textPopulation" name="textPopulation">
+					</textarea>      
+				    </div>
+				</div>
+			
+				<div class="panel-heading">
+				    <h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+					    3. Describe sample size assessed.
+					</a>
+				    </h4>
+				</div>
+			
+				<div id="collapseFour" class="panel-collapse collapse">
+				    <div class="panel-body">
+					<textarea rows="6" cols="60" class="textbox" id="textSamplesize" name="textSamplesize">
+					</textarea>      
+				    </div>
+				</div>
+			
+				<div class="panel-heading">
+				    <h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
+					    4. Describe assessment date assessed.
+					</a>
+				    </h4>
+				</div>
+			
+				<div id="collapseFive" class="panel-collapse collapse">
+				    <div class="panel-body">
+					<textarea rows="6" cols="60" class="textbox" id="textAssessmentDate" name="textAssessmentDate">
+					</textarea>      
+				    </div>
+				</div>
+			
+				<div class="panel-heading">
+				    <h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapseSix">
+					    5. Describe cost assessed.
+					</a>
+				    </h4>
+				</div>
+			
+				<div id="collapseSix" class="panel-collapse collapse">
+				    <div class="panel-body">
+					<textarea rows="6" cols="60" class="textbox" id="textCost" name="textCost">
+					</textarea>      
+				    </div>
+				</div>
+			
+				<div class="panel-heading">
+				    <h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapseSeven">
+					    6. Describe analysis type assessed.
+					</a>
+				    </h4>
+				</div>
+			
+				<div id="collapseSeven" class="panel-collapse collapse">
+				    <div class="panel-body">
+					<textarea rows="6" cols="60" class="textbox" id="textAnalysisType" name="textAnalysisType">
+					</textarea>      
+				    </div>
+				</div>
+			
+				<div class="panel-heading">
+				    <h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapseEight">
+					    7. Describe administrator assessed.
+					</a>
+				    </h4>
+				</div>
+			
+				<div id="collapseEight" class="panel-collapse collapse">
+				    <div class="panel-body">
+					<textarea rows="6" cols="60" class="textbox" id="textAdministrator" name="textAdministrator">
+					</textarea>      
+				    </div>
+				</div>
+			
+				<div class="panel-heading">
+				    <h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapseNine">
+					    8. Describe analysis method assessed.
+					</a>
+				    </h4>
+				</div>
+			
+				<div id="collapseNine" class="panel-collapse collapse">
+				    <div class="panel-body">
+					<textarea rows="6" cols="60" class="textbox" id="textAnalysisMethod" name="textAnalysisMethod">
+					</textarea>      
+				    </div>
+				</div>
+			
+				<div class="panel-heading">
+				    <h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapseTen">
+					    9. Describe scope assessed.
+					</a>
+				    </h4>
+				</div>
+			
+				<div id="collapseTen" class="panel-collapse collapse">
+				    <div class="panel-body">
+					<textarea rows="6" cols="60" class="textbox" id="textScope" name="textScope">
+					</textarea>      
+				    </div>
+				</div>
+			
+				<div class="panel-heading">
+				    <h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapseEleven">
+					    10. Describe feedback assessed.
+					</a>
+				    </h4>
+				</div>
+			
+				<div id="collapseEleven" class="panel-collapse collapse">
+				    <div class="panel-body">
+					<textarea rows="6" cols="60" class="textbox" id="textFeedback" name="textFeedback">
+					</textarea>      
+				    </div>
+				</div>
+			
+				<div class="panel-heading">
+				    <h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwelve">
+					    11. Describe feedback flag assessed.
+					</a>
+				    </h4>
+				</div>
+			
+				<div id="collapseTwelve" class="panel-collapse collapse">
+				    <div class="panel-body">
+					<textarea rows="6" cols="60" class="textbox" id="textFeedbackFlag" name="textFeedbackFlag">
+					</textarea>      
+				    </div>
+				</div>					    
+			
+				<div class="panel-heading">
+				    <h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapseThirteen">
+					    12. Describe plan status flag assessed.
+					</a>
+				    </h4>
+				</div>
+			
+				<div id="collapseThirteen" class="panel-collapse collapse">
+				    <div class="panel-body">
+					<textarea rows="6" cols="60" class="textbox" id="textPlanStatus" name="textPlanStatus">
+					</textarea>      
+				    </div>
+				</div>					    
+			    </div>
+			</div> <!-- controls -->    
+						
+			<button type="submit" name="formSavePlan" value="formSavePlan" class="btn btn-success pull-right">Submit</button>
+			<button type="submit" name="formSaveDraft" value="formSaveDraft" class="btn btn-primary pull-right">Save Draft</button>
+			<a class="btn btn-primary btn-md pull-right" href="../img/userguide.pdf"><?php echo $this->translate ('Preview') ?> &raquo;</a>
 
-
-
-<input class="input-file " id="fileInput" type="file" >
-	<button type="submit" class="btn btn-primary btn-xs ">Upload</button>
-	<button type="submit" class="btn btn-warning btn-xs btn ">Cancel</button>
+			<input class="input-file " id="fileInput" type="file" >
+			<button type="submit" class="btn btn-primary btn-xs ">Upload</button>
+			<button type="submit" class="btn btn-warning btn-xs btn ">Cancel</button>
+		    </div>
+		</form>
 	    </div>
 	</div>
-	 <script src="../js/bootstrap.min.js"></script>
-                        <script src="../js/jquery.min.js"></script>
-                        <script src="../js/bootstrap3-typeahead.js"></script>
-                        <script src="https://code.jquery.com/jquery.js"></script>
-                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-                        <script src="../js/bootstrap-rta.min.js"></script>
-                        <script>
-                            $(document).ready(function() {
-                                document.getElementById('ta_sample').value = "";
-                                $.rta(); // The simplest initialization... default button set on all class="rta" textarea's
-                            });
-                        </script>
+
+	
+	<?php
+	    // All php functions
+	    function getValue($value)
+	    {
+		echo "value=\"$value\"";
+	    }
+	    
+	    function getCount($count)
+	    {
+		echo $count;
+	    }
+	?>
+         
+	<!-- All Java Script functions -->
+        <script>
+            $(document).ready(function() {
+	        document.getElementById('ta_sample').value = "";
+                $.rta(); // The simplest initialization... default button set on all class="rta" textarea's
+            });
+
+	    $(".dropdown-department li a").click(function(){
+	      document.getElementById("textDepartment").value = $(this).text();
+	    });
+			    
+	    $(".dropdown-program li a").click(function(){
+	      document.getElementById("textProgram").value = $(this).text();
+	    });
+	
+		$(".dropdown-year li a").click(function(){
+	      document.getElementById("textYear").value = $(this).text();
+	    });
+	    
+	    // Enable the radio buttons
+	    $('.btn').button();
+        </script>
     </body>
 </html>

@@ -319,6 +319,29 @@ $this->headTitle($title);
 						</div>					    
 						
 					    </div>
+					    
+					    <div class="panel panel-default">
+						<div class="panel-heading">
+						    <h4 class="panel-title">
+						      <a data-toggle="collapse" data-parent="#accordion" href="#collapseFourteen">
+							Feedback
+						      </a>
+						    </h4>
+						</div>
+						
+						<div id="collapseFourteen" class="panel-collapse collapse">
+						    <div class="panel-body">
+						       <div class="input-group">
+							    <span class="input-group-addon">
+								<input type="radio" placeholder="">In need of revision &nbsp;
+								<input type="radio" placeholder="">Ready to be carried out
+							    </span>
+							</div>
+							<textarea rows="6" cols="60" class="rta" id="ta_sample" name="ta_sample"
+								placeholder="Enter feedback..."></textarea>
+						    </div>
+						</div>
+					    </div>
 					</div> <!-- controls -->    
 	    
 					<a class="btn btn-primary" href="<?php echo $this->url('plans', array('action'=>'index')); ?>">Back to Plans</a>&nbsp;
@@ -328,7 +351,7 @@ $this->headTitle($title);
 			    </div><!-- /example -->
 			</table>
 		    </div>
-	    </form>
+		</form>
 	    </div>
 	</div>
 	    
