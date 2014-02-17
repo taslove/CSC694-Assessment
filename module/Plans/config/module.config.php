@@ -23,9 +23,10 @@
              'plans' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/plans[/][:action][/:planId][/:department][/:program][/:year]',
+                     'route'    => '/plans[/][:action][/:type][/:planId][/:department][/:program][/:year]',
                      'constraints' => array(
                          'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                         'type' => '[a-zA-Z][a-zA-Z0-9_-]*',
                          'planId'     => '[0-9]+',
                          'department' => '[a-zA-Z][a-zA-Z0-9_-\s\%]*',
                          'program' => '[a-zA-Z][a-zA-Z0-9_-\s\%]*',

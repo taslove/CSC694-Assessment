@@ -5,6 +5,15 @@ $title = 'Add New Assessment Plan';
 $this->headTitle($title);
 ?>	
 <html>
+     <head>
+        <meta charset="utf-8">
+	    
+	<?php echo $this->headScript()
+            ->prependFile($this->basePath() . '/js/customPlan.js')
+            ;
+	?>
+
+     </head>
     <body>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="../css/bootstrap.min.css"> 
@@ -23,22 +32,33 @@ $this->headTitle($title);
 		    
 		    <form action="<?php echo $this->url('plans', array('action'=>'index'));?>" method="post">                                    				
 			<div class="container">
-    
-			    <!-- Create the Radio Buttons -->
-			    <div class="btn-group" data-toggle="buttons">
-			      <label class="btn btn-primary">
-				<input type="radio" name="optionView" id="optionView"> View &raquo;
-			      </label>
-			      <label class="btn btn-primary">
-				<input type="radio" name="optionAdd" id="optionAdd"> Add &raquo;
-			      </label>
-			      <label class="btn btn-primary">
-				<input type="radio" name="optionModify" id="optionModify"> Modify &raquo;
-			      </label>
-			    </div>
-    
 			    <p></p>
 			
+			    <!-- Action dropdown -->
+			    <h6>Action</h6>                    
+			    <div class="input-group">
+				<input type="text" class="form-control" placeholder="Selection Appears Here" id="textAction" name="textAction"
+				    <?php
+					// check to see if there is a value returned from the response
+					if ($returnAction != null) {
+					    getValue($returnAction);
+					}
+				    ?>				       
+				>
+				<div class="input-group-btn">
+				    <button type="button" class="btn btn-primary
+					    dropdown-toggle"
+					    data-toggle="dropdown">Select
+					<span class="caret"></span>
+				    </button>
+				    <ul class="dropdown-menu dropdown-action">
+					<li><a href="#">Add</a></li>
+					<li><a href="#">Modify</a></li>
+					<li><a href="#">View</a></li>
+				    </ul>
+				</div>
+			    </div>
+			    
 			    <!-- Department dropdown -->
 			    <h6>Department Name</h6>                    
 			    <div class="input-group">
@@ -117,12 +137,12 @@ $this->headTitle($title);
 			    <p></p>
 			    
 			    <!-- Submit Button used to get the plan data from the database -->
-			    <button type="submit" name="formGetPlan" value="formGetPlan" class="btn btn-success btn-md">Submit &raquo;</button>
+			    <button type="submit" name="formGetPlan" value="formGetPlan" class="btn btn-success btn-md" onclick="planValidation()">Submit &raquo;</button>
 			    <p></p>
 			    
 			    <!-- Back to Main Button used to return to the main page -->
-			    <a class="btn btn-primary btn-md" href="../mock">&laquo;<?php echo $this->translate ('Back to Main') ?>
-			    </a> <p></p>
+			    <a class="btn btn-primary btn-md" onclick="planAlert()" href="../mock">&laquo;<?php echo $this->translate ('Back to Main') ?></a>
+			    <p></p>
 			</div><!--close container-->
 		    </form>
                 </div><!--close column-->
@@ -147,23 +167,27 @@ $this->headTitle($title);
 						<h4 class="title">
 						    <a data-toggle="collapse" data-parent="#accordion"
 							   href="#collapse<?php getCount($planCount) ?>">Plan # <?php getCount($planCount) ?> &nbsp; </a>
+						
+						    <?php
+							if ($returnAction == "View") {
+							    $page="viewonlyplan";
+							}
+							else {
+							    $page="modifyplan";
+							}
+						    ?>
+						
 						    <a class="btn btn-primary btn-xs" href="<?php echo $this->url('plans',
-														    array('action'=>'viewonlyplan',
+														    array('action'=>$page,
+															  'type' => $returnAction,
 														          'planId' => $plan['planId'],
 															  'department' => $returnDepartment,
 															  'program' => $returnProgram,
 															  'year' => $returnYear
 														  ));
-											    ?>"><?php echo $this->translate ('View') ?> &raquo;</a>&nbsp;
+											    ?>"><?php echo $this->translate ('Select') ?> &raquo;</a>&nbsp;
 											    
-						    <a class="btn btn-primary btn-xs" href="<?php echo $this->url('plans',
-														    array('action'=>'modifyplan',
-														          'planId' => $plan['planId'],
-															  'department' => $returnDepartment,
-															  'program' => $returnProgram,
-															  'year' => $returnYear
-														  ));
-											    ?>"><?php echo $this->translate ('Modify') ?> &raquo;</a>
+
 						</h4>
 					    </div>
 		    
@@ -223,6 +247,7 @@ $this->headTitle($title);
 
 	<!-- All Java Script functions -->
         <script>
+	    
             $(document).ready(function() {
 	        document.getElementById('ta_sample').value = "";
                 $.rta(); // The simplest initialization... default button set on all class="rta" textarea's
@@ -236,8 +261,12 @@ $this->headTitle($title);
 	      document.getElementById("textProgram").value = $(this).text();
 	    });
 	
-		$(".dropdown-year li a").click(function(){
+	    $(".dropdown-year li a").click(function(){
 	      document.getElementById("textYear").value = $(this).text();
+	    });
+	    
+	    $(".dropdown-action li a").click(function(){
+	      document.getElementById("textAction").value = $(this).text();
 	    });
 	    
 	    // Enable the radio buttons

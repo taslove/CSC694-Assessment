@@ -10,31 +10,50 @@ $this->headTitle($title);
 	<link rel="stylesheet" href="../css/bootstrap.min.css">
 	<link rel="stylesheet" href="../css/bootstrap-rta.min.css">
         <div class="container">
-            <center><h3>Assessment Plans</h3></center>
+            <center><h3>Assessment Plans-VIEW Specific</h3></center>
 	    
             <p></p>  
             <div class="row">
                 <div class="col-md-4">
-		    <div class="container">
-			
-			<!-- Create the Radio Buttons -->
-			<div class="btn-group" data-toggle="buttons">
-			    <label class="btn btn-primary">
-				<input type="radio" name="optionView" id="optionView"> View &raquo;
-			    </label>
-			    <label class="btn btn-primary">
-				<input type="radio" name="optionAdd" id="optionAdd"> Add &raquo;
-			    </label>
-			    <label class="btn btn-primary">
-				<input type="radio" name="optionModify" id="optionModify"> Modify &raquo;
-			    </label>
-			</div>
+		    <div class="container">			
 			<p></p>
+			
+		        <!-- Action dropdown -->
+			<h6>Action</h6>                    
+			<div class="input-group">
+			    <input type="text" class="form-control" placeholder="Selection Appears Here" id="textAction" name="textAction"
+				<?php
+				    // check to see if there is a value returned from the response
+				    if ($returnAction != null) {
+				        getValue($returnAction);
+				    }
+				?>				       
+			    >
+			    <div class="input-group-btn">
+				<button type="button" class="btn btn-primary
+					    dropdown-toggle"
+					    data-toggle="dropdown">Select
+				    <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu dropdown-action">
+				    <li><a href="#">Add</a></li>
+				    <li><a href="#">Modify</a></li>
+				    <li><a href="#">View</a></li>
+				</ul>
+			    </div>
+			</div>	
 			
                         <h6>Department Name</h6>
                         <div class="input-group">
                             <input type="text" class="form-control"
-                                   placeholder="Accounting">
+                                   placeholder="Accounting"
+   				    <?php
+					// check to see if there is a value returned from the response
+					if ($returnDepartment != null) {
+					    getValue($returnDepartment);
+					}
+				    ?>	
+				   >
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-primary
                                         dropdown-toggle"
@@ -52,7 +71,14 @@ $this->headTitle($title);
                         <h6>Degree/Program</h6>
                         <div class="input-group">
                             <input type="text" class="form-control"
-                                   placeholder="MS/Accounting">
+                                   placeholder="MS/Accounting"
+      				    <?php
+					// check to see if there is a value returned from the response
+					if ($returnProgram != null) {
+					    getValue($returnProgram);
+					}
+				    ?>	
+				   >
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-primary
                                         dropdown-toggle"
@@ -70,7 +96,14 @@ $this->headTitle($title);
 			<h6>Academic Year</h6>
 			<div class="input-group">
                             <input type="text" class="form-control"
-                                   placeholder="2014-15">
+                                   placeholder="2014-15"
+       				    <?php
+					// check to see if there is a value returned from the response
+					if ($returnYear != null) {
+					    getValue($returnYear);
+					}
+				    ?>	
+				   >
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-primary
                                         dropdown-toggle"
@@ -103,7 +136,7 @@ $this->headTitle($title);
 			    <div class="bs-example">
 				<table class="table">
 				    <h6>View Plan</h6>
-				    <h4><?php echo $department . ", " . $program . ", " . $year ?></h4>
+				    <h4>VIEW PLAN FOR: <?php echo $returnDepartment . ", " . $returnProgram . ", " . $returnYear ?></h4>
 	
 				    <div class="controls">
 					<div class="panel-group" id="accordion">

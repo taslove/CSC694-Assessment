@@ -40,36 +40,37 @@ class PlansController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
          
-            $optionsView = $request->getPost('optionView');
-            $optionsAdd = $request->getPost('optionAdd');
-            $optionModify = $request->getPost('optionModify');
+            $action = $request->getPost('textAction');
             $department = $request->getPost('textDepartment');
             $program = $request->getPost('textProgram');
             $year = $request->getPost('textYear');
             $form = $request->getPost('formGetPlan');                 
                  
-            if ($form == "formGetPlan" && $optionsAdd == null) {
-               // Get Plan Form
+            if ($form == "formGetPlan" && $action == "Add") {
+               // Go to the add plan page
+                  return $this->redirect()->toRoute('plans', array('action'=>'addplan',
+                                                    'type' => $action,
+                  			            'department' => $department,                                                                
+						    'program' => $program,
+						    'year' => $year
+                                                   ));
+            }
+            else {
+               // Go to the modify plan page
                return new ViewModel(array(
+                  'returnAction' => $action,
                   'returnDepartment' => $department,
                   'returnProgram' => $program,
                   'returnYear' => $year,
                   'outcomes' => $this->getDatabaseData()->getOutcomes($department, $program, $year),
                   'plans' => $this->getDatabaseData()->getPlans($department, $program, $year),                  
-               ));
-            }
-            else {
-               
-               return $this->redirect()->toRoute('plans', array('action'=>'addplan',
-							        'department' => $department,
-								'program' => $program,
-								'year' => $year
-                                                               ));
+               ));               
             }
          }
          else {
             // Initial Page Load, get request
             return new ViewModel(array(
+               'returnAction' => null,
                'returnDepartment' => null,
                'returnProgram' => null,
                'returnYear' => null,
@@ -80,7 +81,8 @@ class PlansController extends AbstractActionController
 
    public function viewOnlyPlanAction()
    {
-      // pull data from the route url               
+      // pull data from the route url
+      $action = $this->params()->fromRoute('type', 0);
       $planId = (int) $this->params()->fromRoute('planId', 0);
       $department = $this->params()->fromRoute('department', '');
       $program = $this->params()->fromRoute('program', '');
@@ -94,9 +96,10 @@ class PlansController extends AbstractActionController
          // Initial Page Load, get request
          return new ViewModel(array(
             'planId' => $planId,
-            'department' => $department,
-            'program' => $program,
-            'year' => $year,
+            'returnAction' => $action,
+            'returnDepartment' => $department,
+            'returnProgram' => $program,
+            'returnYear' => $year,
             'outcomes' => $this->getDatabaseData()->getOutcomesByPlanId($planId),
             'plan' => $this->getDatabaseData()->getPlanByPlanId($planId),
          ));
@@ -106,7 +109,8 @@ class PlansController extends AbstractActionController
    
    public function modifyPlanAction()
    {
-      // pull data from the route url               
+      // pull data from the route url
+      $action = $this->params()->fromRoute('type', 0);
       $planId = (int) $this->params()->fromRoute('planId', 0);
       $department = $this->params()->fromRoute('department', '');
       $program = $this->params()->fromRoute('program', '');
@@ -144,9 +148,10 @@ class PlansController extends AbstractActionController
          // Initial Page Load, get request
          return new ViewModel(array(
             'planId' => $planId,
-            'department' => $department,
-            'program' => $program,
-            'year' => $year,
+            'returnAction' => $action,
+            'returnDepartment' => $department,
+            'returnProgram' => $program,
+            'returnYear' => $year,
             'outcomes' => $this->getDatabaseData()->getOutcomesByPlanId($planId),
             'plan' => $this->getDatabaseData()->getPlanByPlanId($planId),
          ));
@@ -155,6 +160,7 @@ class PlansController extends AbstractActionController
    
    public function addplanAction()
    {
+      $action = $this->params()->fromRoute('type', '');
       $department = $this->params()->fromRoute('department', '');
       $program = $this->params()->fromRoute('program', '');
       $year = (int) $this->params()->fromRoute('year', 0);
@@ -195,11 +201,12 @@ class PlansController extends AbstractActionController
       }
       else {
          // Initial Page Load, get request
-         return new ViewModel(array(               
-            'department' => $department,
-            'program' => $program,
-            'year' => $year,
-            'outcomes' => $this->getDatabaseData()->getOutcomes($department, $program, $year),
+         return new ViewModel(array(
+            'returnAction' => $action,
+            'returnDepartment' => $department,
+            'returnProgram' => $program,
+            'returnYear' => $year,
+            'outcomes' => $this->getDatabaseData()->getUniqueOutcomes($department, $program, $year),
          ));
       }
    }

@@ -113,6 +113,53 @@ group by o.id, pl.id, o.outcome_text
         return $entities;
     }
     
+    public function getUniqueOutcomes($unit_id, $name, $year)
+    {
+/*
+SELECT o.id, o.outcome_text from assessment.units un
+	inner join assessment.programs p
+		on p.unit_id = un.id
+    inner join assessment.outcomes o
+		on o.program_id = p.id
+	inner join assessment.plan_outcomes po
+		on po.outcome_id = o.id
+	inner join assessment.plans pl
+		on pl.id = po.plan_id
+where un.id = 'CSC'
+	and p.name = 'BS Computer Science'
+	and pl.year = 2011
+group by o.id, o.outcome_text
+;
+*/	
+	
+        $sql = new Sql($this->adapter);
+        $select = $sql->select()
+                      ->columns(array('outcomeId' => new Expression('outcomes.id'),
+				      'outcomeText' => new Expression('outcomes.outcome_text'),
+				      ))
+                      ->from('units')
+		      ->join('programs', 'programs.unit_id = units.id')
+		      ->join('outcomes', 'outcomes.program_id = programs.id')
+		      ->join('plan_outcomes', 'plan_outcomes.outcome_id = outcomes.id')
+		      ->join('plans', 'plans.id = plan_outcomes.plan_id')		      
+		      ->where(array('units.id' => $unit_id, 'programs.name' => $name, 'plans.year' => $year))
+		      ->group (array('outcomeId' => new Expression('outcomes.id'),
+				     'outcomeText' => new Expression('outcomes.outcome_text'),
+				      ))
+		   ;
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $resultSet = $statement->execute();
+
+	$entities = array();
+        foreach ($resultSet as $row) {
+            $entity = new Entity\Outcome($row['outcomeId'], 0,$row['outcomeText']);
+            $entities[] = $entity;
+        }
+        return $entities;
+    }
+    
+    
 
     public function getOutcomesByPlanId($planId)
     {
