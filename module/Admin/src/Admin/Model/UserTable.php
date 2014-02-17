@@ -24,7 +24,6 @@ class UserTable extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         $select = $sql->select()
                       ->from($this->table);
-                      #->join(array('ur'=>'user_roles'), 'ur.owner_id = users.id');
                       
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -32,10 +31,11 @@ class UserTable extends AbstractTableGateway
         $users = array();
         foreach($result as $row){
             $roles = $this->getRoles($row['id']);
-            $row['role'] = $roles;
+            $row['user_roles'] = $roles;
             $user = new User();
             $user->exchangeArray($row);
             $users[] = $user;
+            
         }
         return $users;
     }
@@ -54,10 +54,24 @@ class UserTable extends AbstractTableGateway
         $result = $statement->execute();
         $roles = array();
         foreach($result as $row){
-            $roles[$row['owner_id']]['role'] = $row['role'];
-            $roles[$row['owner_id']]['id'] = $row['id'];
+            $roles[$row['id']]['id'] = $row['role'];
+            $roles[$row['id']]['term'] = $this->getRoleTerm($row['role']);
         }
         return $roles;
+    }
+    
+    public function getRoleTerm($id){
+      if(!$id){
+          return;
+      }  
+        $roles = array(
+          '1' => 'Admin',
+          '2' => 'Chair',
+          '3' => 'User',
+          '4' => 'Assessor',
+          '5' => 'Committee',
+        );
+        return $roles[$id];
     }
 
 
@@ -66,22 +80,12 @@ class UserTable extends AbstractTableGateway
         $id = (int) $id;
         $rowset = $this->select(array('id' => $id));
         
-       /* $sql = new Sql($this->adapter);
-        $select = $sql->select()
-                      ->from($this->table)
-                      ->join('user_roles', 'owner_id = users.id');
-        $where = new Where();
-        $where->equalTo('id',$id);
-        $select->where($where);
-                      
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();*/
-        
-        
         $row = $rowset->current();
         if (!$row) {
             throw new \Exception("Could not find row $id");
         }
+        $roles = $this->getRoles($row['id']);
+        $row['rolesdb'] = $roles;
         $user = new User();
         $user->exchangeArray($row);
         return $user;
@@ -95,20 +99,38 @@ class UserTable extends AbstractTableGateway
             'middle_init' => $user->middle_init,
         );
         
-        $role = $user->role;
-
+        $role = $user->user_roles;
+        
         $id = (int)$user->id;
         if ($id == 0) {
             $this->insert($data);
+            $id = $this->adapter->getDriver()->getLastGeneratedValue();
+
+            //add role(s)
+            foreach($role as $row => $value){
+                $role = array(
+                    'owner_id' => $id,
+                    'role' => $value
+                );
+                $sql = new Sql($this->adapter);
+                $insert = $sql->insert('user_roles');
+                $insert->values($role);
+                $insertString = $sql->getSqlStringForSqlObject($insert);
+                $this->adapter->query($insertString, Adapter::QUERY_MODE_EXECUTE);
+            }
         } else {
             if ($this->getUser($id)) {
                 $this->update($data, array('id' => $id));
                 
-                //update role
-                $sql = new Sql($this->adapter);
-                $update = $sql->update('user_roles')
-                              ->set(array('role' => $role))
-                              ->where('owner_id', $id);
+                //update role(s)
+                foreach($role as $row => $value){
+                    $sql = new Sql($this->adapter);
+                    $update = $sql->update('user_roles')
+                                  ->set(array('role' => $value))
+                                  ->where('id', $role_id);
+                    $updateString = $sql->getSqlStringForSqlObject($insert);
+                    $this->adapter->query($updateString, Adapter::QUERY_MODE_EXECUTE);
+                }
   
             } else {
                 throw new \Exception('Form id does not exist');
