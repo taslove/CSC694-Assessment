@@ -59,9 +59,17 @@ class UserController extends AbstractActionController
         }
         $user = $this->getUserQueries()->getUser($id);
 
+
+        $user->dbroles = $user->user_roles;
+
+        foreach($user->user_roles as $role => $value){
+            $user->user_roles[] = $role;
+        }
+ 
+        
         $form = new UserForm();
         $form->bind($user);
-        $form->get('submit')->setAttribute('value', 'Edit');
+        $form->get('submit')->setAttribute('value', 'Save');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
