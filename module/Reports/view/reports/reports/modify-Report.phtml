@@ -1,86 +1,68 @@
 <?php
-// module/Student/view/mock/mock/viewSO.phtml:
+// modifyreport.phtml:
 
-$title = 'Plans';
+$title = 'Modify Report';
 $this->headTitle($title);
 ?>
 <html>
     <body>
-	 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/bootstrap.min.css">
-  
-    <link rel="stylesheet" href="../css/bootstrap-rta.min.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="stylesheet" href="../../css/bootstrap.min.css"> 
+    <link rel="stylesheet" href="../../css/bootstrap-rta.min.css">
+    <style>
+        textarea {
+            width: 300px;
+        }</style>
         <div class="container">
-            <center><h3>Assessment Reports</h3>
+           	<center><h3>Assessment Reports</h3>
             
 	    </center>
-	    
 	    
             <p></p>  
             <div class="row">
                 <div class="col-md-4">
                     <!-- Dept typeahead --> <div class="container">
-                       <input type="checkbox">View &nbsp;
-		    <input type="checkbox">Add &nbsp;
-		    <input type="checkbox">Modify
-	<p></p>
-                        <h6>Department Name</h6>
                        
-                        <div class="input-group">
-                            <input type="text" class="form-control"
-                                   placeholder="Accounting">
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-primary
-                                        dropdown-toggle"
-                                        data-toggle="dropdown">Select
-                                    <span class="caret"></span>
-                                </button> <ul class="dropdown-menu">
-                                    <li><a href="#">Computer Science/BS</a></li>
-                                    <li><a href="#">Computer Science/MS</a></li>
-                                    <li><a href="#">Computer Science/BS</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- Prog/Degree dropdown -->
-                        <h6>Degree/Program</h6>
-                        <div class="input-group">
-                            <input type="text" class="form-control"
-                                   placeholder="MS/Accounting">
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-primary
-                                        dropdown-toggle"
-                                        data-toggle="dropdown">Select
-                                    <span class="caret"></span>
-                                </button> <ul class="dropdown-menu">
-                                    <li><a href="#">Computer Science/BS</a></li>
-                                    <li><a href="#">Computer Science/MS</a></li>
-                                    <li><a href="#">Computer Science/BS</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- Year --> <h6>Academic Year</h6>
-			<div class="input-group">
-                            <input type="text" class="form-control"
-                                   placeholder="2014-15">
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-primary
-                                        dropdown-toggle"
-                                        data-toggle="dropdown">
-
-                                    <span data-bind="label">Select</span>&nbsp;
-                                    <span class="caret"></span>
-                                </button> <ul class="dropdown-menu" >
-                                    <li><a href="#">Current</a></li>
-                                    <li><a href="#">2015-16</a></li>
-                                    <li><a href="#">2016-17</a></li>
-                                    <li><a href="#">2017-18</a></li>
-                                </ul>
-                            </div>			    
-                        </div><p></p>
-			
+	<p></p>
+                         <!-- Choose Action -->
+      <select class="selectpicker" id="action-menu" data-style="btn-primary" title='Choose Action'>
+         <option data-hidden="true"></option>
+         <option>View</option>
+         <option>Add</option>
+         <option>Modify</option>
+      </select>  
+     <br />
+     <br />
+      <!-- Choose Department/Unit -->
+      <select class="selectpicker" id="unit-menu" data-style="btn-primary" title='Choose Department/Unit'>
+         <option data-hidden="true"></option>
+      </select>  
+     <br />
+     <br />
+   
+   <!--
+      <h6>Enter Department Name</h6>
+      <div class="input-group">
+      <div class="input-group-btn">
+         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Select
+         <span class="caret"></span>
+         </button>
+         <ul class="dropdown-menu" id='unit-menu2' >
+         </ul>
+      </div>
+      <input type="text" id="unit-input" class="form-control" placeholder="Department">
+      </div>
+   -->
+      <!-- Choose Program/Degree -->
+      <select class="selectpicker" id="prog-menu" data-style="btn-primary" title='Choose Program/Degree' multiple>
+         <option data-hidden="true"></option>
+      </select>
+     <br />
+     <br />
+   
 	  <!-- Get Button trigger modal -->
-<a class="btn btn-success btn-md" href="./reports">
-  Submit &raquo;
+<a class="btn btn-primary btn-md" href="../view-All-Reports">
+  Find Reports &raquo;
 </a>
 
 <p></p>
@@ -88,6 +70,7 @@ $this->headTitle($title);
 	    $this->translate ('Back to Main') ?> </a> <p></p>
                     </div><!--close container-->
                 </div><!--close column-->
+		
 		<!--column 2-->
 		<p></p>
 		<div class="col-md-8">
@@ -215,18 +198,70 @@ $this->headTitle($title);
                    
     </div>
          
-             <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-                        <script src="../js/jquery.min.js"></script>
-                        <script src="../js/bootstrap3-typeahead.js"></script>
-                        <script src="https://code.jquery.com/jquery.js"></script>
-                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-                        <script src="../js/bootstrap.min.js"></script>
-                        <script src="../js/bootstrap-rta.min.js"></script>
-                        <script>
-                            $(document).ready(function() {
-                                document.getElementById('ta_sample').value = "";
-                                $.rta(); // The simplest initialization... default button set on all class="rta" textarea's
-                            });
-                        </script>
     </body>
 </html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="../../js/bootstrap.min.js"></script>
+<script src="../../js/bootstrap-rta.min.js"></script>
+<script src="../../js/bootstrap-select.js"></script>
+<script>
+
+// call loadDepts on page load
+$(document).ready(function() {
+   $.rta(); // load rta features - simplest implementation
+   loadUnits();
+});
+
+// function to create department/unit options
+function loadUnits(){
+   
+   // convert php array into javascript array
+   var units = <?php print json_encode($units); ?>;
+   // assign unit ids to html dropdown
+   for (var i = 0; i < units.length; i++){
+      //$('#unit-menu2').append('<li><a>' + units[i].id + '</a></li>');
+      $('#unit-menu').append('<option>' + units[i].id + '</option>');
+   }
+   // call code to initialize the selectpicker
+   // this must come after the options are ini
+   $('.selectpicker').selectpicker();
+   
+}
+
+// call loadPrograms when user chooses a department/unit
+$(document).on('change', '#unit-menu', function () {
+    loadPrograms($('#unit-menu option:selected').val());
+});
+
+// function to create program options based on department/unit chosen
+function loadPrograms($unit){
+   // clear selectorlist before adding program/degree options
+   var oldSelections = $('#prog-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
+   }
+   $('#prog-menu').selectpicker('refresh');
+   
+   // create url for redirect
+   var urlform = "<?php echo $this->url('review', array(
+                                    'controller'=>'review',
+                                    'action'=>'get')); ?>";
+   urlform = urlform + '/' + $unit;
+   
+   // asynchronous ajax code to populate program/degree selector
+   $.ajax({
+      url: urlform,
+      type: "GET",
+      dataType: "json",
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+      success: function(programsJson){
+         for (var i = 0; i < programsJson.length; i++){
+            $('#prog-menu').append('<option>' + programsJson[i].name + '</option>');
+         }
+         $('#prog-menu').selectpicker('refresh');
+      },
+   });
+}
+</script>

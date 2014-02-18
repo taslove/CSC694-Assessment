@@ -64,7 +64,8 @@ class AllTables extends AbstractTableGateway
                     ->where(array('liaison_privs.user_id' => $userID));
         
         // union results from both selects
-        //$select1->combine($select2);
+        $select1->combine($select2);
+
 
         $statement = $sql->prepareStatementForSqlObject($select1);
         $result = $statement->execute();

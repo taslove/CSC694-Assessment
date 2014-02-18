@@ -9,7 +9,9 @@ return array(
         'Reports',
         'Review',
         'Mock',
+
        //'ZF2FileUploadExamples',
+
     ),
 
     // These are various options for the listeners attached to the ModuleManager
