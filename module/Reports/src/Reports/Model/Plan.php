@@ -6,15 +6,20 @@ use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
+use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Where;
 
-class Reports implements InputFilterAwareInterface
+class Plan implements InputFilterAwareInterface
 {
     public $id;
+    public $outcome;
+
     protected $inputFilter;
 
     public function exchangeArray($data)
     {
-        $this->uid = (isset($data['id'])) ? $data['id'] : null;
+        $this->id = (isset($data['id'])) ? $data['id'] : null;
+        $this->outcome = (isset($data['outcome_text'])) ? $data['outcome_text'] : null;
     }
 
      // Add the following method:
@@ -42,11 +47,20 @@ class Reports implements InputFilterAwareInterface
                         'id' => 'StringLength',
                         'options' => array(
                             'encoding' => 'UTF-8',
-                            'min' => 3,
-                            'max' => 3,
                         ),
                     ),
                 ),
+                'outcome_text' => 'outcome_text',
+                'required' => false,
+                'validators' => array(
+                    array(
+                        'outcome_text' => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                        ),
+                    ),
+                ),
+                
             )));
 
             
