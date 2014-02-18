@@ -15,8 +15,11 @@
      ),
      'view_manager' => array(
          'template_path_stack' => array(
-             'review' => __DIR__ . '/../view',
+            'review' => __DIR__ . '/../view',
          ),
+         'strategies' => array(
+            'ViewJsonStrategy',
+        ),
      ),
        'router' => array(
          'routes' => array(
@@ -26,8 +29,7 @@
                      'route'    => '/review[/][:action][/:id]',
                      'constraints' => array(
                          'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                         'id'     => '[0-9]+',
-                     ),
+                      ),
                      'defaults' => array(
                          'controller' => 'Review\Controller\Review',
                          'action'     => 'index',
@@ -36,10 +38,6 @@
              ),
          ),
      ),
-
-     'view_manager' => array(
-         'template_path_stack' => array(
-             'outcomes' => __DIR__ . '/../view',
-         ),
-     ),
+    
+   
  );

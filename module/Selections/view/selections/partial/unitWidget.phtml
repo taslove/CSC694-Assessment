@@ -1,0 +1,50 @@
+<div class="row">
+   <div class="col-md-4">
+   <div class="container">
+   
+      <!-- Dept typeahead -->
+      <h6>Enter Department Name</h6>
+      <div class="input-group">
+      <div class="input-group-btn">
+         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Select
+         <span class="caret"></span>
+         </button>
+         <ul class="dropdown-menu" id="unit-menu">
+         </ul>
+      </div>
+      <input type="text" id="unit-input" class="form-control" placeholder="Department">
+      </div><!-- /input-group -->
+    </div><!--close container-->
+</div><!--close column-->
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap-rta.min.js"></script>
+<script>
+
+// on page load
+$(document).ready(function() {
+   loadUnits();
+});
+
+// populate units
+$(document).on('click', '#unit-menu li a', function () {
+   $('#unit-input').val($(this).text());
+   loadPrograms();
+});
+
+// function to create unit options
+function loadUnits(){
+    
+   // convert php array into javascript array
+   var units = <?php print json_encode($units); ?>;
+   // assign unit ids to html dropdown
+   for (var i = 0; i < units.length; i++){
+      $('#unit-menu').append('<li><a>' + units[i].id + '</a></li>');
+   }
+   //$('unit-menu').listview('refresh');
+}
+</script>
+

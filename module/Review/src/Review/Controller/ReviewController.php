@@ -14,6 +14,7 @@ use Zend\View\Model\ViewModel;
 use Zend\Db\Sql\Select;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Adapter;
+use Zend\View\Model\JsonModel;
 
 class ReviewController extends AbstractActionController
 {
@@ -21,19 +22,50 @@ class ReviewController extends AbstractActionController
     
     public function indexAction()
     {
+        // get units
+        $results = $this->getGenericQueries()->getUnits();
+        // iterate over database results forming a php array
+        foreach ($results as $result){
+            $unitarray[] = $result;
+        }
+        // pass array to view
         return new ViewModel(array(
-            'reviews' => $this->getModelReviewTable()->getAllStudentEnroll(),
+            'units' => $unitarray,
         ));
     }
     
-    public function getModelReviewTable()
+    public function getAction()
+    {
+        // get unit from id in url
+        $unitChosen = $this->params()->fromRoute('id', 0);
+        // get programs for that unit
+        $results = $this->getGenericQueries()->getProgramsByUnitId($unitChosen);
+        // iterate through results forming a php array
+        foreach ($results as $result){
+            $programData[] = $result;
+        }
+        // encode results as json object
+        $jsonData = new JsonModel($programData);
+        return $jsonData;
+     
+    }
+    
+    public function getGenericQueries()
     {
         if (!$this->tableResults) {
             $this->tableResults = $this->getServiceLocator()
-                       ->get('Review\Model\StudentTable');
+                                       ->get('Application\Model\AllTables');
                     
         }
         return $this->tableResults;
     }
-    
+    public function getReviewQueries()
+    {
+        if (!$this->tableResults) {
+            $this->tableResults = $this->getServiceLocator()
+                                       ->get('Review\Model\ReviewTables');
+                    
+        }
+        return $this->tableResults;
+    }
 }

@@ -9,28 +9,119 @@
 
 namespace Admin\Controller;
 
+use Admin\Model\User;
+use Admin\Form\UserForm;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\Db\Sql\Select;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Adapter\Adapter;
+
 
 class UserController extends AbstractActionController
 {
-   protected $studentTable;
+    protected $tableResults;
 
    public function indexAction()
-   {
-      echo "List all users here";  
-   }
+    {
+        return new ViewModel(array(
+            'users' => $this->getUserQueries()->fetchAll(),
+        ));
+    }
    public function addAction()
    {
-      echo "Add User";  
+        $form = new UserForm();
+        $form->get('submit')->setValue('Add');
+
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $user = new User();
+            $form->setInputFilter($user->getInputFilter());
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $user->exchangeArray($form->getData());
+                $this->getUserQueries()->saveUser($user);
+
+                // Redirect to list of users
+                return $this->redirect()->toRoute('user');
+            }
+        }
+        return array('form' => $form);  
    }
    public function editAction()
    {
-      echo "Edit User";  
+       $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('user', array(
+                'action' => 'add'
+            ));
+        }
+        $user = $this->getUserQueries()->getUser($id);
+
+        $form = new UserForm();
+        $form->bind($user);
+        $form->get('submit')->setAttribute('value', 'Edit');
+
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setInputFilter($user->getInputFilter());
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $this->getUserQueries()->saveUser($form->getData());
+
+                // Redirect to list of users
+                return $this->redirect()->toRoute('user');
+            }
+        }
+
+        return array(
+            'id' => $id,
+            'form' => $form,
+        );
    }
    public function deleteAction()
    {
-      echo "Delete User";  
-   }
+       $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('user');
+        }
 
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $del = $request->getPost('del', 'No');
+
+            if ($del == 'Yes') {
+                $id = (int) $request->getPost('id');
+                $this->getUserQueries()->deleteUser($id);
+            }
+
+            // Redirect to list of users
+            return $this->redirect()->toRoute('user');
+            
+        }else{
+            $this->getUserQueries()->deleteUser($id);
+            return $this->redirect()->toRoute('user');
+        }
+
+   }
+    
+    public function getGenericQueries()
+    {
+        if (!$this->tableResults) {
+            $this->tableResults = $this->getServiceLocator()
+                                       ->get('Application\Model\AllTables');
+                    
+        }
+        return $this->tableResults;
+    }
+   public function getUserQueries()
+    {
+        if (!$this->tableResults) {
+            $this->tableResults = $this->getServiceLocator()
+                                       ->get('Admin\Model\UserTable');             
+        }
+        return $this->tableResults;
+    }
 }

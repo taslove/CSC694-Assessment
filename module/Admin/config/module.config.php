@@ -22,20 +22,17 @@
        'router' => array(
          'routes' => array(
              'admin' => array(
-                 'type'    => 'segment',
+                 'type'    => 'literal',
                  'options' => array(
-                     'route'    => '/admin[/][:action][/:id]',
-                     'constraints' => array(
-                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                         'id'     => '[0-9]+',
-                     ),
+                     'route'    => '/admin',
                      'defaults' => array(
-                         'controller' => 'Admin\Controller\Admin',
+                         '__NAMESPACE__' => 'Admin\Controller',
+                         'controller' => 'Admin',
                          'action'     => 'index',
                      ),
                  ),
              ),
-             'admin/user' => array(
+             'user' => array(
                  'type'    => 'segment',
                  'options' => array(
                      'route'    => '/admin/user[/][:action][/:id]',
@@ -44,17 +41,12 @@
                          'id'     => '[0-9]+',
                      ),
                      'defaults' => array(
-                         'controller' => 'Admin\Controller\User',
+                         '__NAMESPACE__' => 'Admin\Controller',
+                         'controller' => 'User',
                          'action'     => 'index',
                      ),
                  ),
              ),
-         ),
-     ),
-
-     'view_manager' => array(
-         'template_path_stack' => array(
-             'album' => __DIR__ . '/../view',
          ),
      ),
  );

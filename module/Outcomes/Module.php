@@ -2,10 +2,8 @@
 
 namespace Outcomes;
 
-use Outcomes\Model\Enroll;
-use Outcomes\Model\EnrollTable;
-use Outcomes\Model\Student;
-use Outcomes\Model\StudentTable;
+use Outcomes\Model\Outcomes;
+use Outcomes\Model\OutcomesTable;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -29,9 +27,9 @@ class Module
     {
         return array(
                 'factories' =>  array(
-                    'Outcomes\Model\StudentTable' => function($sm) {
+                    'Outcomes\Model\OutcomesTable' => function($sm) {
                         $dbAdapter = $sm->get('dbAdapter');
-                        $table = new StudentTable($dbAdapter);
+                        $table = new OutcomesTable($dbAdapter);
                         return $table;
                     },
                 ),
