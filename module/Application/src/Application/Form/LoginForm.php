@@ -17,19 +17,22 @@ class LoginForm extends Form
             'name' => 'userName',
             'attributes' => array(
                 'type' => 'text',
+                'class' => 'jumbotron',
             ),
             'options' => array(
-                'label' => 'User Name',
+                'label' => 'User Name',                
             ),
         ));
         $this->add(array(
             'name' => 'password',
             'attributes' => array(
                 'type' => 'password',
+                'class' => 'jumbotron',               
             ),
             'options' => array(
-                'label' => 'Password',
+                'label' => 'Password',                
             ),
+            
         ));
         $this->add(array(
             'name' => 'submit',
@@ -37,6 +40,7 @@ class LoginForm extends Form
                 'type' => 'submit',
                 'value' => 'Go',
                 'id' => 'submitbutton',
+                'class' => 'btn btn-primary',
             ),
         ));
     }

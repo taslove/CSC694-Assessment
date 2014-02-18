@@ -18,6 +18,9 @@ class UserTable extends AbstractTableGateway
         $this->initialize();
     }
 
+    /*
+     * Returns all users in the user database
+     */
     public function fetchAll()
     {
         #$resultSet = $this->select();
@@ -40,6 +43,10 @@ class UserTable extends AbstractTableGateway
         return $users;
     }
     
+    /*
+     *  Get all roles by user id
+     *  @id - the user id
+     */
     public function getRoles($id)
     {
         $sql = new Sql($this->adapter);
@@ -62,6 +69,10 @@ class UserTable extends AbstractTableGateway
 <<<<<<< HEAD
 =======
     
+    /*
+     * deletes all roles a user has
+     * @id - the user id
+     */
     public function deleteRoles($id)
     {
         $sql = new Sql($this->adapter);
@@ -71,6 +82,12 @@ class UserTable extends AbstractTableGateway
         $deleteString = $sql->getSqlStringForSqlObject($delete);
         $this->adapter->query($deleteString, Adapter::QUERY_MODE_EXECUTE);
     }
+    
+    /*
+     *  Adds roles to a user
+     * @userID - id to the user object
+     * @roles - array of role ids
+     */
     function addRoles($userID,$roles)
     {
        //add role(s)
@@ -87,6 +104,9 @@ class UserTable extends AbstractTableGateway
        }
     }
     
+    /*
+     * Assigns a role id to a term
+     */
     public function getRoleTerm($id){
       if(!$id){
           return;
@@ -102,7 +122,10 @@ class UserTable extends AbstractTableGateway
     }
 >>>>>>> fb5ae052afdd1f904a9ad82c07c9a280fc9b6ba4
 
-
+    /*
+     * Get user by id
+     * @returns null if no user is found or the user object
+     */
     public function getUser($id)
     {
         $id = (int) $id;
@@ -128,7 +151,29 @@ class UserTable extends AbstractTableGateway
         $user->exchangeArray($row);
         return $user;
     }
+    
+    /*
+     * Gets user by email address
+     * @returns null if no user is found or the user object
+     */
+    public function getUserByEmail($email)
+    {
+        $rowset = $this->select(array('email' => $email));
+        
+        $row = $rowset->current();
+        if (!$row) {
+            return null;
+        }
+        $roles = $this->getRoles($row['id']);
+        $row['user_roles'] = $roles;
+        $user = new User();
+        $user->exchangeArray($row);
+        return $user;
+    }
 
+    /*
+     * Saves a user
+     */
     public function saveUser(User $user)
     {
         $data = array(
@@ -166,6 +211,9 @@ class UserTable extends AbstractTableGateway
         }
     }
 
+    /*
+     * deletes a user
+     */
     public function deleteUser($id)
     {
         $this->delete(array('id' => $id));
