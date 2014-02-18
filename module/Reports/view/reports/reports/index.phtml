@@ -1,14 +1,14 @@
 <?php
 
-// module/Mock/view/mock/mock/reports.phtml:
+// module/Mock/view/mock/mock/reportsindex.phtml:
 
 $title = 'Assessment Report Index';
 $this->headTitle($title);
 ?>	
 <html>
     <body>  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <link rel="stylesheet" href="../css/bootstrap.min.css"> 
-    <link rel="stylesheet" href="../css/bootstrap-rta.min.css">
+ <link rel="stylesheet" href="./css/bootstrap.min.css"> 
+    <link rel="stylesheet" href="./css/bootstrap-rta.min.css">
     <style>
         textarea {
             width: 300px;
@@ -17,7 +17,6 @@ $this->headTitle($title);
 	<center><h3>Assessment Reports</h3>
             
 	    </center>
-	    
 	    
             <p></p>  
             <div class="row">
@@ -62,10 +61,10 @@ $this->headTitle($title);
      <br />
    
 	  <!-- Get Button trigger modal -->
-<a class="btn btn-primary btn-md" href="./viewAllReports">
+<a class="btn btn-primary btn-md" href="reports/view-All-Reports">
   View Reports &raquo;
 </a>
-<a class="btn btn-primary btn-md btn" href="./addReport">
+<a class="btn btn-primary btn-md btn" href="reports/add-Report">
   Add New &raquo;
 </a>
 <p></p>
@@ -81,9 +80,9 @@ $this->headTitle($title);
     </body>
 </html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/bootstrap-rta.min.js"></script>
-<script src="../js/bootstrap-select.js"></script>
+<script src="./js/bootstrap.min.js"></script>
+<script src="./js/bootstrap-rta.min.js"></script>
+<script src="./js/bootstrap-select.js"></script>
 <script>
 
 // call loadDepts on page load

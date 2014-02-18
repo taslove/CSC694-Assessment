@@ -32,7 +32,7 @@ class AllTables extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         $select = $sql->select()
                       ->from('units')
-                      ->where(array('active' => 1));
+                      ->where(array('active_flag' => 1));
                       
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -50,7 +50,7 @@ class AllTables extends AbstractTableGateway
         $select = $sql->select()
                       ->from('programs')
                       ->where(array('unit_id' => $unitid))
-                      ->where(array('active' => 1));
+                      ->where(array('active_flag' => 1));
                       
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

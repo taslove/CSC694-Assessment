@@ -43,6 +43,7 @@
                      ),
                      'defaults' => array(
                          'controller' => 'Reports\Controller\Reports',
+                         'action'     => 'index',
                      ),
                  ),
              ),

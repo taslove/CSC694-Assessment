@@ -22,75 +22,57 @@ $this->headTitle($title);
             <div class="row">
                 <div class="col-md-4">
                     <!-- Dept typeahead --> <div class="container">
-                       <input type="checkbox">View &nbsp;
-		    <input type="checkbox">Add &nbsp;
-		    <input type="checkbox">Modify
-	<p></p>
-                        <h6>Department Name</h6>
                        
-                        <div class="input-group">
-                            <input type="text" class="form-control"
-                                   placeholder="Accounting">
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-primary
-                                        dropdown-toggle"
-                                        data-toggle="dropdown">Select
-                                    <span class="caret"></span>
-                                </button> <ul class="dropdown-menu">
-                                    <li><a href="#">Computer Science</a></li>
-                                    <li><a href="#">Science</a></li>
-                                    <li><a href="#">Math</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- Prog/Degree dropdown -->
-                        <h6>Degree/Program</h6>
-                        <div class="input-group">
-                            <input type="text" class="form-control"
-                                   placeholder="MS/Accounting">
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-primary
-                                        dropdown-toggle"
-                                        data-toggle="dropdown">Select
-                                    <span class="caret"></span>
-                                </button> <ul class="dropdown-menu">
-                                    
-				    <li><a href="#">BS/Computer Science</a></li>
-                                    <li><a href="#">MS/Computer Science</a></li>
-                                    <li><a href="#">MA/Computer Science</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- Year --> <h6>Academic Year</h6>
-			<div class="input-group">
-                            <input type="text" class="form-control"
-                                   placeholder="2014-15">
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-primary
-                                        dropdown-toggle"
-                                        data-toggle="dropdown">
-
-                                    <span data-bind="label">Select</span>&nbsp;
-                                    <span class="caret"></span>
-                                </button> <ul class="dropdown-menu" >
-                                    <li><a href="#">Current</a></li>
-                                    <li><a href="#">2015-16</a></li>
-                                    <li><a href="#">2016-17</a></li>
-                                    <li><a href="#">2017-18</a></li>
-                                </ul>
-                            </div>			    
-                        </div><p></p>
-			
+	<p></p>
+                         <!-- Choose Action -->
+      <select class="selectpicker" id="action-menu" data-style="btn-primary" title='Choose Action'>
+         <option data-hidden="true"></option>
+         <option>View</option>
+         <option>Add</option>
+         <option>Modify</option>
+      </select>  
+     <br />
+     <br />
+      <!-- Choose Department/Unit -->
+      <select class="selectpicker" id="unit-menu" data-style="btn-primary" title='Choose Department/Unit'>
+         <option data-hidden="true"></option>
+      </select>  
+     <br />
+     <br />
+   
+   <!--
+      <h6>Enter Department Name</h6>
+      <div class="input-group">
+      <div class="input-group-btn">
+         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Select
+         <span class="caret"></span>
+         </button>
+         <ul class="dropdown-menu" id='unit-menu2' >
+         </ul>
+      </div>
+      <input type="text" id="unit-input" class="form-control" placeholder="Department">
+      </div>
+   -->
+      <!-- Choose Program/Degree -->
+      <select class="selectpicker" id="prog-menu" data-style="btn-primary" title='Choose Program/Degree' multiple>
+         <option data-hidden="true"></option>
+      </select>
+     <br />
+     <br />
+   
 	  <!-- Get Button trigger modal -->
-<a class="btn btn-success btn-md" href="./reports">
-  Submit &raquo;
+<a class="btn btn-primary btn-md" href="reports/view-All-Reports">
+  View Reports &raquo;
 </a>
-
+<a class="btn btn-primary btn-md btn" href="reports/add-Report">
+  Add New &raquo;
+</a>
 <p></p>
 <a class="btn btn-primary btn-md" href="../mock">&laquo;<?php echo
 	    $this->translate ('Back to Main') ?> </a> <p></p>
                     </div><!--close container-->
                 </div><!--close column-->
+		
 		<!--column 2-->
 		<p></p>
                     <div class="col-md-6">
