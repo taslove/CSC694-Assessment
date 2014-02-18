@@ -17,15 +17,16 @@ use Reports\Model\PlanData;
 use Reports\Forms\ReportForm;
 use Zend\View\Model\JsonModel;
 
-
 class ReportsController extends AbstractActionController
 {
+   // This holds table results for certain methods
    protected $tableResults;
    
     // get these values from the session namespace
-    protected $userRole = 3;
-    protected $userID = 9;   
+   protected $userRole = 3;
+   protected $userID = 9;   
 
+   // Returns main index with left select options and blank right side
    public function indexAction()
     {
          $sl = $this->getServiceLocator();
@@ -58,85 +59,103 @@ class ReportsController extends AbstractActionController
     // Called to get plan data after selection is made on left menu of view
     public function viewPlansAction()
     {
-      // Get route vars
-      $programId = $this->params()->fromRoute('pid');
-      $year = $this->params()->fromRoute('year');
       
+      // Get post data
+      $jsonData = $this->getRequest()->getContent();
+
       // Get the plans
-      $results = $this->getReports($programId, $year)->getPlans($programId, $year);
-      
-      // Create array to hold the plans
-      $plans = array();
-      $sl = $this->getServiceLocator();
+      $results = $this->getReports($jsonData)->getPlans($jsonData);
+      if(count($results) > 0){
 
-      // Start with an empty plan
-      $currPlan = new PlanData(null);
-      $needsAdding = true;
-      
-      // Loop through results, adding all outcomes for same plan id
-      // to same planData, otherwise start a new planData
-      // This was created here when trying a different approach,
-      // May remove planData class as it doesn't serve much purpose anymore
-      foreach ($results as $result){
-         if(is_null($currPlan->id)){
-            $currPlan = new PlanData($result['plan_id']);
-            // Add form
-            $currPlan->form = $sl->get('FormElementManager')->get('Reports\forms\PlanForm');
-            array_push($currPlan->outcomes, $result['outcome_text']);
-         }elseif($currPlan->id == $result['plan_id']){
-            array_push($currPlan->outcomes, $result['outcome_text']);
-            
-         }else{
-            $currPlan = new PlanData($result['plan_id']);
-            // Add form
-            $currPlan->form = $sl->get('FormElementManager')->get('Reports\forms\PlanForm');
-            array_push($currPlan->outcomes, $result['outcome_text']);
-            array_push($plans, $currPlan);
-            $needsAdding = false;
+         // Create array to hold the plans
+         $plans = array();
+         $sl = $this->getServiceLocator();
+   
+         // Start with an empty plan
+         $currPlan = new PlanData(null, null);
+         $needsAdding = true;
+         
+         // Loop through results, adding all outcomes for same plan id
+         // to same planData, otherwise start a new planData
+         // This was created here when trying a different approach,
+         // May remove planData class as it doesn't serve much purpose anymore
+         foreach ($results as $result){
+            $test[] = $result;
+            $needsAdding = true;
+            if(is_null($currPlan->id)){
+               $currPlan = new PlanData($result['id'], $result['meta_flag']);
+               array_push($currPlan->descriptions, $result['text']);
+            }elseif($currPlan->id == $result['id']){
+               array_push($currPlan->descriptions, $result['text']);
+               
+            }else{
+               array_push($plans, $currPlan);
+               $currPlan = new PlanData($result['id'], $result['meta_flag']);
+               array_push($currPlan->descriptions, $result['text']);
+            }
          }
+         
+         // Add last plan
+         array_push($plans, $currPlan);
+         
+         $data = json_decode($jsonData, true);
+         $action = $data['action'];
+   
+            
+         $partialView = new ViewModel(array(
+            'plans' => $plans, 'action' => $action, 'results' => true,
+         ));
+         
+         $partialView->setTerminal(true);
+         return $partialView;
+      }else{
+         $partialView = new ViewModel(array(
+            'results' => false,
+         ));
       }
       
-      // Add last plan if needed
-      if($needsAdding){
-         array_push($plans, $currPlan);
-      }
-
-     return new ViewModel(array(
-      'plans' => $plans,
-     ));
+      
+      $partialView->setTerminal(true);
+      return $partialView;
     }
     
     // Display add report view
     public function addReportAction()
     {
       
+      $planId = $this->params()->fromPost('id');
+      
+      // Check if report already exists
+      $count = $this->getReports()->reportExists($planId);
+      if($count > 0){
+         $partialView = new ViewModel(array(
+            'results' => true,
+         ));
+         $partialView->setTerminal(true);
+         return $partialView;
+      }
+   
+      $results = $this->getReports()->getPlanForAdd($planId);
       $sl = $this->getServiceLocator();
       $form = $sl->get('FormElementManager')->get('Reports\forms\ReportForm');
-      $planId = $this->params()->fromPost('id');
-      $results = $this->getReports($planId)->getReports($planId);
-      $outcomes = array();
-         foreach ($results as $result){
-            array_push($outcomes, $result['outcome_text']);
-            $reportArray[] = $result;
-         }
-        return new ViewModel(array(
-         'report' => $reportArray, 'outcomes' => $outcomes, 'form' => $form
-        ));
-    }
-    
-    // Called from addReport view to insert new report into DB
-    public function insertReportAction()
-    {
-      $this->getServiceLocator()->get('ReportTable')
-           ->addReport($this->params()->fromPost('id'),
-                          $this->params()->fromPost('population'),
-                          $this->params()->fromPost('results'),
-                          $this->params()->fromPost('conclusions'),
-                          $this->params()->fromPost('actions'));
+                  
+                  $descriptions = array();
 
-      return new ViewModel(array(
-      ));
+            foreach ($results as $result){
+                array_push($descriptions, $result['text']);
+
+               $planData[] = $result;
+            }
+         
+         $partialView = new ViewModel(array(
+            'results' => false, 'form' => $form, 'planData' => $planData, 'descriptions' => $descriptions,
+         ));
+         
+         $partialView->setTerminal(true);
+
+         return $partialView;
     }
+
     
     // Gets individual report details when user selects a plan they wish
     // to view the report for
@@ -144,34 +163,62 @@ class ReportsController extends AbstractActionController
     {
       
       $planId = $this->params()->fromPost('id');
-      $results = $this->getReports()->getReports($planId);
-      $outcomes = array();
+      $results = $this->getReports()->getReport($planId);
+      
+      if(count($results) > 0){
+         $descriptions = array();
          foreach ($results as $result){
-            array_push($outcomes, $result['outcome_text']);
+            array_push($descriptions, $result['text']);
             $reportArray[] = $result;
          }
-        return new ViewModel(array(
-         'report' => $reportArray, 'outcomes' => $outcomes,
-        ));
+      
+         $partialView = new ViewModel(array(
+            'report' => $reportArray, 'descriptions' => $descriptions, 'results' => true,
+         ));
+      }else{
+         $partialView = new ViewModel(array(
+            'results' => false,
+         ));
+      }
+      
+      
+      $partialView->setTerminal(true);
+      return $partialView;
     }
     
     // Called after user selects a plan they with to modify the report for
     // Displays report data associated with user selected plan 
     public function modifyReportAction()
     {
-      $sl = $this->getServiceLocator();
-      $form = $sl->get('FormElementManager')->get('Reports\forms\ReportForm');
+      
       $planId = $this->params()->fromPost('id');
-      $results = $this->getReports($planId)->getReports($planId);
-      $outcomes = array();
-         foreach ($results as $result){
-            array_push($outcomes, $result['outcome_text']);
-            $reportArray[] = $result;
-         }
-        return new ViewModel(array(
-         'report' => $reportArray, 'outcomes' => $outcomes, 'form' => $form
-        ));
+      $results = $this->getReports()->getReport($planId);
+      
+      if(count($results) > 0){
+          $descriptions = array();
+            foreach ($results as $result){
+               array_push($descriptions, $result['text']);
+               $reportArray[] = $result;
+            }
+         $sl = $this->getServiceLocator();
+         $form = $sl->get('FormElementManager')->get('Reports\forms\ReportForm');
+         
+         $partialView = new ViewModel(array(
+            'report' => $reportArray, 'descriptions' => $descriptions, 'form' => $form, 'results' => true,
+         ));
+         
+      }else{
+         $partialView = new ViewModel(array(
+            'results' => false,
+         ));
+         
+      }
+      
+         $partialView->setTerminal(true);
+
+         return $partialView;
     }
+    
     
     // This is called after user makes modifications to the report data and
     // wants to send it to the database
@@ -184,7 +231,19 @@ class ReportsController extends AbstractActionController
                           $this->params()->fromPost('conclusions'),
                           $this->params()->fromPost('actions'));
 
-      return $view;
+      $this->redirect()->toRoute('index');
+    }
+    
+    public function addNewReportAction()
+    {
+      $this->getServiceLocator()->get('ReportTable')
+           ->addReport($this->params()->fromPost('id'),
+                          $this->params()->fromPost('population'),
+                          $this->params()->fromPost('results'),
+                          $this->params()->fromPost('conclusions'),
+                          $this->params()->fromPost('actions'));
+
+      $this->redirect()->toRoute('index');
     }
     
     // Used to call methods in the ReportTable class
@@ -244,6 +303,25 @@ class ReportsController extends AbstractActionController
         }
         // encode results as json object
         $jsonData = new JsonModel($programData);
+        return $jsonData;
+    }
+    
+    public function getYearsAction()
+    {
+        // Get post data
+      $jsonData = $this->getRequest()->getContent();
+
+      // Get the plans
+      $results = $this->getReports($jsonData)->getYears($jsonData);
+      
+      // iterate through results forming a php array
+        foreach ($results as $result){
+            $yearData[] = $result;
+        }
+      
+        // encode results as json object
+        $jsonData = new JsonModel($yearData);
+        
         return $jsonData;
     }
 }

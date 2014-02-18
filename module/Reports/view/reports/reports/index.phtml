@@ -8,10 +8,7 @@ $this->headTitle($title);
 <html lang="en">
 
 <head>
-     <link rel="stylesheet" href="./css/bootstrap.css"> 
-    <link rel="stylesheet" href="./css/bootstrap-rta.min.css">
-	    <link rel="stylesheet" href="./css/bootstrap-select.css">
-	    <link rel="stylesheet" href="./css/bootstrap-select.css">
+    
     
 </head>
     <body>  <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,7 +44,7 @@ $this->headTitle($title);
      <br />
    
       <!-- Choose Program/Degree -->
-      <select class="selectpicker" name ="test" id="prog-menu" data-style="btn-primary" title='Choose Program/Degree' multiple>
+      <select class="selectpicker" id="prog-menu" name="prog-menu" data-style="btn-primary" title='Choose Program/Degree' multiple>
 	 <option data-hidden="true"></option>
         
 
@@ -56,13 +53,8 @@ $this->headTitle($title);
      <br />
       
       <!-- Choose Program/Degree -->
-     <select class="selectpicker" id="year-menu" data-style="btn-primary" title='Choose Year'>
+     <select class="selectpicker" id="year-menu" name="year-menu" data-style="btn-primary" title='Choose Year'>
          <option data-hidden="true"></option>
-	 <option value="2010">2010</option>
-	 <option value="2011">2011</option>
-         <option value="2012">2012</option>
-         <option value="2013">2013</option>
-         <option value="2014">2014</option>
      </select>
      <br />
      <br />
@@ -82,6 +74,7 @@ $this->headTitle($title);
 		<!--column 2-->
 		<div id="content">
 		</div>
+
 	</div>
 	                    
     </body>
@@ -92,18 +85,15 @@ $this->headTitle($title);
 <script src="./js/bootstrap-select.js"></script>
 
 <script>
-
-// Submit data to get plans
-$(document).on('click', '#submit', function () {
-    var action = document.getElementById('action-menu').value;
-    var unit = document.getElementById('unit-menu').value;
-    var program = $( '[name=test]' ).val();
-    var year = document.getElementById('year-menu').value;
-    alert(program);
-   // asynchronous ajax code to get plans
+function getReports(action, id) {
+    var urlform = "<?php echo $this->url('default', array(
+                                    'controller'=>'reports')); ?>";
+    urlform = urlform + action + 'Report';
+    // asynchronous ajax code to get Report
    $.ajax({
-      url: 'http://localhost/csc694-assessment/reports/viewPlans/31/2007',
-      type: "GET",
+      url: urlform,
+      type: "POST",
+      data: 'id=' + id,
       dataType: "text",
       error : function(xhr, status, error) {
         alert(error);
@@ -112,9 +102,36 @@ $(document).on('click', '#submit', function () {
         document.getElementById('content').innerHTML = html;
       },
    });
+   
+}
+
+// Submit data to get plans
+$(document).on('click', '#submit', function () {
+    var action = document.getElementById('action-menu').value;
+    var unit = document.getElementById('unit-menu').value;
+    var programs = $('[name=prog-menu]').val();
+    var year = document.getElementById('year-menu').value;
+    if (!action || !unit || !programs || !year) {
+	alert('Please fill out all criteria')
+    }else{
+	var json = '{"action" : "' + action + '", "unit" : "' + unit + '", "year" : "' + year + '", "programs" : ' + JSON.stringify(programs) + ' }';
+
+	// asynchronous ajax code to get plans
+	$.ajax({
+	   url: 'http://localhost/zendframework/reports/viewPlans',
+     
+	   type: "POST",
+	   data: json,
+	   dataType: "text",
+	   error : function(xhr, status, error) {
+	     alert(error);
+	   },
+	   success: function(html){
+	     document.getElementById('content').innerHTML = html;
+	   },
+	});
+    }
 });
-</script>
-<script>
 
 // load actions based on user privileges
 $(document).ready(function() {
@@ -135,28 +152,28 @@ $(document).on('change', '#action-menu', function () {
    for (var i = 0; i < oldSelections.length; i++){
       oldSelections.remove();
    }
-   
    // data-hidden="true" shows title on button
    $('#unit-menu').append('<option  data-hidden="true"></option>');
    $('#unit-menu').selectpicker('refresh');
-   
    // create url for redirect
    var urlform = "<?php echo $this->url('default', array(
                                     'controller'=>'reports',
                                     'action'=>'getUnits')); ?>";
-                                    
-                urlform = urlform + '/' + $action;
+
+   urlform = urlform + '/' + $action;
    // asynchronous ajax code to populate unit/department selector
    $.ajax({
       url: urlform,
       type: "GET",
-      dataType: "text",
+      dataType: "json",
       error : function(xhr, status, error) {
-        alert(error);
+
          console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
       },
       success: function(unitsJson){
+
          for (var i = 0; i < unitsJson.length; i++){
+	    
             $('#unit-menu').append('<option>' + unitsJson[i].id + '</option>');
          }
          $('#unit-menu').selectpicker('refresh');
@@ -181,13 +198,13 @@ $(document).on('change', '#unit-menu', function () {
    urlform = urlform + '/' + $unit;
    // asynchronous ajax code to populate program/degree selector
    // build stuff here and make it work
-    var stuff = {};
+
     //key programs, value = array of programs
    $.ajax({
       url: urlform,
       type: "GET", //post
-      dataType: "text",//data 
-      //data:stuff,
+      dataType: "json",//data 
+      data:stuff,
       // content type
       
       error : function(xhr, status, error) {
@@ -196,9 +213,53 @@ $(document).on('change', '#unit-menu', function () {
       success: function(programsJson){
          for (var i = 0; i < programsJson.length; i++){
 		 
-            $('#prog-menu').append('<option>' + programsJson[i].name + '</option>');
+            $('#prog-menu').append('<option value="' + programsJson[i].id + '">' + programsJson[i].name + '</option>');
          }
          $('#prog-menu').selectpicker('refresh');
+      },
+   });
+});
+
+// update years based on programs
+$(document).on('change', '#prog-menu', function () {
+    var programs = $('[name=prog-menu]').val();
+      
+      // clear selectorlist before adding program/degree options
+   var oldSelections = $('#year-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
+   }
+   $('#year-menu').selectpicker('refresh');
+   
+   // create url for redirect
+   var urlform = "<?php echo $this->url('default', array(
+                                    'controller'=>'reports',
+                                    'action'=>'getYears')); ?>";
+	var json = '{"programs" : ' + JSON.stringify(programs) + ' }';
+
+	
+    //key programs, value = array of programs
+   $.ajax({
+      url: urlform,
+      type: "POST", //post
+      dataType: "json",//data 
+      data:json,
+      
+      error : function(xhr, status, error) {
+         alert(error);
+      },
+      success: function(yearsJson){	
+	 var years = new Array();
+         for (var i = 0; i < yearsJson.length; i++){
+	    years.push(yearsJson[i].year);
+	 }
+	 
+	 years.sort();
+	 
+         for (var i = 0; i < years.length; i++){
+            $('#year-menu').append('<option value="' + years[i] + '">' + years[i] + '</option>');
+         }
+         $('#year-menu').selectpicker('refresh');
       },
    });
 });
