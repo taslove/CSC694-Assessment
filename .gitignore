@@ -1,7 +1,7 @@
 /conf/
 nbproject
 ._*
-.~lock.*
+.~lock.*  
 .buildpath
 .DS_Store
 .idea
