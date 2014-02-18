@@ -5,7 +5,6 @@ namespace Outcomes\Model;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 
-
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 
@@ -30,73 +29,14 @@ class OutcomesTable extends AbstractTableGateway
         $this->adapter = $adapter;
         $this->initialize();
     }
-    
-    /*
-    public function getAllStudentEnroll()
-    {   
+
+        public function getAllActiveOutcomesForProgram($programId){
         $sql = new Sql($this->adapter);
-        $select = $sql->select()
-                      ->from($this->table)
-                      ->join('enroll', 'enroll.sid = student.sid');
-                      
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        
-        // dumping $result will not show any rows returned
-        // you must iterate over $result to retrieve query results
-        
-        return $result;
-    }
-    */
-    
-    // returns the outcome table ordered active first
-    public function getAllOutcomes()
-    {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select()
-                      ->from($this->table)
-                    //  ->where('id = 1')
-                      ->order('active_flag DESC');
-                     
-         
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        
-        return $result;
-    }
-    
-    public function getAllUnits(){
-        
-        $sql = new Sql($this->adapter);
-        $select = $sql->select()
-                      ->from('units');
-                     
-         
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        
-        return $result;   
-    }
-    
-        public function getAllProgramsForUnit($unitId){
-        
-        $sql = new Sql($this->adapter);
-        $select = $sql->select()
-                      ->from('programs')
-                      ->where('unit_id ="' . $unitId . '"');
-                     
-         
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        
-        return $result;   
-    }
-    
-        public function getAllOutcomesForProgram($programId){
-                  $sql = new Sql($this->adapter);
         $select = $sql->select()
                       ->from('outcomes')
-                      ->where('program_id ="' . $programId . '"');
+                      ->where('program_id ="' . $programId . '"')
+                      ->where('active_flag = 1');
+                     
                      
          
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -104,18 +44,14 @@ class OutcomesTable extends AbstractTableGateway
         
         return $result;   
         }
-    
-    
-    
+     
     // used to retrieve an outcome by its ID (if it exists)
         public function getOutcome($id)
     {
         $id  = (int) $id;
-
         $rowset = $this->select(array(
             'id' => $id,
         ));
-
         $row = $rowset->current();
 
         if (!$row) {
@@ -135,8 +71,8 @@ class OutcomesTable extends AbstractTableGateway
             'outcome_text' => $outcome->outcomeText,
             'active_flag' => $outcome->activeFlag,
         );
-
         $id = (int)$outcome->oid;
+        
         // if it doesn't have an id yet (meaning it's new)
         if ($id == false) {
             $this->insert($data);
@@ -149,11 +85,39 @@ class OutcomesTable extends AbstractTableGateway
         }
     }
     
-
-        public function deleteOutcome($id)
+    // called when done adding or editing an outcome
+        public function addOutcome(Outcomes $outcome)
     {
-        $id = (int) $id;
-        $this->delete(array('id' => $id));
+        $sql = new Sql($this->adapter);
+        
+        // store data from the outcome object that was passed in    
+        $data = array('id' => $outcome->oid,
+		      'program_id' => $outcome->programId,
+		      'outcome_text' => $outcome->outcomeText,
+                      'active_flag' => $outcome->activeFlag,
+            );
+            
+            $insert = $sql->insert('outcomes');
+            $insert->values($data);
+            $statement = $sql->prepareStatementForSqlObject($insert);
+            $statement->execute();
     }
+    
+    
+    
+        public function deactivateOutcome($outcomeId)
+    {
+        $sql = new Sql($this->adapter);
+	$update = $sql->update()
+			->table('outcomes')
+			->set(array('active_flag' => 0,
+			))
+			->where(array('id' => $outcomeId
+        ));
+                        
+        $statement = $sql->prepareStatementForSqlObject($update);
+        $statement->execute();
+    }
+    
     
 }

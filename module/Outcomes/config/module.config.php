@@ -7,6 +7,8 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
+ // This is for o
+ 
  return array(
      'controllers' => array(
          'invokables' => array(
@@ -26,7 +28,7 @@
              'outcomes' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/outcomes[/][:action][/:id]',
+                     'route'    => '/outcomes[/:action][/:id]',  // changed this from '/outcomes[/][:action][/:id]'
                      'constraints' => array(
                          'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                      ),
