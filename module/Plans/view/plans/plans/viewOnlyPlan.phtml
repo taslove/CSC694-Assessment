@@ -5,6 +5,14 @@ $title = 'Plans';
 $this->headTitle($title);
 ?>
 <html>
+    <head>
+        <meta charset="utf-8">
+	    
+	<?php echo $this->headScript()
+            ->prependFile($this->basePath() . '/js/customPlan.js')
+            ;
+	?>
+    </head>
     <body>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="../css/bootstrap.min.css">
@@ -14,7 +22,7 @@ $this->headTitle($title);
 	    
             <p></p>  
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4" id="divNoPrint1">
 		    <div class="container">			
 			<p></p>
 			
@@ -126,7 +134,7 @@ $this->headTitle($title);
 			<a class="btn btn-primary btn-md" href="../mock">&laquo;<?php echo $this->translate ('Back to Main') ?> </a> <p></p>
                     </div><!--close container-->
                 </div><!--close column-->
-
+ 
 		<!--column 2-->
 		<p></p>
 		<div class="col-md-8">
@@ -135,9 +143,8 @@ $this->headTitle($title);
 			    <colgroup><col class="col-xs-8"></colgroup>
 			    <div class="bs-example">
 				<table class="table">
-				    <h6>View Plan</h6>
 				    <h4>VIEW PLAN FOR: <?php echo $returnDepartment . ", " . $returnProgram . ", " . $returnYear ?></h4>
-	
+
 				    <div class="controls">
 					<div class="panel-group" id="accordion">
 					    <div class="panel panel-default">
@@ -361,10 +368,11 @@ $this->headTitle($title);
 					    
 					</div>
 				    </div> <!-- controls -->
-        
-				    <a class="btn btn-primary" href="<?php echo $this->url('plans', array('action'=>'index')); ?>">Back to Plans</a>&nbsp;
-				    <button type="button" class="btn btn-primary">Print</button>&nbsp;
-
+				    
+				    <div id="divNoPrint2">
+					<a class="btn btn-primary" href="<?php echo $this->url('plans', array('action'=>'index')); ?>">Back to Plans</a>&nbsp;
+					<button type="button" class="btn btn-primary" onclick="printPage()">Print</button>&nbsp;  <!--window.print()-->
+				    </div>
 				</table>
 			    </div><!-- bs-example -->
 			</table>

@@ -6,6 +6,7 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
+use Zend\Db\Sql\Expression;
 
 
 // This class must be included in the factories array in
@@ -57,6 +58,27 @@ class AllTables extends AbstractTableGateway
         
         // dumping $result will not show any rows returned
         // you must iterate over $result to retrieve query results
+        
+        return $result;
+    }
+    
+        public function getYears()
+    {
+/*    
+SELECT year from assessment.plans
+group by year
+;
+ */   
+        
+        $sql = new Sql($this->adapter);
+        $select = $sql->select()
+                      ->columns(array('year' => new Expression('plans.year')))
+                      ->from('plans')
+		      ->group (array('year' => new Expression('plans.year')))
+		   ;
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
         
         return $result;
     }

@@ -135,13 +135,13 @@ $this->headTitle($title);
 		<p></p>
 		<form action="<?php echo $this->url('plans', array('action'=>'addplan'));?>" method="post">
                     <div class="col-md-6">
-			<input type="hidden" name="year" value="<?php echo $year ?>">
+			<input type="hidden" name="year" value="<?php echo $returnYear ?>">
 			<h4>ADD PLAN FOR: <?php echo $returnDepartment . ", " . $returnProgram . ", " . $returnYear ?></h4>
 			<p></p>
 			<div class="input-group">
 			    <span class="input-group-addon"> <h6>Are you conducting Meta Assessment?</h6>
-				<input type="radio">Yes &nbsp;&nbsp;
-				<input type="radio">No
+				<input type="radio" name="metaFlag" value="yes">Yes &nbsp;&nbsp;
+				<input type="radio" name="metaFlag" value="no" checked="checked">No
 			    </span>
 			</div>
 
@@ -163,7 +163,13 @@ $this->headTitle($title);
 							foreach ($outcomes as $outcome) :
 							    $outcomeCount++;
 					    ?>
-							    <p><input type="radio" id="radioOutcomes" name="radioOutcomes" value="<?php echo $outcome->getOutcomeId() ?>"> <?php getCount($outcomeCount) ?>. <?php echo $outcome->getOutcomeText() ?></td></p>
+							    <p><input type="radio" id="radioOutcomes" name="radioOutcomes" value="<?php echo $outcome->getOutcomeId() ?>"
+							    
+							    <?php  // force the first row to be checked
+							    ?>
+							    
+							    
+							    > <?php getCount($outcomeCount) ?>. <?php echo $outcome->getOutcomeText() ?></td></p>
 					    <?php
 							endforeach;
 						    }
@@ -356,8 +362,8 @@ $this->headTitle($title);
 			    </div>
 			</div> <!-- controls -->    
 						
-			<button type="submit" name="formSavePlan" value="formSavePlan" class="btn btn-success pull-right">Submit</button>
-			<button type="submit" name="formSaveDraft" value="formSaveDraft" class="btn btn-primary pull-right">Save Draft</button>
+			<button type="submit" name="formSubmit" value="formSavePlan" class="btn btn-success pull-right">Submit</button>
+			<button type="submit" name="formSubmit" value="formSaveDraft" class="btn btn-primary pull-right">Save Draft</button>
 			<a class="btn btn-primary btn-md pull-right" href="../img/userguide.pdf"><?php echo $this->translate ('Preview') ?> &raquo;</a>
 
 			<input class="input-file " id="fileInput" type="file" >

@@ -224,7 +224,7 @@ where id = 1175
     }
     
     
-    public function updatePlan($id,$assessmentMethod,$population,$sampleSize,$assessmentDate,$cost,$analysisType,$administrator,$analysisMethod,$scope,$feedback,$feedbackFlag,$planStatus)
+    public function updatePlan($id,$assessmentMethod,$population,$sampleSize,$assessmentDate,$cost,$analysisType,$administrator,$analysisMethod,$scope,$feedback,$feedbackFlag,$planStatus,$draftFlag)
     {
 /*
 update assessment.plans
@@ -236,20 +236,22 @@ where id = 1175
         $sql = new Sql($this->adapter);
 	$update = $sql->update()
 			->table('plans')
-			->set(array('meta_flag' => $metaFlag,
-				    'meta_description' => $metaDecription,
-				    'assessment_method' => $assessmentMethod,
-				    'population' => $population,
-				    'sample_size' => $sampleSize,
-				    'assessment_date' => $assessmentDate,
-				    'cost' => $cost,
-				    'analysis_type' => $analysisType,
-				    'administrator' => $administrator,
-				    'analysis_method' => $analysisMethod,
-				    'scope' => $scope,
-				    'feedback' => $feedback,
-				    'feedback_flag' => $feedbackFlag,
-				    'plan_status' => $planStatus))
+			->set(array('meta_flag' => trim($metaFlag),
+				    'meta_description' => trim($metaDecription),
+				    'assessment_method' => trim($assessmentMethod),
+				    'population' => trim($population),
+				    'sample_size' => trim($sampleSize),
+				    'assessment_date' => trim($assessmentDate),
+				    'cost' => trim($cost),
+				    'analysis_type' => trim($analysisType),
+				    'administrator' => trim($administrator),
+				    'analysis_method' => trim($analysisMethod),
+				    'scope' => trim($scope),
+				    'feedback' => trim($feedback),
+				    'feedback_flag' => trim($feedbackFlag),
+				    'plan_status' => trim($planStatus),
+				    'draft_flag' => trim($draftFlag)
+				))
 			->where(array('id' => $id))
 		    ;
 		    
@@ -257,22 +259,23 @@ where id = 1175
         $statement->execute();
     }
     
-    public function insertPlan($year,$assessmentMethod,$population,$sampleSize,$assessmentDate,$cost,$analysisType,$administrator,$analysisMethod,$scope,$feedback,$feedbackFlag,$planStatus)
+    public function insertPlan($year,$assessmentMethod,$population,$sampleSize,$assessmentDate,$cost,$analysisType,$administrator,$analysisMethod,$scope,$feedback,$feedbackFlag,$planStatus,$draftFlag)
     {	
         $sql = new Sql($this->adapter);
-	$data = array('year' => $year,
-		      'assessment_method' => $assessmentMethod,
-		      'population' => $population,
-		      'sample_size' => $sampleSize,
-		      'assessment_date' => $assessmentDate,
-		      'cost' => $cost,
-		      'analysis_type' => $analysisType,
-		      'administrator' => $administrator,
-		      'analysis_method' => $analysisMethod,
-		      'scope' => $scope,
-		      'feedback' => $feedback,
-		      'feedback_flag' => $feedbackFlag,
-		      'plan_status' => $planStatus);
+	$data = array('year' => trim($year),
+		      'assessment_method' => trim($assessmentMethod),
+		      'population' => trim($population),
+		      'sample_size' => trim($sampleSize),
+		      'assessment_date' => trim($assessmentDate),
+		      'cost' => trim($cost),
+		      'analysis_type' => trim($analysisType),
+		      'administrator' => trim($administrator),
+		      'analysis_method' => trim($analysisMethod),
+		      'scope' => trim($scope),
+		      'feedback' => trim($feedback),
+		      'feedback_flag' => trim($feedbackFlag),
+		      'plan_status' => trim($planStatus),
+		      'draft_flag' => trim($draftFlag));
 	
 	$insert = $sql->insert('plans');
 	$insert->values($data);		    
@@ -318,11 +321,7 @@ where id = 1175
     
     
     
-    
-    
-    
-    
-    
+    /* SCOTT - you can delete these, they are no longer being used.  */
     
     
     public function getAllDepartments()
@@ -426,11 +425,11 @@ where id = 1175
         return $result;
     }
 
-    
+/*    
     public function getYears($unit_id)
     {
 
-/*    
+    
 SELECT pl.year from assessment.units un
 	inner join assessment.programs p
 		on p.unit_id = un.id
@@ -443,7 +442,7 @@ SELECT pl.year from assessment.units un
 where un.id = 'CSC'
 group by pl.year
 ;
- */   
+  
         
         $sql = new Sql($this->adapter);
         $select = $sql->select()
@@ -462,4 +461,5 @@ group by pl.year
         
         return $result;
     }
+    */
 }

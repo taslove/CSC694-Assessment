@@ -1,5 +1,6 @@
 <?php
 /**
+ * Plans
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
@@ -17,13 +18,16 @@
          'template_path_stack' => array(
              'plans' => __DIR__ . '/../view',
          ),
+         'strategies' => array(
+            'ViewJsonStrategy',
+        ),
      ),
        'router' => array(
          'routes' => array(
              'plans' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/plans[/][:action][/:type][/:planId][/:department][/:program][/:year]',
+                     'route'    => '/plans[/][:action][/:id][/:type][/:planId][/:department][/:program][/:year]',
                      'constraints' => array(
                          'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                          'type' => '[a-zA-Z][a-zA-Z0-9_-]*',
@@ -38,12 +42,6 @@
                      ),
                  ),
              ),
-         ),
-     ),
-
-     'view_manager' => array(
-         'template_path_stack' => array(
-             'plans' => __DIR__ . '/../view',
          ),
      ),
  );
