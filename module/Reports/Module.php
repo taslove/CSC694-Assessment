@@ -2,12 +2,12 @@
 
 namespace Reports;
 
-use Reports\Model\Reports;
-use Reports\Model\ReportsTable;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Adapter\Adapter as DbAdapter;
-use Reports\Model\UnitTable;
+use Reports\Model\ReportTable;
+use Reports\Model\PlanTable;
+
 
 class Module
 {
@@ -27,12 +27,18 @@ class Module
 
     public function getServiceConfig()
     {
+        
         return array(
                         
                 'factories' =>  array(
-                    'UnitTable' => function($sm) {
+                    'PlanTable' => function($sm) {
                         $dbAdapter = $sm->get('dbAdapter');
-                        $table = new UnitTable($dbAdapter);
+                        $table = new PlanTable($dbAdapter);
+                        return $table;
+                    },
+                    'ReportTable' => function($sm) {
+                        $dbAdapter = $sm->get('dbAdapter');
+                        $table = new ReportTable($dbAdapter);
                         return $table;
                     },
                 ),
