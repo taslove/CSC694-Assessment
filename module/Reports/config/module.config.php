@@ -33,6 +33,21 @@
                      ),
                  ),
              ),
+             
+             'reports' => array(
+                 'type'    => 'segment',
+                 'options' => array(
+                     'route'    => '/reports[/][:action][/][:pid]',
+                     'constraints' => array(
+                         'pid' => '[0-9]+',
+                     ),
+                     'defaults' => array(
+                         'controller' => 'Reports\Controller\Reports',
+                     ),
+                 ),
+             ),
+             
+             
          ),
      ),
 
