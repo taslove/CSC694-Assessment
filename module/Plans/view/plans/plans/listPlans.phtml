@@ -9,12 +9,12 @@ $this->headTitle($title);
     <p></p>  
     <div class="row">
 	<div class="col-md-4">		    
-	    <form action="<?php echo $this->url('plans', array('action'=>'index'));?>" method="post">                                    				
+	    <form action="<?php echo $this->url('plans', array('action'=>'listPlans'));?>" method="post">                                    				
 		<div class="container">
 		    <br />
 		    <br />
 		    <!-- Choose Action -->
-		    <select class="selectpicker" id="action-menu" data-style="btn-primary" title='Choose Action'>
+		    <select class="selectpicker" id="action-menu" data-style="btn-primary" title='<?php echo $action ?>'>
 			<option data-hidden="true"></option>
 			<option>View</option>
 			<option>Add</option>
@@ -23,19 +23,30 @@ $this->headTitle($title);
 		    <br />
 		    <br />
 		    <!-- Choose Department/Unit -->
-		    <select class="selectpicker" id="unit-menu" data-style="btn-primary" title='Choose Department/Unit'>
+		    <select class="selectpicker" id="unit-menu" data-style="btn-primary" title='<?php echo $unit ?>'>
 			<option data-hidden="true"></option>
 		    </select>  
 		    <br />
 		    <br />
 		    <!-- Choose Program/Degree -->
-		    <select class="selectpicker" id="prog-menu" data-style="btn-primary" title='Choose Program/Degree' multiple>
+		    <select class="selectpicker" id="prog-menu" data-style="btn-primary"
+			    title='
+				    <?php
+					// loop through all the outcomes
+						    if (!empty($programs)) {
+							foreach ($programs as $program) :
+							    echo $program . ", ";
+							endforeach;
+						    }
+				    ?>
+				  '
+			    multiple>
 		       <option data-hidden="true"></option>
 		    </select>
 		    <br />
 		    <br />
 		    <!-- Choose Years -->
-		    <select class="selectpicker" id="year-menu" data-style="btn-primary" title='Choose Year'>
+		    <select class="selectpicker" id="year-menu" data-style="btn-primary" title='<?php echo $year ?>'>
 		       <option data-hidden="true"></option>
 		    </select>
 		    <br />

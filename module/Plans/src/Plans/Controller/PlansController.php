@@ -15,6 +15,7 @@ use Zend\Db\Sql\Select;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Adapter;
 use Zend\View\Model\JsonModel;
+use Zend\Session\Container;
 
 
 class PlansController extends AbstractActionController
@@ -71,24 +72,33 @@ class PlansController extends AbstractActionController
          
             $action = $request->getPost('action-menu');
             $unit = $request->getPost('unit-menu');
-            $program = $request->getPost('prog-menu');
+            $programs = $request->getPost('prog-menu');
             $year = $request->getPost('year-menu');
-            
-            var_dump($action);
-            var_dump($unit);
-            var_dump($program);
-            var_dump($year);
 
+            // create session variable
             
-            if ($action == "View") {
-               return $this->redirect()->toRoute('plans/viewlist');
-                 
+               // Store username in session
+		$planSession = new Container('planSession');
+		$planSession->action = $action;
+                $planSession->unit = $unit;
+                $planSession->programs = $programs;
+                $planSession->year = $year;
+            
+            
+            if ($action == "View" || $action == "Modify") {
+               return $this->redirect()->toRoute('plans', array('action'=>'listplans'));
+                           
+        //       return $this->redirect()->toRoute('plans', array('action'=>'viewlist',
+          //        			            'unit' => $unit,                                                                
+		//				    'program' => 'help',
+		//				    'year' => $year
+                  //                                 ));                 
             }
             elseif ($action == "Add") {
-               
+               return $this->redirect()->toRoute('plans', array('action'=>'addplan'));
             }
             else {
-               
+               return $this->redirect()->toRoute('plans', array('action'=>'modifyplan'));
             }
          }
          else {
@@ -115,26 +125,76 @@ class PlansController extends AbstractActionController
          
    }
    
-   public function viewListAction()
+   public function listPlansAction()
    {
-         // get units
-         $results = $this->getGenericQueries()->getUnits();
-         // iterate over database results forming a php array
-         foreach ($results as $result){
-            $unitarray[] = $result;
+      $request = $this->getRequest();
+            
+        if ($request->isPost()) {
+
+            
+            $action = $request->getPost('action-menu');
+            $unit = $request->getPost('unit-menu');
+            $program = $request->getPost('prog-menu');
+            $year = $request->getPost('year-menu');
+
+            
+            var_dump($action);
+            exit();
+            
+            // create session variable
+            
+            if ($action == "View" || $action == "Modify") {
+               return $this->redirect()->toRoute('plans', array('action'=>'listplans'));
+                           
+        //       return $this->redirect()->toRoute('plans', array('action'=>'viewlist',
+          //        			            'unit' => $unit,                                                                
+		//				    'program' => 'help',
+		//				    'year' => $year
+                  //                                 ));                 
+            }
+            elseif ($action == "Add") {
+               return $this->redirect()->toRoute('plans', array('action'=>'addplan'));
+            }
+            else {
+               return $this->redirect()->toRoute('plans', array('action'=>'modifyplan'));
+            }
          }
-        
-         // get years
-         $results = $this->getGenericQueries()->getYears();
-         // iterate over database results forming a php array
-         foreach ($results as $result){
-            $yeararray[] = $result;
+         else {
+            
+
+            // get session data
+       		$planSession = new Container('planSession');
+		$action = $planSession->action; 
+                $unit = $planSession->unit;
+                $programs = $planSession->programs;
+                $year = $planSession->year; 
+            
+            // Initial Page Load, get request
+            // get units
+            $results = $this->getGenericQueries()->getUnits();
+            // iterate over database results forming a php array
+            foreach ($results as $result){
+               $unitarray[] = $result;
+            }
+           
+            // get years
+            $results = $this->getGenericQueries()->getYears();
+            // iterate over database results forming a php array
+            foreach ($results as $result){
+               $yeararray[] = $result;
+            }
+            // pass array to view
+            return new ViewModel(array(
+               'units' => $unitarray,
+               'years' => $yeararray,
+                              
+               'action' => $action,
+               'unit' => $unit,
+               'programs' => $programs,
+               'year' => $year,
+               
+            ));
          }
-         // pass array to view
-         return new ViewModel(array(
-            'units' => $unitarray,
-            'years' => $yeararray,
-         ));
    }
 
 
