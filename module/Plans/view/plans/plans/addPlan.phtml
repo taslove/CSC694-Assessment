@@ -1,380 +1,325 @@
 <?php
-// module/Mock/view/mock/mock/add.phtml:
 
 $title = 'Add New Assessment Plan';
 $this->headTitle($title);
 ?>	
-<html>
-    <body>  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="../css/bootstrap.min.css"> 
-	<link rel="stylesheet" href="../css/bootstrap-rta.min.css">
-	<style>
-	    textarea {
-		width: 300px;
-	    }
-	</style>
-	<div class="container">
-	    <center><h3>Assessment Plans-ADD</h3></center>
-            <p></p>  
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="container">
-			<p></p>
-		    
-		        <!-- Action dropdown -->
-			<h6>Action</h6>                    
-			<div class="input-group">
-			    <input type="text" class="form-control" placeholder="Selection Appears Here" id="textAction" name="textAction"
+<div class="container">
+    <center><h3>Assessment Plans-ADD</h3></center>
+    <p></p>  
+    <div class="row">
+        <div class="col-md-4">
+            <form action="<?php echo $this->url('plans', array('action'=>'index'));?>" method="post">                                    				
+		<div class="container">
+		    <br />
+		    <br />
+		    <!-- Choose Action -->
+		    <select class="selectpicker" name="action-menu" id="action-menu" data-style="btn-primary" title='<?php echo $action ?>'>
+			<option data-hidden="true"></option>
+			<option>View</option>
+			<option>Add</option>
+			<option>Modify</option>
+		    </select>  
+		    <br />
+		    <br />
+		    <!-- Choose Department/Unit -->
+		    <select class="selectpicker" name="unit-menu" id="unit-menu" data-style="btn-primary" title='<?php echo $unit ?>'>
+			<option data-hidden="true"></option>
+		    </select>  
+		    <br />
+		    <br />
+		    <!-- Choose Program/Degree -->
+		    <select class="selectpicker" id="prog-menu" name="prog-menu[]" data-style="btn-primary"
+			    title='
 				    <?php
-					// check to see if there is a value returned from the response
-					if ($returnAction != null) {
-					    getValue($returnAction);
-					}
-				    ?>
-				   >
-			    <div class="input-group-btn">
-				<button type="button" class="btn btn-primary
-					    dropdown-toggle"
-					    data-toggle="dropdown">Select
-				    <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu dropdown-action">
-				    <li><a href="#">Add</a></li>
-				    <li><a href="#">Modify</a></li>
-				    <li><a href="#">View</a></li>
-				</ul>
-			    </div>
-			</div>
-			    
-			<!-- Department dropdown -->		    
-                        <h6>Department Name</h6>
-                        <div class="input-group">
-                            <input type="text" class="form-control"
-                                   placeholder="Accounting"
-   				    <?php
-					// check to see if there is a value returned from the response
-					if ($returnDepartment != null) {
-					    getValue($returnDepartment);
-					}
-				    ?>
-				   >
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-primary
-                                        dropdown-toggle"
-                                        data-toggle="dropdown">Select
-                                    <span class="caret"></span>
-                                </button> <ul class="dropdown-menu">
-                                    <li><a href="#">Computer Science</a></li>
-                                    <li><a href="#">Science</a></li>
-                                    <li><a href="#">Math</a></li>
-                                </ul>
-                            </div>
-                        </div>
-			
-                        <!-- Prog/Degree dropdown -->
-                        <h6>Degree/Program</h6>
-                        <div class="input-group">
-                            <input type="text" class="form-control"
-                                   placeholder="MS/Accounting"
-      				    <?php
-					// check to see if there is a value returned from the response
-					if ($returnProgram != null) {
-					    getValue($returnProgram);
-					}
-				    ?>
-				   >
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-primary
-                                        dropdown-toggle"
-                                        data-toggle="dropdown">Select
-                                    <span class="caret"></span>
-                                </button> <ul class="dropdown-menu">
-                                    
-				    <li><a href="#">BS/Computer Science</a></li>
-                                    <li><a href="#">MS/Computer Science</a></li>
-                                    <li><a href="#">MA/Computer Science</a></li>
-                                </ul>
-                            </div>
-                        </div>
-			
-                        <!-- Year --> <h6>Academic Year</h6>
-			<div class="input-group">
-                            <input type="text" class="form-control"
-                                   placeholder="2014-15"
-       				    <?php
-					// check to see if there is a value returned from the response
-					if ($returnYear != null) {
-					    getValue($returnYear);
-					}
-				    ?>
-				   >
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-primary
-                                        dropdown-toggle"
-                                        data-toggle="dropdown">
-
-                                    <span data-bind="label">Select</span>&nbsp;
-                                    <span class="caret"></span>
-                                </button> <ul class="dropdown-menu" >
-                                    <li><a href="#">Current</a></li>
-                                    <li><a href="#">2015-16</a></li>
-                                    <li><a href="#">2016-17</a></li>
-                                    <li><a href="#">2017-18</a></li>
-                                </ul>
-                            </div>			    
-                        </div>
-			<p></p>
-			
-			<!-- Get Button trigger modal -->
-			<a class="btn btn-primary btn-md" href="../mock">&laquo;<?php echo $this->translate ('Back to Main') ?> </a> <p></p>
-                    </div><!--close container-->
-                </div><!--close column-->
-		
-		
-		<!--column 2-->
-		<p></p>
-		<form action="<?php echo $this->url('plans', array('action'=>'addplan'));?>" method="post">
-                    <div class="col-md-6">
-			<input type="hidden" name="year" value="<?php echo $returnYear ?>">
-			<h4>ADD PLAN FOR: <?php echo $returnDepartment . ", " . $returnProgram . ", " . $returnYear ?></h4>
-			<p></p>
-			<div class="input-group">
-			    <span class="input-group-addon"> <h6>Are you conducting Meta Assessment?</h6>
-				<input type="radio" name="metaFlag" value="yes">Yes &nbsp;&nbsp;
-				<input type="radio" name="metaFlag" value="no" checked="checked">No
-			    </span>
-			</div>
-
-			<div class="controls">
-			    <div class="panel-group" id="accordion">
-				<div class="panel panel-default">
-				    <div class="panel-heading">
-					<h4 class="panel-title">
-					    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Outcomes</a>
-					</h4>
-				    </div>
-			
-				    <div id="collapseOne" class="panel-collapse collapse in">
-					<div class="panel-body">
-					    <?php
-						// loop through all the outcomes
-						$outcomeCount = 0;
-						    if (!empty($outcomes)) {
-							foreach ($outcomes as $outcome) :
-							    $outcomeCount++;
-					    ?>
-							    <p><input type="radio" id="radioOutcomes" name="radioOutcomes" value="<?php echo $outcome->getOutcomeId() ?>"
-							    
-							    <?php  // force the first row to be checked
-							    ?>
-							    
-							    
-							    > <?php getCount($outcomeCount) ?>. <?php echo $outcome->getOutcomeText() ?></td></p>
-					    <?php
+					// loop through all the outcomes
+						    if (!empty($programs)) {
+							foreach ($programs as $program) :
+							    echo $program . ", ";
 							endforeach;
 						    }
-					    ?>
-					</div>
-				    </div>
-				</div>
-			    </div>
-			
-			    <div class="panel panel-default">
-				<div class="panel-heading">
-				    <h4 class="panel-title">
-					<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-					    1. Describe assessment method.
-					</a>
-				    </h4>
-				</div>
-			
-				<div id="collapseTwo" class="panel-collapse collapse">
-				    <div class="panel-body">
-					<textarea rows="6" cols="60" class="textbox" id="textAssessmentMethod" name="textAssessmentMethod">
-					</textarea>  
-				    </div>
-				</div>
-			
-				<div class="panel-heading">
-				    <h4 class="panel-title">
-					<a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-					    2. Describe population assessed.
-					</a>
-				    </h4>
-				</div>
-			
-				<div id="collapseThree" class="panel-collapse collapse">
-				    <div class="panel-body">
-					<textarea rows="6" cols="60" class="textbox" id="textPopulation" name="textPopulation">
-					</textarea>      
-				    </div>
-				</div>
-			
-				<div class="panel-heading">
-				    <h4 class="panel-title">
-					<a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
-					    3. Describe sample size assessed.
-					</a>
-				    </h4>
-				</div>
-			
-				<div id="collapseFour" class="panel-collapse collapse">
-				    <div class="panel-body">
-					<textarea rows="6" cols="60" class="textbox" id="textSamplesize" name="textSamplesize">
-					</textarea>      
-				    </div>
-				</div>
-			
-				<div class="panel-heading">
-				    <h4 class="panel-title">
-					<a data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
-					    4. Describe assessment date assessed.
-					</a>
-				    </h4>
-				</div>
-			
-				<div id="collapseFive" class="panel-collapse collapse">
-				    <div class="panel-body">
-					<textarea rows="6" cols="60" class="textbox" id="textAssessmentDate" name="textAssessmentDate">
-					</textarea>      
-				    </div>
-				</div>
-			
-				<div class="panel-heading">
-				    <h4 class="panel-title">
-					<a data-toggle="collapse" data-parent="#accordion" href="#collapseSix">
-					    5. Describe cost assessed.
-					</a>
-				    </h4>
-				</div>
-			
-				<div id="collapseSix" class="panel-collapse collapse">
-				    <div class="panel-body">
-					<textarea rows="6" cols="60" class="textbox" id="textCost" name="textCost">
-					</textarea>      
-				    </div>
-				</div>
-			
-				<div class="panel-heading">
-				    <h4 class="panel-title">
-					<a data-toggle="collapse" data-parent="#accordion" href="#collapseSeven">
-					    6. Describe analysis type assessed.
-					</a>
-				    </h4>
-				</div>
-			
-				<div id="collapseSeven" class="panel-collapse collapse">
-				    <div class="panel-body">
-					<textarea rows="6" cols="60" class="textbox" id="textAnalysisType" name="textAnalysisType">
-					</textarea>      
-				    </div>
-				</div>
-			
-				<div class="panel-heading">
-				    <h4 class="panel-title">
-					<a data-toggle="collapse" data-parent="#accordion" href="#collapseEight">
-					    7. Describe administrator assessed.
-					</a>
-				    </h4>
-				</div>
-			
-				<div id="collapseEight" class="panel-collapse collapse">
-				    <div class="panel-body">
-					<textarea rows="6" cols="60" class="textbox" id="textAdministrator" name="textAdministrator">
-					</textarea>      
-				    </div>
-				</div>
-			
-				<div class="panel-heading">
-				    <h4 class="panel-title">
-					<a data-toggle="collapse" data-parent="#accordion" href="#collapseNine">
-					    8. Describe analysis method assessed.
-					</a>
-				    </h4>
-				</div>
-			
-				<div id="collapseNine" class="panel-collapse collapse">
-				    <div class="panel-body">
-					<textarea rows="6" cols="60" class="textbox" id="textAnalysisMethod" name="textAnalysisMethod">
-					</textarea>      
-				    </div>
-				</div>
-			
-				<div class="panel-heading">
-				    <h4 class="panel-title">
-					<a data-toggle="collapse" data-parent="#accordion" href="#collapseTen">
-					    9. Describe scope assessed.
-					</a>
-				    </h4>
-				</div>
-			
-				<div id="collapseTen" class="panel-collapse collapse">
-				    <div class="panel-body">
-					<textarea rows="6" cols="60" class="textbox" id="textScope" name="textScope">
-					</textarea>      
-				    </div>
-				</div>
-			
-				<div class="panel-heading">
-				    <h4 class="panel-title">
-					<a data-toggle="collapse" data-parent="#accordion" href="#collapseEleven">
-					    10. Describe feedback assessed.
-					</a>
-				    </h4>
-				</div>
-			
-				<div id="collapseEleven" class="panel-collapse collapse">
-				    <div class="panel-body">
-					<textarea rows="6" cols="60" class="textbox" id="textFeedback" name="textFeedback">
-					</textarea>      
-				    </div>
-				</div>
-			
-				<div class="panel-heading">
-				    <h4 class="panel-title">
-					<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwelve">
-					    11. Describe feedback flag assessed.
-					</a>
-				    </h4>
-				</div>
-			
-				<div id="collapseTwelve" class="panel-collapse collapse">
-				    <div class="panel-body">
-					<textarea rows="6" cols="60" class="textbox" id="textFeedbackFlag" name="textFeedbackFlag">
-					</textarea>      
-				    </div>
-				</div>					    
-			
-				<div class="panel-heading">
-				    <h4 class="panel-title">
-					<a data-toggle="collapse" data-parent="#accordion" href="#collapseThirteen">
-					    12. Describe plan status flag assessed.
-					</a>
-				    </h4>
-				</div>
-			
-				<div id="collapseThirteen" class="panel-collapse collapse">
-				    <div class="panel-body">
-					<textarea rows="6" cols="60" class="textbox" id="textPlanStatus" name="textPlanStatus">
-					</textarea>      
-				    </div>
-				</div>					    
-			    </div>
-			</div> <!-- controls -->    
-						
-			<button type="submit" name="formSubmit" value="formSavePlan" class="btn btn-success pull-right">Submit</button>
-			<button type="submit" name="formSubmit" value="formSaveDraft" class="btn btn-primary pull-right">Save Draft</button>
-			<a class="btn btn-primary btn-md pull-right" href="../img/userguide.pdf"><?php echo $this->translate ('Preview') ?> &raquo;</a>
+				    ?>
+				  '
+			    multiple>
+		       <option data-hidden="true"></option>
+		    </select>
+		    <br />
+		    <br />
+		    <!-- Choose Years -->
+		    <select class="selectpicker" name="year-menu" id="year-menu" data-style="btn-primary" title='<?php echo $year ?>'>
+		       <option data-hidden="true"></option>
+		    </select>
+		    <br />
+		    <br />
 
-			<input class="input-file " id="fileInput" type="file" >
-			<button type="submit" class="btn btn-primary btn-xs ">Upload</button>
-			<button type="submit" class="btn btn-warning btn-xs btn ">Cancel</button>
-		    </div>
-		</form>
-	    </div>
-	</div>
+		    <!-- Submit Button used to get the plan data from the database -->
+		    <button type="submit" name="formGetPlan" value="formGetPlan" class="btn btn-success btn-md">Submit &raquo;</button>
+		    <p></p>
 
+		    <!-- Back to Main Button used to return to the main page -->
+		    <a class="btn btn-primary btn-md" href="../mock">&laquo;<?php echo $this->translate ('Back to Main') ?>
+		    </a>
+		    <p></p>
+		</div><!--close container-->
+	    </form>
+
+        </div><!--close column-->
+		
+		
+	<!--column 2-->
+	<p></p>
+	<form action="<?php echo $this->url('plans', array('action'=>'addplan'));?>" method="post">
+	    <div class="col-md-6">
+		<input type="hidden" name="year" value="<?php echo $returnYear ?>">
+					    					    <?php
+				$allPrograms = "";
+					    if (!empty($programs)) {
+						foreach ($programs as $program) :
+						    $allPrograms = $allPrograms . $program . ", ";
+						endforeach;
+					    }
+			    ?>
+		<h4>ADD PLAN FOR: <?php echo $unit . ", " . $allPrograms . $year ?></h4>
+		<p></p>
+		<div class="input-group">
+		    <span class="input-group-addon"> <h6>Are you conducting Meta Assessment?</h6>
+			<input type="radio" name="metaFlag" value="yes">Yes &nbsp;&nbsp;
+			<input type="radio" name="metaFlag" value="no" checked="checked">No
+		    </span>
+		</div>
 	
+		<div class="controls">
+		    <div class="panel-group" id="accordion">
+			<div class="panel panel-default">
+			    <div class="panel-heading">
+				<h4 class="panel-title">
+				    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Outcomes</a>
+				</h4>
+			    </div>
+	
+			    <div id="collapseOne" class="panel-collapse collapse in">
+				<div class="panel-body">
+				    <?php
+					// loop through all the outcomes
+					$outcomeCount = 0;
+					    if (!empty($outcomes)) {
+						foreach ($outcomes as $outcome) :
+						    $outcomeCount++;
+				    ?>
+						    <p><input type="radio" id="radioOutcomes" name="radioOutcomes" value="<?php echo $outcome->getOutcomeId() ?>"
+	
+						    <?php
+							// force the first radio button to be checked
+							if ($outcomeCount == 1){
+							    echo "checked=\"checked\"";
+							}
+						    ?>
+	
+	
+						    > <?php getCount($outcomeCount) ?>. <?php echo $outcome->getOutcomeText() ?></td></p>
+				    <?php
+						endforeach;
+					    }
+				    ?>
+				</div>
+			    </div>
+			</div>
+		    </div>
+	
+		    <div class="panel panel-default">
+			<div class="panel-heading">
+			    <h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+				    1. Describe assessment method.
+				</a>
+			    </h4>
+			</div>
+	
+			<div id="collapseTwo" class="panel-collapse collapse">
+			    <div class="panel-body">
+				<textarea rows="6" cols="60" class="rta" id="textAssessmentMethod" name="textAssessmentMethod">
+				</textarea>  
+			    </div>
+			</div>
+	
+			<div class="panel-heading">
+			    <h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+				    2. Describe population assessed.
+				</a>
+			    </h4>
+			</div>
+	
+			<div id="collapseThree" class="panel-collapse collapse">
+			    <div class="panel-body">
+				<textarea rows="6" cols="60" class="rta" id="textPopulation" name="textPopulation">
+				</textarea>      
+			    </div>
+			</div>
+	
+			<div class="panel-heading">
+			    <h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+				    3. Describe sample size assessed.
+				</a>
+			    </h4>
+			</div>
+	
+			<div id="collapseFour" class="panel-collapse collapse">
+			    <div class="panel-body">
+				<textarea rows="6" cols="60" class="rta" id="textSamplesize" name="textSamplesize">
+				</textarea>      
+			    </div>
+			</div>
+	
+			<div class="panel-heading">
+			    <h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
+				    4. Describe assessment date assessed.
+				</a>
+			    </h4>
+			</div>
+	
+			<div id="collapseFive" class="panel-collapse collapse">
+			    <div class="panel-body">
+				<textarea rows="6" cols="60" class="rta" id="textAssessmentDate" name="textAssessmentDate">
+				</textarea>      
+			    </div>
+			</div>
+	
+			<div class="panel-heading">
+			    <h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapseSix">
+				    5. Describe cost assessed.
+				</a>
+			    </h4>
+			</div>
+	
+			<div id="collapseSix" class="panel-collapse collapse">
+			    <div class="panel-body">
+				<textarea rows="6" cols="60" class="rta" id="textCost" name="textCost">
+				</textarea>      
+			    </div>
+			</div>
+	
+			<div class="panel-heading">
+			    <h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapseSeven">
+				    6. Describe analysis type assessed.
+				</a>
+			    </h4>
+			</div>
+	
+			<div id="collapseSeven" class="panel-collapse collapse">
+			    <div class="panel-body">
+				<textarea rows="6" cols="60" class="rta" id="textAnalysisType" name="textAnalysisType">
+				</textarea>      
+			    </div>
+			</div>
+	
+			<div class="panel-heading">
+			    <h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapseEight">
+				    7. Describe administrator assessed.
+				</a>
+			    </h4>
+			</div>
+	
+			<div id="collapseEight" class="panel-collapse collapse">
+			    <div class="panel-body">
+				<textarea rows="6" cols="60" class="rta" id="textAdministrator" name="textAdministrator">
+				</textarea>      
+			    </div>
+			</div>
+	
+			<div class="panel-heading">
+			    <h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapseNine">
+				    8. Describe analysis method assessed.
+				</a>
+			    </h4>
+			</div>
+	
+			<div id="collapseNine" class="panel-collapse collapse">
+			    <div class="panel-body">
+				<textarea rows="6" cols="60" class="rta" id="textAnalysisMethod" name="textAnalysisMethod">
+				</textarea>      
+			    </div>
+			</div>
+	
+			<div class="panel-heading">
+			    <h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapseTen">
+				    9. Describe scope assessed.
+				</a>
+			    </h4>
+			</div>
+	
+			<div id="collapseTen" class="panel-collapse collapse">
+			    <div class="panel-body">
+				<textarea rows="6" cols="60" class="rta" id="textScope" name="textScope">
+				</textarea>      
+			    </div>
+			</div>
+	
+			<div class="panel-heading">
+			    <h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapseEleven">
+				    10. Describe feedback assessed.
+				</a>
+			    </h4>
+			</div>
+	
+			<div id="collapseEleven" class="panel-collapse collapse">
+			    <div class="panel-body">
+				<textarea rows="6" cols="60" class="rta" id="textFeedback" name="textFeedback">
+				</textarea>      
+			    </div>
+			</div>
+	
+			<div class="panel-heading">
+			    <h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwelve">
+				    11. Describe feedback flag assessed.
+				</a>
+			    </h4>
+			</div>
+	
+			<div id="collapseTwelve" class="panel-collapse collapse">
+			    <div class="panel-body">
+				<textarea rows="6" cols="60" class="rta" id="textFeedbackFlag" name="textFeedbackFlag">
+				</textarea>      
+			    </div>
+			</div>					    
+	
+			<div class="panel-heading">
+			    <h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" href="#collapseThirteen">
+				    12. Describe plan status flag assessed.
+				</a>
+			    </h4>
+			</div>
+	
+			<div id="collapseThirteen" class="panel-collapse collapse">
+			    <div class="panel-body">
+				<textarea rows="6" cols="60" class="rta" id="textPlanStatus" name="textPlanStatus">				    
+				</textarea>      
+			    </div>
+			</div>					    
+		    </div>
+		</div> <!-- controls -->    
+	
+		<button type="submit" name="formSubmit" value="formSavePlan" class="btn btn-success pull-right">Submit</button>
+		<button type="submit" name="formSubmit" value="formSaveDraft" class="btn btn-primary pull-right">Save Draft</button>
+		<a class="btn btn-primary btn-md pull-right" href="../img/userguide.pdf"><?php echo $this->translate ('Preview') ?> &raquo;</a>
+	
+		<input class="input-file " id="fileInput" type="file" >
+		<button type="submit" class="btn btn-primary btn-xs ">Upload</button>
+		<button type="submit" class="btn btn-warning btn-xs btn ">Cancel</button>
+	    </div>
+	</form>		
+    </div>
+</div>
+
 	<?php
 	    // All php functions
 	    function getValue($value)
@@ -387,28 +332,80 @@ $this->headTitle($title);
 		echo $count;
 	    }
 	?>
-         
-	<!-- All Java Script functions -->
-        <script>
-            $(document).ready(function() {
-	        document.getElementById('ta_sample').value = "";
-                $.rta(); // The simplest initialization... default button set on all class="rta" textarea's
-            });
+ 
 
-	    $(".dropdown-department li a").click(function(){
-	      document.getElementById("textDepartment").value = $(this).text();
-	    });
-			    
-	    $(".dropdown-program li a").click(function(){
-	      document.getElementById("textProgram").value = $(this).text();
-	    });
-	
-		$(".dropdown-year li a").click(function(){
-	      document.getElementById("textYear").value = $(this).text();
-	    });
-	    
-	    // Enable the radio buttons
-	    $('.btn').button();
-        </script>
-    </body>
-</html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-rta.min.js"></script>
+<script src="../js/bootstrap-select.js"></script>
+<script>
+
+// call loadDepts on page load
+$(document).ready(function() {
+   $.rta(); // load rta features - simplest implementation
+   loadUnits();
+});
+
+// function to create department/unit options
+function loadUnits(){
+   
+   // convert php array into javascript array
+   var units = <?php print json_encode($units); ?>;
+   // assign unit ids to html dropdown
+   for (var i = 0; i < units.length; i++){
+      $('#unit-menu').append('<option>' + units[i].id + '</option>');
+   }
+
+    // convert php array into javascript array
+    var years = <?php print json_encode($years); ?>;
+    // assign years to html dropdown
+    for (var i = 0; i < years.length; i++){
+      $('#year-menu').append('<option>' + years[i].year + '</option>');
+    }
+    
+   // call code to initialize the selectpicker
+   // this must come after the options are initalized
+   $('.selectpicker').selectpicker();
+   
+
+}
+
+// call loadPrograms when user chooses a department/unit
+$(document).on('change', '#unit-menu', function () {
+    loadPrograms($('#unit-menu option:selected').val());
+});
+
+// function to create program options based on department/unit chosen
+function loadPrograms($unit){
+   // clear selectorlist before adding program/degree options
+   var oldSelections = $('#prog-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
+   }
+   $('#prog-menu').selectpicker('refresh');
+   
+   // create url for redirect
+   var urlform = "<?php echo $this->url('plans', array(
+                                    'controller'=>'viewlist',
+                                    'action'=>'viewlist',
+                                    'action'=>'get')); ?>";
+   urlform = urlform + '/' + $unit;
+   
+   // asynchronous ajax code to populate program/degree selector
+   $.ajax({
+      url: urlform,
+      type: "GET",
+      dataType: "json",
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+      success: function(programsJson){
+         for (var i = 0; i < programsJson.length; i++){
+            $('#prog-menu').append('<option>' + programsJson[i].name + '</option>');
+         }
+         $('#prog-menu').selectpicker('refresh');
+      },
+   });
+}
+</script>
+

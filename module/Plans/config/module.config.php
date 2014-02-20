@@ -27,12 +27,9 @@
              'plans' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/plans[/][:action][/:id][/:unit][/:program][/:year]',
+                     'route'    => '/plans[/][:action][/:id]',
                      'constraints' => array(
-                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                         'unit' => '[a-zA-Z][a-zA-Z0-9_-\s\%]*',
-                         'program' => '[a-zA-Z][a-zA-Z0-9_-\s\%]*',
-                         'year'     => '[0-9]*',
+                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',                      
                      ),
                      'defaults' => array(
                          'controller' => 'Plans\Controller\Plans',

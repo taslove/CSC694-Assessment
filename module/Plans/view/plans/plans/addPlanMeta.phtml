@@ -1,0 +1,179 @@
+<?php
+
+$title = 'Assessment Meta Plan';
+$this->headTitle($title);
+?>	
+
+    <div class="container">
+	<center>
+	    <h3>Assessment Plans-ADD Meta</h3>	
+	</center>
+        <p></p>  
+        <div class="row">
+            <div class="col-md-4">
+		<form action="<?php echo $this->url('plans', array('action'=>'index'));?>" method="post">                                    				
+		    <div class="container">
+			<br />
+			<br />
+			<!-- Choose Action -->
+			<select class="selectpicker" name="action-menu" id="action-menu" data-style="btn-primary" title='<?php echo $action ?>'>
+			    <option data-hidden="true"></option>
+			    <option>View</option>
+			    <option>Add</option>
+			    <option>Modify</option>
+			</select>  
+			<br />
+			<br />
+			<!-- Choose Department/Unit -->
+			<select class="selectpicker" name="unit-menu" id="unit-menu" data-style="btn-primary" title='<?php echo $unit ?>'>
+			    <option data-hidden="true"></option>
+			</select>  
+			<br />
+			<br />
+			<!-- Choose Program/Degree -->
+			<select class="selectpicker" id="prog-menu" name="prog-menu[]" data-style="btn-primary"
+				title='
+					<?php
+					    // loop through all the outcomes
+							if (!empty($programs)) {
+							    foreach ($programs as $program) :
+								echo $program . ", ";
+							    endforeach;
+							}
+					?>
+				      '
+				multiple>
+			   <option data-hidden="true"></option>
+			</select>
+			<br />
+			<br />
+			<!-- Choose Years -->
+			<select class="selectpicker" name="year-menu" id="year-menu" data-style="btn-primary" title='<?php echo $year ?>'>
+			   <option data-hidden="true"></option>
+			</select>
+			<br />
+			<br />
+    
+			<!-- Submit Button used to get the plan data from the database -->
+			<button type="submit" name="formGetPlan" value="formGetPlan" class="btn btn-success btn-md">Submit &raquo;</button>
+			<p></p>
+    
+			<!-- Back to Main Button used to return to the main page -->
+			<a class="btn btn-primary btn-md" href="../mock">&laquo;<?php echo $this->translate ('Back to Main') ?>
+			</a>
+			<p></p>
+		    </div><!--close container-->
+                </form>
+	    </div>
+	    
+	    <!--column 2-->
+	    <p></p>
+	    <form action="<?php echo $this->url('plans', array('action'=>'addplanmeta'));?>" method="post">
+		<input type="hidden" name="outcomeId" id="outcomeId" value="<?php echo $outcomeId ?>">
+		<div class="col-md-6">
+		    <div class="controls">
+			<h6>Describe the Meta Assessment Plan & Rationale</h6>
+			<p></p>
+			
+			<div class="controls">
+			    <textarea rows="6" cols="60" class="rta" id="textMetaDescription" name="textMetaDescription" ></textarea>
+			</div> <!-- controls -->
+			<button type="submit" name="formSubmitMeta" value="formSaveDraft" class="btn btn-primary pull-left">Save Draft</button>
+			<button type="submit" name="formSubmitMeta" value="formSavePlan" class="btn btn-success pull-left">Submit</button>
+		    </div>
+		</div>
+	    </form>
+	</div>
+    </div>
+		
+		
+
+	<?php
+	    // All php functions
+	    function getValue($value)
+	    {
+		echo "value=\"$value\"";
+	    }
+	    
+	    function getCount($count)
+	    {
+		echo $count;
+	    }
+	?>
+ 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-rta.min.js"></script>
+<script src="../js/bootstrap-select.js"></script>
+<script>
+
+// call loadDepts on page load
+$(document).ready(function() {
+   $.rta(); // load rta features - simplest implementation
+   loadUnits();
+});
+
+// function to create department/unit options
+function loadUnits(){
+   
+   // convert php array into javascript array
+   var units = <?php print json_encode($units); ?>;
+   // assign unit ids to html dropdown
+   for (var i = 0; i < units.length; i++){
+      $('#unit-menu').append('<option>' + units[i].id + '</option>');
+   }
+
+    // convert php array into javascript array
+    var years = <?php print json_encode($years); ?>;
+    // assign years to html dropdown
+    for (var i = 0; i < years.length; i++){
+      $('#year-menu').append('<option>' + years[i].year + '</option>');
+    }
+    
+   // call code to initialize the selectpicker
+   // this must come after the options are initalized
+   $('.selectpicker').selectpicker();
+   
+
+}
+
+// call loadPrograms when user chooses a department/unit
+$(document).on('change', '#unit-menu', function () {
+    loadPrograms($('#unit-menu option:selected').val());
+});
+
+// function to create program options based on department/unit chosen
+function loadPrograms($unit){
+   // clear selectorlist before adding program/degree options
+   var oldSelections = $('#prog-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
+   }
+   $('#prog-menu').selectpicker('refresh');
+   
+   // create url for redirect
+   var urlform = "<?php echo $this->url('plans', array(
+                                    'controller'=>'viewlist',
+                                    'action'=>'viewlist',
+                                    'action'=>'get')); ?>";
+   urlform = urlform + '/' + $unit;
+   
+   // asynchronous ajax code to populate program/degree selector
+   $.ajax({
+      url: urlform,
+      type: "GET",
+      dataType: "json",
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+      success: function(programsJson){
+         for (var i = 0; i < programsJson.length; i++){
+            $('#prog-menu').append('<option>' + programsJson[i].name + '</option>');
+         }
+         $('#prog-menu').selectpicker('refresh');
+      },
+   });
+}
+</script>
+
