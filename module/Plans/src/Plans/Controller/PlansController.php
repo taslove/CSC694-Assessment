@@ -26,7 +26,8 @@ class PlansController extends AbstractActionController
    protected $tableResults;
    
        // get these values from the session namespace
-    protected $userRole = null;
+//    protected $userRole = null;
+    protected $userRole = 3;
     protected $userID = 9;
 
     /**
@@ -49,15 +50,21 @@ class PlansController extends AbstractActionController
 //      var_dump($request);
 //      exit();
 
+   /**
+    * Used to access the plans specific SQL statements
+    */
    public function getDatabaseData()
    {
-       if (!$this->tableResults) {
-           $this->tableResults = $this->getServiceLocator()
-                      ->get('Plans\Model\DatabaseSql');
+       if (!$this->$tableResults) {
+           $this->$tableResults = $this->getServiceLocator()
+                                       ->get('Plans\Model\DatabaseSql');
        }
-       return $this->tableResults;
+       return $this->$tableResults;
    }
-   
+
+   /**
+    * Used to access the generic SQL statements
+    */  
    public function getGenericQueries()
    {
       if (!$this->tableResults) {
@@ -67,62 +74,78 @@ class PlansController extends AbstractActionController
         return $this->tableResults;
    }
       
+   /**
+    * This is the controller that gets called upon loading the plans page
+    *
+    * Post Request
+    *
+    * Get Request
+    *  1)
+    * 
+    */
    public function indexAction()
    {
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-         
-            $action = $request->getPost('action-menu');
-            $unit = $request->getPost('unit-menu');
-            $programs = $request->getPost('prog-menu');
-            $year = $request->getPost('year-menu');
+      // get and check the request type
+      $request = $this->getRequest();
+      if ($request->isPost()) {
+         // process post request
+ 
+         // get the data from the form        
+         $action = $request->getPost('action-menu');
+         $unit = $request->getPost('unit-menu');
+         $programs = $request->getPost('prog-menu');
+         $year = $request->getPost('year-menu');
             
-            // create session variable
-		$planSession = new Container('planSession');
-		$planSession->action = $action;
-                $planSession->unit = $unit;
-                $planSession->programs = $programs;
-                $planSession->year = $year;
+         // create session variable used to populate the titles on the next page
+	 $planSession = new Container('planSession');
+	 $planSession->action = $action;
+         $planSession->unit = $unit;
+         $planSession->programs = $programs;
+         $planSession->year = $year;
             
-            
-            if ($action == "View" || $action == "Modify") {
-               return $this->redirect()->toRoute('plans', array('action'=>'listplans'));                
-            }
-            else {
-               return $this->redirect()->toRoute('plans', array('action'=>'addplan'));
-            }
+         // determine where to go next
+         if ($action == "View" || $action == "Modify") {
+            return $this->redirect()->toRoute('plans', array('action'=>'listplans'));                
          }
          else {
+            return $this->redirect()->toRoute('plans', array('action'=>'addplan'));
+         }
+      }
+      else {
+         // process get request
             
-            // get years
-            $results = $this->getGenericQueries()->getYears();
-            // iterate over database results forming a php array
-            foreach ($results as $result){
-               $yeararray[] = $result;
-            }
-            
-            
-      // if general user - only view
-        // get all units, since only view option is displayed
-        if ($this->userRole == null){
+         // create session variable used to populate the titles on the next page
+	 $planSession = new Container('planSession');
+         
+         // if general user - only view
+         // get all units, since only view option is displayed
+         if ($this->userRole == null){
             $results = $this->getGenericQueries()->getUnits();
+         
             // iterate over database results forming a php array
             foreach ($results as $result){
-                $unitarray[] = $result;
+               $unitarray[] = $result;
             }
+                        
+            $useractions = array('View');
+            $planSession->useractions = $useractions;
+                   
             return new ViewModel(array(
-                'actions' => array('view'),
-                'units' => $unitarray,
-                'years' => $yeararray,
+               'useractions' => array('View'),
+               'units' => $unitarray,
             ));
-        }
-        else{  // user in table with role - show actions
-               // wait to populate units until action chosen
+         }
+         else{
+            
+            $useractions = array('View', 'Add', 'Modify');
+            $planSession->useractions = $useractions;
+            
+            // user in table with role - show actions
+            // wait to populate units until action chosen
             return new ViewModel(array(
-                'useractions' => array('View', 'Add', 'Modify'),
-                'years' => $yeararray,
+               'useractions' => array('View', 'Add', 'Modify'),
             ));
-        }
+         }
       }
    }
    
@@ -148,8 +171,7 @@ class PlansController extends AbstractActionController
         }
       
         // encode results as json object
-        //$jsonData = new JsonModel($unitData);
-         $jsonData = new JsonModel(array('View', 'Add', 'Modify'));                
+        $jsonData = new JsonModel($unitData);
         return $jsonData;
     }
     
@@ -169,6 +191,29 @@ class PlansController extends AbstractActionController
         $jsonData = new JsonModel($programData);
         return $jsonData;
     }
+    
+    public function getYearsAction()
+    {
+        // get unit from id in url
+        $yearsChosen = $this->params()->fromRoute('id', 0);
+        // get programs for that unit
+        $results = $this->getGenericQueries()->getYears();
+      
+        // iterate through results forming a php array
+        foreach ($results as $result){
+            $yearsData[] = $result;
+        }
+      
+        // encode results as json object
+        $jsonData = new JsonModel($yearsData);
+        return $jsonData;
+    }
+    
+    
+    
+    
+    
+    
    
    public function listPlansAction()
    {
@@ -184,7 +229,9 @@ class PlansController extends AbstractActionController
 		$action = $planSession->action; 
                 $unit = $planSession->unit;
                 $programs = $planSession->programs;
-                $year = $planSession->year; 
+                $year = $planSession->year;
+                $useractions = $planSession->useractions;
+                
             
             // Initial Page Load, get request
             // get units
@@ -210,6 +257,7 @@ class PlansController extends AbstractActionController
                'unit' => $unit,
                'programs' => $programs,
                'year' => $year,
+               'useractions' => $useractions,
             
                // get outcome and plans data
                'outcomes' => $this->getGenericQueries()->getOutcomes($unit, $programs, $year),
@@ -235,6 +283,7 @@ class PlansController extends AbstractActionController
                 $unit = $planSession->unit;
                 $programs = $planSession->programs;
                 $year = $planSession->year;
+                $useractions = $planSession->useractions;
          
                      // Initial Page Load, get request
             // get units
@@ -261,6 +310,7 @@ class PlansController extends AbstractActionController
             'unit' => $unit,
             'programs' => $programs,
             'year' => $year,
+            'useractions' => $useractions,
             
             'outcomes' => $this->getGenericQueries()->getOutcomesByPlanId($planId),
             'plan' => $this->getGenericQueries()->getPlanByPlanId($planId),
@@ -315,7 +365,8 @@ class PlansController extends AbstractActionController
 		$action = $planSession->action; 
                 $unit = $planSession->unit;
                 $programs = $planSession->programs;
-                $year = $planSession->year;
+                $year = $planSession->year;               
+                $useractions = $planSession->useractions;
          
                      // Initial Page Load, get request
             // get units
@@ -342,6 +393,7 @@ class PlansController extends AbstractActionController
             'unit' => $unit,
             'programs' => $programs,
             'year' => $year,
+            'useractions' => $useractions,
             
             'outcomes' => $this->getGenericQueries()->getOutcomesByPlanId($planId),
             'plan' => $this->getGenericQueries()->getPlanByPlanId($planId),
@@ -457,6 +509,7 @@ class PlansController extends AbstractActionController
                 $unit = $planSession->unit;
                 $programs = $planSession->programs;
                 $year = $planSession->year;
+                $useractions = $planSession->useractions;
          
                      // Initial Page Load, get request
             // get units
@@ -483,6 +536,7 @@ class PlansController extends AbstractActionController
             'unit' => $unit,
             'programs' => $programs,
             'year' => $year,
+            'useractions' => $useractions,
             
             'outcomes' => $this->getGenericQueries()->getUniqueOutcomes($unit, $programs, $year),
          ));

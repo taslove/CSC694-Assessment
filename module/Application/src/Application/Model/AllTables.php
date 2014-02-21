@@ -5,6 +5,7 @@ namespace Application\Model;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
+use Zend\DB\Sql\Select;
 use Zend\Db\Sql\Where;
 use Zend\Db\Sql\Expression;
 use Plans\Model\Entity;
@@ -63,7 +64,7 @@ class AllTables extends AbstractTableGateway
                     ->where(array('liaison_privs.user_id' => $userID));
         
         // union results from both selects
-        $select1->combine($select2);
+        //$select1->combine($select2);
 
         $statement = $sql->prepareStatementForSqlObject($select1);
         $result = $statement->execute();
