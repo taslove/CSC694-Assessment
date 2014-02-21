@@ -9,6 +9,7 @@
 
 namespace Plans\Controller;
 
+use Plans\Form\CollectionUpload;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Db\Sql\Select;
@@ -18,10 +19,26 @@ use Zend\View\Model\JsonModel;
 use Zend\Session\Container;
 
 
+
 class PlansController extends AbstractActionController
 {
 
    protected $tableResults;
+   
+       // get these values from the session namespace
+    protected $userRole = null;
+    protected $userID = 9;
+
+    /**
+     * @var Container
+     */
+    protected $sessionContainer;
+
+    
+        public function __construct()
+    {
+        $this->sessionContainer = new Container('fileUpload');
+    }
 
 // Sample dump logic used for debugging, use as needed   
 //      foreach ($this->getDatabaseData()->getAllYears() as $data) :
@@ -48,21 +65,6 @@ class PlansController extends AbstractActionController
                                       ->get('Application\Model\AllTables');
         }
         return $this->tableResults;
-   }
-   
-   public function getAction()
-   {
-      // get unit from id in url
-      $unitChosen = $this->params()->fromRoute('id', 0);
-      // get programs for that unit
-      $results = $this->getGenericQueries()->getProgramsByUnitId($unitChosen);
-      // iterate through results forming a php array
-      foreach ($results as $result){
-         $programData[] = $result;
-      }
-      // encode results as json object
-      $jsonData = new JsonModel($programData);
-      return $jsonData;     
    }
       
    public function indexAction()
@@ -91,28 +93,82 @@ class PlansController extends AbstractActionController
             }
          }
          else {
-            // Initial Page Load, get request
-            // get units
-            $results = $this->getGenericQueries()->getUnits();
-            // iterate over database results forming a php array
-            foreach ($results as $result){
-               $unitarray[] = $result;
-            }
-           
+            
             // get years
             $results = $this->getGenericQueries()->getYears();
             // iterate over database results forming a php array
             foreach ($results as $result){
                $yeararray[] = $result;
             }
-            // pass array to view
+            
+            
+      // if general user - only view
+        // get all units, since only view option is displayed
+        if ($this->userRole == null){
+            $results = $this->getGenericQueries()->getUnits();
+            // iterate over database results forming a php array
+            foreach ($results as $result){
+                $unitarray[] = $result;
+            }
             return new ViewModel(array(
-               'units' => $unitarray,
-               'years' => $yeararray,
+                'actions' => array('view'),
+                'units' => $unitarray,
+                'years' => $yeararray,
             ));
-         }
-         
+        }
+        else{  // user in table with role - show actions
+               // wait to populate units until action chosen
+            return new ViewModel(array(
+                'useractions' => array('View', 'Add', 'Modify'),
+                'years' => $yeararray,
+            ));
+        }
+      }
    }
+   
+   
+       // Creates list of available units (departments/programs)
+    // based on user role and privileges.
+    public function getUnitsAction()
+    {
+        // get action from id in url
+        $actionChosen = $this->params()->fromRoute('id', 0);
+     
+        // get units for that action
+        if ($actionChosen == 'View'){
+            $results = $this->getGenericQueries()->getUnits();
+        }
+        else{
+            $results = $this->getGenericQueries()->getUnitsByPrivId($this->userID);
+        }
+      
+        // iterate through results forming a php array
+        foreach ($results as $result){
+            $unitData[] = $result;
+        }
+      
+        // encode results as json object
+        //$jsonData = new JsonModel($unitData);
+         $jsonData = new JsonModel(array('View', 'Add', 'Modify'));                
+        return $jsonData;
+    }
+    
+    public function getProgramsAction()
+    {
+        // get unit from id in url
+        $unitChosen = $this->params()->fromRoute('id', 0);
+        // get programs for that unit
+        $results = $this->getGenericQueries()->getProgramsByUnitId($unitChosen);
+      
+        // iterate through results forming a php array
+        foreach ($results as $result){
+            $programData[] = $result;
+        }
+      
+        // encode results as json object
+        $jsonData = new JsonModel($programData);
+        return $jsonData;
+    }
    
    public function listPlansAction()
    {
@@ -296,6 +352,8 @@ class PlansController extends AbstractActionController
    public function addplanAction()
    {
        
+      $form = new CollectionUpload('file-form');
+       
       $request = $this->getRequest();
       
       if ($request->isPost()) {
@@ -306,7 +364,47 @@ class PlansController extends AbstractActionController
          
          // get button form data       
          $button = $request->getPost('formSubmit');
-                                         
+                  
+         if ($button == "formUpload") {
+            
+            $fileInput = $request->getPost('fileInput');
+
+
+            var_dump($button);
+            var_dump($fileInput);
+            
+            exit();
+         
+         }
+         
+                   
+        if ($this->getRequest()->isPost()) {
+            // Postback
+            $data = array_merge_recursive(
+                $this->getRequest()->getPost()->toArray(),
+                $this->getRequest()->getFiles()->toArray()
+            );
+            
+            $form->setData($data);            
+            
+            if ($form->isValid()) {
+                //
+                // ...Save the form...
+                //
+                
+//            var_dump("valid");
+//            exit();
+            
+                return $this->redirectToSuccessPage($form->getData());
+            }
+            
+            //var_dump("in-valid");
+            //exit();
+        }
+        
+        
+         
+         
          if ($button == "formSavePlan" || $button == "formSaveDraft") {
 
             $metaFlag = $request->getPost('metaFlag');
@@ -377,6 +475,7 @@ class PlansController extends AbstractActionController
             
          // Initial Page Load, get request
          return new ViewModel(array(
+            'form' => $form ,
             'units' => $unitarray,
             'years' => $yeararray,
                
@@ -390,6 +489,16 @@ class PlansController extends AbstractActionController
       }
    }
    
+   
+   protected function redirectToSuccessPage($formData = null)
+    {
+        $this->sessionContainer->formData = $formData;
+        $response = $this->redirect()->toRoute('plans');
+        $response->setStatusCode(303);
+        return $response;
+    }
+    
+    
    public function addplanmetaAction()
    {
                

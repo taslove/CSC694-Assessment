@@ -29,7 +29,7 @@
                  'options' => array(
                      'route'    => '/plans[/][:action][/:id]',
                      'constraints' => array(
-                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',                      
+                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                      ),
                      'defaults' => array(
                          'controller' => 'Plans\Controller\Plans',
