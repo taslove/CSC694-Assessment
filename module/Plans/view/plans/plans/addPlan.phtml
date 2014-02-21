@@ -22,21 +22,21 @@ $this->headTitle($title);
 		    <br />
 		    <br />
 		    <!-- Choose Department/Unit -->
-		    <select class="selectpicker" name="unit-menu" id="unit-menu" data-style="btn-primary" title='<?php echo $unit ?>'>
+		    <select class="selectpicker" name="unit-menu" id="unit-menu" data-style="btn-primary" title='Choose Department/Unit'>
 			<option data-hidden="true"></option>
 		    </select>  
 		    <br />
 		    <br />
 		    <!-- Choose Program/Degree -->
 		    <select class="selectpicker" id="prog-menu" name="prog-menu[]" data-style="btn-primary"
-			    title='
+			    title='Choose Program/Degree
 				    <?php
 					// loop through all the outcomes
-						    if (!empty($programs)) {
-							foreach ($programs as $program) :
-							    echo $program . ", ";
-							endforeach;
-						    }
+					//	    if (!empty($programs)) {
+					//		foreach ($programs as $program) :
+					//		    echo $program . ", ";
+					//		endforeach;
+					//	    }
 				    ?>
 				  '
 			    multiple>
@@ -45,7 +45,7 @@ $this->headTitle($title);
 		    <br />
 		    <br />
 		    <!-- Choose Years -->
-		    <select class="selectpicker" name="year-menu" id="year-menu" data-style="btn-primary" title='<?php echo $year ?>'>
+		    <select class="selectpicker" name="year-menu" id="year-menu" data-style="btn-primary" title='Choose Year'>
 		       <option data-hidden="true"></option>
 		    </select>
 		    <br />
@@ -312,13 +312,92 @@ $this->headTitle($title);
 		<button type="submit" name="formSubmit" value="formSaveDraft" class="btn btn-primary pull-right">Save Draft</button>
 		<a class="btn btn-primary btn-md pull-right" href="../img/userguide.pdf"><?php echo $this->translate ('Preview') ?> &raquo;</a>
 	
-		<input class="input-file " id="fileInput" type="file" >
-		<button type="submit" class="btn btn-primary btn-xs ">Upload</button>
-		<button type="submit" class="btn btn-warning btn-xs btn ">Cancel</button>
+
 	    </div>
 	</form>		
     </div>
+
+		<form action="uploadFile.php" method="post" enctype="multipart/form-data">
+		    <input class="input-file " name="fileInput" id="fileInput" type="file" >
+		    <button type="submit" name="formSubmit" value="formUpload" class="btn btn-primary btn-xs ">Upload</button>
+		    <button type="submit" name="formSubmit" value="formCancel"class="btn btn-warning btn-xs btn ">Cancel</button>
+		</form>
 </div>
+
+
+
+<?php
+// Init Form
+$form = $this->form;
+$form->setAttribute('class', 'form-horizontal');
+$form->prepare();
+
+
+// Configure Errors Helper
+$errorsHelper  = $this->plugin('formelementerrors');
+$errorsHelper
+    ->setMessageOpenFormat('<div class="help-block">')
+    ->setMessageSeparatorString('</div><div class="help-block">')
+    ->setMessageCloseString('</div>');
+?>
+<?php echo $this->form()->openTag($form); ?>
+<fieldset>
+    <legend><?php echo ($this->legend) ?: 'Multi-File Upload with Collections' ?></legend>
+
+    <?php
+    $elem = $form->get('text');
+    $elem->setLabelAttributes(array('class' => 'control-label'));
+    $errors = $elem->getMessages();
+    $errorClass = (!empty($errors)) ? ' error' : '';
+    ?>
+    <div class="control-group<?php echo $errorClass ?>">
+        <?php echo $this->formLabel($elem); ?>
+        <div class="controls">
+            <?php echo $this->formText($elem); ?>
+            <?php echo $errorsHelper($elem); ?>
+        </div>
+    </div>
+
+    <?php
+    $collection = $form->get('file-collection');
+    foreach ($collection as $elem) {
+        $elem->setLabelAttributes(array('class' => 'control-label'));
+        $errors = $elem->getMessages();
+        $errorClass = (!empty($errors)) ? ' error' : '';
+        ?>
+        <div class="control-group<?php echo $errorClass ?>">
+            <?php echo $this->formLabel($elem); ?>
+            <div class="controls">
+                <?php echo $this->formFile($elem); ?>
+                <?php echo $errorsHelper($elem); ?>
+            </div>
+        </div>
+        <?php
+    }
+    ?>
+    <?php if (!empty($this->tempFiles)) { ?>
+    <div class="control-group"><div class="controls">
+        <div class="help-block">
+            Uploaded: <ul>
+            <?php foreach ($this->tempFiles as $tempFile) { ?>
+            <li><?php echo $this->escapeHtml($tempFile['name']) ?></li>
+            <?php } ?>
+            </ul>
+        </div>
+    </div></div>
+    <?php } ?>
+
+    <div class="control-group">
+        <div class="controls">
+            <button name="formSubmit" value="uploadFiles" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+
+</fieldset>
+<?php echo $this->form()->closeTag($form); ?>
+
+
+
 
 	<?php
 	    // All php functions
@@ -338,45 +417,67 @@ $this->headTitle($title);
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/bootstrap-rta.min.js"></script>
 <script src="../js/bootstrap-select.js"></script>
+
 <script>
 
-// call loadDepts on page load
+// load actions based on user privileges
 $(document).ready(function() {
-   $.rta(); // load rta features - simplest implementation
-   loadUnits();
-});
+     $.rta(); // load rta features - simplest implementation
 
-// function to create department/unit options
-function loadUnits(){
-   
-   // convert php array into javascript array
-   var units = <?php print json_encode($units); ?>;
-   // assign unit ids to html dropdown
-   for (var i = 0; i < units.length; i++){
-      $('#unit-menu').append('<option>' + units[i].id + '</option>');
+   // clear selectorlist before adding unit/department options
+   var oldSelections = $('#action-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
    }
-
-    // convert php array into javascript array
-    var years = <?php print json_encode($years); ?>;
-    // assign years to html dropdown
-    for (var i = 0; i < years.length; i++){
-      $('#year-menu').append('<option>' + years[i].year + '</option>');
-    }
-    
-   // call code to initialize the selectpicker
-   // this must come after the options are initalized
-   $('.selectpicker').selectpicker();
    
-
-}
-
-// call loadPrograms when user chooses a department/unit
-$(document).on('change', '#unit-menu', function () {
-    loadPrograms($('#unit-menu option:selected').val());
+   var actions = <?php print json_encode($useractions); ?>;
+   for (var i = 0; i < actions.length; i++){
+      $('#action-menu').append('<option>' + actions[i] + '</option>');
+   }
+   
+   // call code to initialize the selectpicker
+   // this must come after the options are initialized
+   $('.selectpicker').selectpicker();
 });
 
-// function to create program options based on department/unit chosen
-function loadPrograms($unit){
+// update unit/department options based on actions
+$(document).on('change', '#action-menu', function () {
+   $action = $('#action-menu option:selected').val();
+   // clear selectorlist before adding unit/department options
+   var oldSelections = $('#unit-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
+   }
+   // data-hidden="true" shows title on button
+   $('#unit-menu').append('<option  data-hidden="true"></option>');
+   $('#unit-menu').selectpicker('refresh');
+   
+   // create url for redirect
+   var urlform = "<?php echo $this->url('plans', array(
+                                    'controller'=>'plans',
+                                    'action'=>'getUnits')); ?>";
+   urlform = urlform + '/' + $action;
+     
+   // asynchronous ajax code to populate unit/department selector
+   $.ajax({
+      url: urlform,
+      type: "GET",
+      dataType: "json",
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+      success: function(unitsJson){
+         for (var i = 0; i < unitsJson.length; i++){
+            $('#unit-menu').append('<option>' + unitsJson[i].id + '</option>');
+         }
+         $('#unit-menu').selectpicker('refresh');
+      },
+   });
+});
+
+// update program options based on unit/department
+$(document).on('change', '#unit-menu', function () {
+   $unit = $('#unit-menu option:selected').val();
    // clear selectorlist before adding program/degree options
    var oldSelections = $('#prog-menu option');
    for (var i = 0; i < oldSelections.length; i++){
@@ -386,9 +487,8 @@ function loadPrograms($unit){
    
    // create url for redirect
    var urlform = "<?php echo $this->url('plans', array(
-                                    'controller'=>'viewlist',
-                                    'action'=>'viewlist',
-                                    'action'=>'get')); ?>";
+                                    'controller'=>'plans',
+                                    'action'=>'getPrograms')); ?>";
    urlform = urlform + '/' + $unit;
    
    // asynchronous ajax code to populate program/degree selector
@@ -406,6 +506,40 @@ function loadPrograms($unit){
          $('#prog-menu').selectpicker('refresh');
       },
    });
-}
-</script>
+});
 
+// load all the year options after the unit/department & unit/department are selected
+$(document).on('change', '#prog-menu', function () {
+   // clear selectorlist before adding all the years
+   var oldSelections = $('#year-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
+   }
+   
+   // data-hidden="true" shows title on button
+   $('#year-menu').append('<option  data-hidden="true"></option>');
+   $('#year-menu').selectpicker('refresh');
+   
+   // create url for redirect
+   var urlform = "<?php echo $this->url('plans', array(
+                                    'controller'=>'plans',
+                                    'action'=>'getYears')); ?>";
+   urlform = urlform;
+   
+   // asynchronous ajax code to populate program/degree selector
+   $.ajax({
+      url: urlform,
+      type: "GET",
+      dataType: "json",
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+      success: function(programsJson){
+         for (var i = 0; i < programsJson.length; i++){
+            $('#year-menu').append('<option>' + programsJson[i].year + '</option>');
+         }
+         $('#year-menu').selectpicker('refresh');
+      },
+   });
+});
+</script>		

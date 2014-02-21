@@ -5,6 +5,7 @@ namespace Application\Model;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
+use Zend\DB\Sql\Select;
 use Zend\Db\Sql\Where;
 use Zend\Db\Sql\Expression;
 use Plans\Model\Entity;
@@ -32,10 +33,12 @@ class AllTables extends AbstractTableGateway
     public function getUnits()
     {   
         $sql = new Sql($this->adapter);
+        
+       // $sql->beginTransaction();
         $select = $sql->select()
                       ->from('units')
-                      ->where(array('active' => 1));
-                      
+                      ->where(array('active_flag' => 1));
+ 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         
@@ -45,6 +48,33 @@ class AllTables extends AbstractTableGateway
         return $result;
     }
     
+    
+    public function getUnitsByPrivId($userID)
+    {
+        // get units available for user from unit_privs and liaison_privs
+        $sql = new Sql($this->adapter);
+        $select1 = $sql->select()
+                    ->from('unit_privs')
+                    ->columns(array('id' => 'unit_id'))
+                    ->where(array('unit_privs.user_id' => $userID));
+                    
+        $select2 = $sql->select()
+                    ->from('liaison_privs')
+                    ->columns(array('id' => 'unit_id'))
+                    ->where(array('liaison_privs.user_id' => $userID));
+        
+        // union results from both selects
+        //$select1->combine($select2);
+
+        $statement = $sql->prepareStatementForSqlObject($select1);
+        $result = $statement->execute();
+        
+        // dumping $result will not show any rows returned
+        // you must iterate over $result to retrieve query results
+        
+        return $result;
+    }
+        
     // Retrieves all active programs for a given unit id
     public function getProgramsByUnitId($unitid)
     {   
@@ -52,7 +82,7 @@ class AllTables extends AbstractTableGateway
         $select = $sql->select()
                       ->from('programs')
                       ->where(array('unit_id' => $unitid))
-                      ->where(array('active' => 1));
+                      ->where(array('active_flag' => 1));
                       
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

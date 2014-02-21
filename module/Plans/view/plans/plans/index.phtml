@@ -13,25 +13,24 @@ $this->headTitle($title);
 		<div class="container">
 		    <br />
 		    <br />
-		    <!-- Choose Action -->
-		    <select class="selectpicker" id="action-menu" name="action-menu" data-style="btn-primary" title='Choose Action'>
+		     <!-- Choose Action -->
+		     <select class="selectpicker" id="action-menu" name="action-menu" data-style="btn-primary" title='Choose Action'>
 			<option data-hidden="true"></option>
-			<option>View</option>
-			<option>Add</option>
-			<option>Modify</option>
-		    </select>  
+		     </select>  
 		    <br />
 		    <br />
-		    <!-- Choose Department/Unit -->
-		    <select class="selectpicker" id="unit-menu" name="unit-menu" data-style="btn-primary" title='Choose Department/Unit'>
+		  
+		     <!-- Choose Department/Unit -->
+		     <select class="selectpicker" id="unit-menu" name="unit-menu" data-style="btn-primary" title='Choose Department/Unit'>
 			<option data-hidden="true"></option>
-		    </select>  
+		     </select>  
 		    <br />
 		    <br />
-		    <!-- Choose Program/Degree -->
-		    <select class="selectpicker" id="prog-menu" name="prog-menu[]" data-style="btn-primary" title='Choose Program/Degree' multiple>
-		       <option data-hidden="true"></option>
-		    </select>
+		  
+		     <!-- Choose Program/Degree -->
+		     <select class="selectpicker" id="prog-menu" name="prog-menu[]" data-style="btn-primary" title='Choose Program/Degree' multiple>
+			<option data-hidden="true"></option>
+		     </select>
 		    <br />
 		    <br />
 		    <!-- Choose Years -->
@@ -52,56 +51,92 @@ $this->headTitle($title);
 		</div><!--close container-->
 	    </form>
 	</div><!--close column-->
+	
+	<!--column 2-->
+	<div class="col-md-6">
+	    <p>This is where the plan or report will pop up with a feedback box.</p>
+	    <style>
+	       textarea {
+		  width: 400px;
+	       }
+	    </style>
+	    <div class="container">
+	       <form class="form-horizontal" name="rtaform" id="rtaform" method="GET" action="#">
+		  <div class="control-group">
+		    <label class="control-label" for="ta_sample">Feedback Response</label>
+		    <div class="controls">
+		       <textarea rows="8" cols="60" class="rta" id="ta_sample" name="ta_sample"></textarea>
+		    </div> <!-- controls -->
+		  </div> <!-- control-group -->
+	       </form>
+	    </div>
+	</div>
     </div>
 </div>
  
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/bootstrap-rta.min.js"></script>
-<script src="js/bootstrap-select.js"></script>
+<script src="./js/bootstrap.min.js"></script> 
+<script src="./js/bootstrap-rta.min.js"></script>
+<script src="./js/bootstrap-select.js"></script>
 
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/bootstrap-rta.min.js"></script>
 <script src="../js/bootstrap-select.js"></script>
+
 <script>
 
-// call loadDepts on page load
+// load actions based on user privileges
 $(document).ready(function() {
-   $.rta(); // load rta features - simplest implementation
-   loadUnits();
-});
+     $.rta(); // load rta features - simplest implementation
 
-// function to create department/unit options
-function loadUnits(){
-   
-   // convert php array into javascript array
-   var units = <?php print json_encode($units); ?>;
-   // assign unit ids to html dropdown
-   for (var i = 0; i < units.length; i++){
-      $('#unit-menu').append('<option>' + units[i].id + '</option>');
+   var actions = <?php print json_encode($useractions); ?>;
+   for (var i = 0; i < actions.length; i++){
+      $('#action-menu').append('<option>' + actions[i] + '</option>');
    }
-
-    // convert php array into javascript array
-    var years = <?php print json_encode($years); ?>;
-    // assign years to html dropdown
-    for (var i = 0; i < years.length; i++){
-      $('#year-menu').append('<option>' + years[i].year + '</option>');
-    }
-    
-   // call code to initialize the selectpicker
-   // this must come after the options are initalized
-   $('.selectpicker').selectpicker();
    
-
-}
-
-// call loadPrograms when user chooses a department/unit
-$(document).on('change', '#unit-menu', function () {
-    loadPrograms($('#unit-menu option:selected').val());
+   // call code to initialize the selectpicker
+   // this must come after the options are initialized
+   $('.selectpicker').selectpicker();
 });
 
-// function to create program options based on department/unit chosen
-function loadPrograms($unit){
+// update unit/department options based on actions
+$(document).on('change', '#action-menu', function () {
+   $action = $('#action-menu option:selected').val();
+   // clear selectorlist before adding unit/department options
+   var oldSelections = $('#unit-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
+   }
+   // data-hidden="true" shows title on button
+   $('#unit-menu').append('<option  data-hidden="true"></option>');
+   $('#unit-menu').selectpicker('refresh');
+   
+   // create url for redirect
+   var urlform = "<?php echo $this->url('plans', array(
+                                    'controller'=>'plans',
+                                    'action'=>'getUnits')); ?>";
+   urlform = urlform + '/' + $action;
+     
+   // asynchronous ajax code to populate unit/department selector
+   $.ajax({
+      url: urlform,
+      type: "GET",
+      dataType: "json",
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+      success: function(unitsJson){
+         for (var i = 0; i < unitsJson.length; i++){
+            $('#unit-menu').append('<option>' + unitsJson[i].id + '</option>');
+         }
+         $('#unit-menu').selectpicker('refresh');
+      },
+   });
+});
+
+// update program options based on unit/department
+$(document).on('change', '#unit-menu', function () {
+   $unit = $('#unit-menu option:selected').val();
    // clear selectorlist before adding program/degree options
    var oldSelections = $('#prog-menu option');
    for (var i = 0; i < oldSelections.length; i++){
@@ -111,8 +146,8 @@ function loadPrograms($unit){
    
    // create url for redirect
    var urlform = "<?php echo $this->url('plans', array(
-                                    'controller'=>'index',
-                                    'action'=>'get')); ?>";
+                                    'controller'=>'plans',
+                                    'action'=>'getPrograms')); ?>";
    urlform = urlform + '/' + $unit;
    
    // asynchronous ajax code to populate program/degree selector
@@ -130,6 +165,40 @@ function loadPrograms($unit){
          $('#prog-menu').selectpicker('refresh');
       },
    });
-}
-</script>
+});
 
+// load all the year options after the unit/department & unit/department are selected
+$(document).on('change', '#prog-menu', function () {
+   // clear selectorlist before adding all the years
+   var oldSelections = $('#year-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
+   }
+   
+   // data-hidden="true" shows title on button
+   $('#year-menu').append('<option  data-hidden="true"></option>');
+   $('#year-menu').selectpicker('refresh');
+   
+   // create url for redirect
+   var urlform = "<?php echo $this->url('plans', array(
+                                    'controller'=>'plans',
+                                    'action'=>'getYears')); ?>";
+   urlform = urlform;
+   
+   // asynchronous ajax code to populate program/degree selector
+   $.ajax({
+      url: urlform,
+      type: "GET",
+      dataType: "json",
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+      success: function(programsJson){
+         for (var i = 0; i < programsJson.length; i++){
+            $('#year-menu').append('<option>' + programsJson[i].year + '</option>');
+         }
+         $('#year-menu').selectpicker('refresh');
+      },
+   });
+});
+</script>		

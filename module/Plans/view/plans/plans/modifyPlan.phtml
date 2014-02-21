@@ -23,21 +23,21 @@ $this->headTitle($title);
 		    <br />
 		    <br />
 		    <!-- Choose Department/Unit -->
-		    <select class="selectpicker" name="unit-menu" id="unit-menu" data-style="btn-primary" title='<?php echo $unit ?>'>
+		    <select class="selectpicker" name="unit-menu" id="unit-menu" data-style="btn-primary" title='Choose Department/Unit'>
 			<option data-hidden="true"></option>
 		    </select>  
 		    <br />
 		    <br />
 		    <!-- Choose Program/Degree -->
 		    <select class="selectpicker" id="prog-menu" name="prog-menu[]" data-style="btn-primary"
-			    title='
+			    title='Choose Program/Degree
 				    <?php
 					// loop through all the outcomes
-						    if (!empty($programs)) {
-							foreach ($programs as $program) :
-							    echo $program . ", ";
-							endforeach;
-						    }
+					//	    if (!empty($programs)) {
+					//		foreach ($programs as $program) :
+					//		    echo $program . ", ";
+					//		endforeach;
+					//	    }
 				    ?>
 				  '
 			    multiple>
@@ -46,7 +46,7 @@ $this->headTitle($title);
 		    <br />
 		    <br />
 		    <!-- Choose Years -->
-		    <select class="selectpicker" name="year-menu" id="year-menu" data-style="btn-primary" title='<?php echo $year ?>'>
+		    <select class="selectpicker" name="year-menu" id="year-menu" data-style="btn-primary" title='Choose Year'>
 		       <option data-hidden="true"></option>
 		    </select>
 		    <br />
@@ -371,45 +371,68 @@ $this->headTitle($title);
 <script src="../../js/bootstrap-rta.min.js"></script>
 <script src="../../js/bootstrap-select.js"></script>
 <script src="../../js/customPlan.js"></script>
+
+
 <script>
 
-// call loadDepts on page load
+// load actions based on user privileges
 $(document).ready(function() {
-   $.rta(); // load rta features - simplest implementation
-   loadUnits();
-});
+     $.rta(); // load rta features - simplest implementation
 
-// function to create department/unit options
-function loadUnits(){
-   
-   // convert php array into javascript array
-   var units = <?php print json_encode($units); ?>;
-   // assign unit ids to html dropdown
-   for (var i = 0; i < units.length; i++){
-      $('#unit-menu').append('<option>' + units[i].id + '</option>');
+   // clear selectorlist before adding unit/department options
+   var oldSelections = $('#action-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
    }
-
-    // convert php array into javascript array
-    var years = <?php print json_encode($years); ?>;
-    // assign years to html dropdown
-    for (var i = 0; i < years.length; i++){
-      $('#year-menu').append('<option>' + years[i].year + '</option>');
-    }
-    
-   // call code to initialize the selectpicker
-   // this must come after the options are initalized
-   $('.selectpicker').selectpicker();
    
-
-}
-
-// call loadPrograms when user chooses a department/unit
-$(document).on('change', '#unit-menu', function () {
-    loadPrograms($('#unit-menu option:selected').val());
+   var actions = <?php print json_encode($useractions); ?>;
+   for (var i = 0; i < actions.length; i++){
+      $('#action-menu').append('<option>' + actions[i] + '</option>');
+   }
+   
+   // call code to initialize the selectpicker
+   // this must come after the options are initialized
+   $('.selectpicker').selectpicker();
 });
 
-// function to create program options based on department/unit chosen
-function loadPrograms($unit){
+// update unit/department options based on actions
+$(document).on('change', '#action-menu', function () {
+   $action = $('#action-menu option:selected').val();
+   // clear selectorlist before adding unit/department options
+   var oldSelections = $('#unit-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
+   }
+   // data-hidden="true" shows title on button
+   $('#unit-menu').append('<option  data-hidden="true"></option>');
+   $('#unit-menu').selectpicker('refresh');
+   
+   // create url for redirect
+   var urlform = "<?php echo $this->url('plans', array(
+                                    'controller'=>'plans',
+                                    'action'=>'getUnits')); ?>";
+   urlform = urlform + '/' + $action;
+     
+   // asynchronous ajax code to populate unit/department selector
+   $.ajax({
+      url: urlform,
+      type: "GET",
+      dataType: "json",
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+      success: function(unitsJson){
+         for (var i = 0; i < unitsJson.length; i++){
+            $('#unit-menu').append('<option>' + unitsJson[i].id + '</option>');
+         }
+         $('#unit-menu').selectpicker('refresh');
+      },
+   });
+});
+
+// update program options based on unit/department
+$(document).on('change', '#unit-menu', function () {
+   $unit = $('#unit-menu option:selected').val();
    // clear selectorlist before adding program/degree options
    var oldSelections = $('#prog-menu option');
    for (var i = 0; i < oldSelections.length; i++){
@@ -419,9 +442,8 @@ function loadPrograms($unit){
    
    // create url for redirect
    var urlform = "<?php echo $this->url('plans', array(
-                                    'controller'=>'viewlist',
-                                    'action'=>'viewlist',
-                                    'action'=>'get')); ?>";
+                                    'controller'=>'plans',
+                                    'action'=>'getPrograms')); ?>";
    urlform = urlform + '/' + $unit;
    
    // asynchronous ajax code to populate program/degree selector
@@ -439,5 +461,40 @@ function loadPrograms($unit){
          $('#prog-menu').selectpicker('refresh');
       },
    });
-}
-</script>
+});
+
+// load all the year options after the unit/department & unit/department are selected
+$(document).on('change', '#prog-menu', function () {
+   // clear selectorlist before adding all the years
+   var oldSelections = $('#year-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
+   }
+   
+   // data-hidden="true" shows title on button
+   $('#year-menu').append('<option  data-hidden="true"></option>');
+   $('#year-menu').selectpicker('refresh');
+   
+   // create url for redirect
+   var urlform = "<?php echo $this->url('plans', array(
+                                    'controller'=>'plans',
+                                    'action'=>'getYears')); ?>";
+   urlform = urlform;
+   
+   // asynchronous ajax code to populate program/degree selector
+   $.ajax({
+      url: urlform,
+      type: "GET",
+      dataType: "json",
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+      success: function(programsJson){
+         for (var i = 0; i < programsJson.length; i++){
+            $('#year-menu').append('<option>' + programsJson[i].year + '</option>');
+         }
+         $('#year-menu').selectpicker('refresh');
+      },
+   });
+});
+</script>		
