@@ -15,21 +15,21 @@ $this->headTitle($title);
 		    <div class="container">
 			<br />
 			<br />
+			
 			<!-- Choose Action -->
 			<select class="selectpicker" name="action-menu" id="action-menu" data-style="btn-primary" title='<?php echo $action ?>'>
 			    <option data-hidden="true"></option>
-			    <option>View</option>
-			    <option>Add</option>
-			    <option>Modify</option>
 			</select>  
 			<br />
 			<br />
+			
 			<!-- Choose Department/Unit -->
 			<select class="selectpicker" name="unit-menu" id="unit-menu" data-style="btn-primary" title='Choose Department/Unit'>
 			    <option data-hidden="true"></option>
 			</select>  
 			<br />
 			<br />
+			
 			<!-- Choose Program/Degree -->
 			<select class="selectpicker" id="prog-menu" name="prog-menu[]" data-style="btn-primary"
 				title='Choose Program/Degree
@@ -47,6 +47,7 @@ $this->headTitle($title);
 			</select>
 			<br />
 			<br />
+			
 			<!-- Choose Years -->
 			<select class="selectpicker" name="year-menu" id="year-menu" data-style="btn-primary" title='Choose Year'>
 			   <option data-hidden="true"></option>
@@ -88,18 +89,31 @@ $this->headTitle($title);
 		
 		
 
-	<?php
-	    // All php functions
-	    function getValue($value)
-	    {
-		echo "value=\"$value\"";
-	    }
+<?php
+    // All php functions
+    function getValue($value)
+    {
+	echo "value=\"$value\"";
+    }
 	    
-	    function getCount($count)
-	    {
-		echo $count;
-	    }
-	?>
+    function getCount($count)
+    {
+	echo $count;
+    }
+	    
+    // create a list of all the programs to display
+    function displayPrograms($programs)
+    {
+	// create an all program label to be displayed to the user
+	$allPrograms = "";
+	if (!empty($programs)) {
+	    foreach ($programs as $program) :
+		$allPrograms = $allPrograms . $program . ", ";
+	    endforeach;
+	}
+	return $allPrograms;
+    }
+?>
  
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>

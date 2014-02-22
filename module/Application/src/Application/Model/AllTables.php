@@ -98,17 +98,17 @@ class AllTables extends AbstractTableGateway
     
     
     
-    
-    // TODO-Scott Added, these all need to go to the plans model - BEGIN
-
-      public function getYears()
+    // TODO-Scott Added the following to support the plans page - BEGIN
+    /**
+     * Get all the unique years from the plans table
+     */ 
+    public function getYears()
     {
 /*    
 SELECT year from assessment.plans
 group by year
 ;
  */   
-        
         $sql = new Sql($this->adapter);
         $select = $sql->select()
                       ->columns(array('year' => new Expression('plans.year')))
@@ -122,15 +122,16 @@ group by year
         return $result;
     }
     
-    
-    public function getPlans($unit_id, $names, $year)
+    /**
+     * Get all the plans for the given deparment, program name, and year
+     */
+    public function getPlans($unitId, $names, $year)
     {
-        
 /*
 SELECT pl.id from assessment.units un
 	inner join assessment.programs p
 		on p.unit_id = un.id
-    inner join assessment.outcomes o
+        inner join assessment.outcomes o
 		on o.program_id = p.id
 	inner join assessment.plan_outcomes po
 		on po.outcome_id = o.id
@@ -149,9 +150,8 @@ group by pl.id
 		      ->join('programs', 'programs.unit_id = units.id')
 		      ->join('outcomes', 'outcomes.program_id = programs.id')
 		      ->join('plan_outcomes', 'plan_outcomes.outcome_id = outcomes.id')
-		      ->join('plans', 'plans.id = plan_outcomes.plan_id')		      
-		      //->where(array('units.id' => $unit_id, 'programs.name' => array('BA Computer Science','BS Computer Science'), 'plans.year' => $year))
-                      ->where(array('units.id' => $unit_id, 'programs.name' => $names, 'plans.year' => $year))
+		      ->join('plans', 'plans.id = plan_outcomes.plan_id')		      		  
+                      ->where(array('units.id' => $unitId, 'programs.name' => $names, 'plans.year' => $year))
 		      ->group (array('planId' => new Expression('plans.id')))
 		   ;
 
@@ -161,7 +161,10 @@ group by pl.id
         return $result;
     }
     
-    public function getOutcomes($unit_id, $names, $year)
+    /**
+     * Get all the outcomes for the given deparment, program name, and year
+     */
+    public function getOutcomes($unitId, $names, $year)
     {
 /*
 SELECT p.name, o.id, pl.id, o.outcome_text from assessment.units un
@@ -191,7 +194,7 @@ group by p.name, o.id, pl.id, o.outcome_text
 		      ->join('outcomes', 'outcomes.program_id = programs.id')
 		      ->join('plan_outcomes', 'plan_outcomes.outcome_id = outcomes.id')
 		      ->join('plans', 'plans.id = plan_outcomes.plan_id')		      
-		      ->where(array('units.id' => $unit_id, 'programs.name' => $names, 'plans.year' => $year))
+		      ->where(array('units.id' => $unitId, 'programs.name' => $names, 'plans.year' => $year))
 		      ->group (array('program' => new Expression('programs.name'),
                                      'outcomeId' => new Expression('outcomes.id'),
 				     'planId' => new Expression('plans.id'),
@@ -202,6 +205,7 @@ group by p.name, o.id, pl.id, o.outcome_text
         $statement = $sql->prepareStatementForSqlObject($select);
         $resultSet = $statement->execute();
 
+        //create an array of entity objects to store the database results
 	$entities = array();
         foreach ($resultSet as $row) {
             $entity = new Entity\Outcome($row['program'],$row['outcomeId'],$row['planId'],$row['outcomeText']);
@@ -210,6 +214,9 @@ group by p.name, o.id, pl.id, o.outcome_text
         return $entities;
     }
     
+    /**
+     * Get all the outcoms by plan id
+     */
     public function getOutcomesByPlanId($planId)
     {
 /*
@@ -242,6 +249,7 @@ group by pl.id, o.outcome_text
         $statement = $sql->prepareStatementForSqlObject($select);
         $resultSet = $statement->execute();
 
+        //create an array of entity objects to store the database results
 	$entities = array();
         foreach ($resultSet as $row) {
             $entity = new Entity\Outcome("",$row['outcomeId'],$row['planId'],$row['outcomeText']);
@@ -250,7 +258,9 @@ group by pl.id, o.outcome_text
         return $entities;
     }
     
-    
+    /**
+     * Get a plan by plan id
+     */
     public function getPlanByPlanId($planId)
     {
 /*
@@ -272,7 +282,10 @@ where id = 1175
         return $row;
     }
     
-        public function getUniqueOutcomes($unit_id, $names, $year)
+    /**
+     * get all the unique outcomes by department, program, and year
+     */
+    public function getUniqueOutcomes($unitId, $names, $year)
     {
 /*
 SELECT o.id, o.outcome_text from assessment.units un
@@ -302,7 +315,7 @@ group by o.id, o.outcome_text
 		      ->join('outcomes', 'outcomes.program_id = programs.id')
 		      ->join('plan_outcomes', 'plan_outcomes.outcome_id = outcomes.id')
 		      ->join('plans', 'plans.id = plan_outcomes.plan_id')		      
-		      ->where(array('units.id' => $unit_id, 'programs.name' => $names, 'plans.year' => $year))
+		      ->where(array('units.id' => $unitId, 'programs.name' => $names, 'plans.year' => $year))
 		      ->group (array('program' => new Expression('programs.name'),
                                      'outcomeId' => new Expression('outcomes.id'),
 				     'outcomeText' => new Expression('outcomes.outcome_text'),
@@ -312,6 +325,7 @@ group by o.id, o.outcome_text
         $statement = $sql->prepareStatementForSqlObject($select);
         $resultSet = $statement->execute();
 
+        //create an array of entity objects to store the database results
 	$entities = array();
         foreach ($resultSet as $row) {
             $entity = new Entity\Outcome($row['program'], $row['outcomeId'], 0,$row['outcomeText']);
@@ -319,10 +333,5 @@ group by o.id, o.outcome_text
         }
         return $entities;
     }
-
     // TODO-Scott Added, these all need to go to the plans model - END
-        
-        
-        
-  
 }
