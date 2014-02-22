@@ -8,12 +8,17 @@ class Outcome {
     protected $planId;
     protected $outcomeText;
 
-    public function __construct($outcomeId, $planId, $outcomeText) {
+    public function __construct($programName, $outcomeId, $planId, $outcomeText) {
+        $this->programName = $programName;
         $this->outcomeId = $outcomeId;
         $this->planId = $planId;
         $this->outcomeText = $outcomeText;
     }
 
+    public function getProgramName() {
+        return $this->programName;
+    }
+    
     public function getOutcomeId() {
         return $this->outcomeId;
     }
@@ -24,18 +29,5 @@ class Outcome {
 
     public function getOutcomeText() {
         return $this->outcomeText;
-    }
-
-/*
-    public function setOutcomeText($outcomeText) {
-        $this->outcomeText = $outcomeText;
-        return $this;
-    }
-    
-    public function setPlanId($planId) {
-        $this->planId = $planId;
-        return $this;
-    }
-*/        
-
+    }  
 }
