@@ -270,7 +270,7 @@ $this->headTitle($title);
 					<div id="collapseEleven" class="panel-collapse collapse">
 					    <div class="panel-body">
 						<textarea rows="6" cols="60" class="textbox" id="textFeedback" name="textFeedback">
-						    <?php echo $this->escapeHtml($plan['feedback']) ?>
+						    <?php echo $this->escapeHtml($plan['feedback_text']) ?>
 						</textarea>      
 					    </div>
 					</div>
@@ -286,7 +286,7 @@ $this->headTitle($title);
 					<div id="collapseTwelve" class="panel-collapse collapse">
 					    <div class="panel-body">
 						<textarea rows="6" cols="60" class="textbox" id="textFeedbackFlag" name="textFeedbackFlag">
-						    <?php echo $this->escapeHtml($plan['feedback_flag']) ?>
+						    <?php echo $this->escapeHtml($plan['feedback']) ?>
 						</textarea>      
 					    </div>
 					</div>					    
@@ -337,7 +337,7 @@ $this->headTitle($title);
 				<button type="button" class="btn btn-primary">Preview</button>&nbsp;
 				
 				<?php
-				    if($plan['draft_flag'] == "N"){
+				    if($plan['draft_flag'] == "1"){
 					echo "<button type=\"submit\" name=\"formSubmit\" value=\"formSaveDraft\" class=\"btn btn-primary\">Save Draft</button>&nbsp;";
 				    }
 				?>

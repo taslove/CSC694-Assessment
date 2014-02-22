@@ -15,9 +15,6 @@ $this->headTitle($title);
 		    <!-- Choose Action -->
 		    <select class="selectpicker" name="action-menu" id="action-menu" data-style="btn-primary" title='<?php echo $action ?>'>
 			<option data-hidden="true"></option>
-			<option>View</option>
-			<option>Add</option>
-			<option>Modify</option>
 		    </select>  
 		    <br />
 		    <br />
@@ -82,8 +79,8 @@ $this->headTitle($title);
 		<p></p>
 		<div class="input-group">
 		    <span class="input-group-addon"> <h6>Are you conducting Meta Assessment?</h6>
-			<input type="radio" name="metaFlag" value="yes">Yes &nbsp;&nbsp;
-			<input type="radio" name="metaFlag" value="no" checked="checked">No
+			<input type="radio" id="metaFlag" name="metaFlag" value="yes">Yes &nbsp;&nbsp;
+			<input type="radio" id="metaFlag" name="metaFlag" value="no" checked="checked">No
 		    </span>
 		</div>
 	
@@ -99,27 +96,29 @@ $this->headTitle($title);
 			    <div id="collapseOne" class="panel-collapse collapse in">
 				<div class="panel-body">
 				    <?php
-					// loop through all the outcomes
-					$outcomeCount = 0;
+					$outcomeCount = 0;					
 					    if (!empty($outcomes)) {
-						foreach ($outcomes as $outcome) :
-						    $outcomeCount++;
+						foreach ($outcomes as $outcome) :						    
+						    $entityCount = 0;
+						    foreach ($outcome as $entity) :
+							$outcomeCount++;
+							$entityCount++;
+							if ($entityCount == 1)
+							{
 				    ?>
-						    <p><input type="radio" id="radioOutcomes" name="radioOutcomes" value="<?php echo $outcome->getOutcomeId() ?>"
-	
-						    <?php
-							// force the first radio button to be checked
-							if ($outcomeCount == 1){
-							    echo "checked=\"checked\"";
-							}
-						    ?>
-	
-	
-						    > <?php getCount($outcomeCount) ?>. <?php echo $outcome->getOutcomeText() ?></td></p>
+							    <B><?php echo $entity->getProgramName() ?></B>
 				    <?php
+							}
+				    ?>
+							<p><input type="checkbox" id="checkboxOutcomes" name="checkboxOutcomes<?php echo $outcomeCount ?>" value="<?php echo $entity->getOutcomeId() ?>">
+							
+							<?php getCount($entityCount) ?>. <?php echo $entity->getOutcomeText() ?></td></p>
+				    <?php
+						    endforeach;
 						endforeach;
 					    }
 				    ?>
+				    <input type="hidden" name="outcomeCount" id="outcomeCount" value="<?php echo $outcomeCount ?>">
 				</div>
 			    </div>
 			</div>
@@ -136,7 +135,7 @@ $this->headTitle($title);
 	
 			<div id="collapseTwo" class="panel-collapse collapse">
 			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="rta" id="textAssessmentMethod" name="textAssessmentMethod">
+				<textarea rows="6" cols="60" class="textbox" id="textAssessmentMethod" name="textAssessmentMethod">
 				</textarea>  
 			    </div>
 			</div>
@@ -151,7 +150,7 @@ $this->headTitle($title);
 	
 			<div id="collapseThree" class="panel-collapse collapse">
 			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="rta" id="textPopulation" name="textPopulation">
+				<textarea rows="6" cols="60" class="textbox" id="textPopulation" name="textPopulation">
 				</textarea>      
 			    </div>
 			</div>
@@ -166,7 +165,7 @@ $this->headTitle($title);
 	
 			<div id="collapseFour" class="panel-collapse collapse">
 			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="rta" id="textSamplesize" name="textSamplesize">
+				<textarea rows="6" cols="60" class="textbox" id="textSamplesize" name="textSamplesize">
 				</textarea>      
 			    </div>
 			</div>
@@ -181,7 +180,7 @@ $this->headTitle($title);
 	
 			<div id="collapseFive" class="panel-collapse collapse">
 			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="rta" id="textAssessmentDate" name="textAssessmentDate">
+				<textarea rows="6" cols="60" class="textbox" id="textAssessmentDate" name="textAssessmentDate">
 				</textarea>      
 			    </div>
 			</div>
@@ -196,7 +195,7 @@ $this->headTitle($title);
 	
 			<div id="collapseSix" class="panel-collapse collapse">
 			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="rta" id="textCost" name="textCost">
+				<textarea rows="6" cols="60" class="textbox" id="textCost" name="textCost">
 				</textarea>      
 			    </div>
 			</div>
@@ -211,7 +210,7 @@ $this->headTitle($title);
 	
 			<div id="collapseSeven" class="panel-collapse collapse">
 			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="rta" id="textAnalysisType" name="textAnalysisType">
+				<textarea rows="6" cols="60" class="textbox" id="textAnalysisType" name="textAnalysisType">
 				</textarea>      
 			    </div>
 			</div>
@@ -226,7 +225,7 @@ $this->headTitle($title);
 	
 			<div id="collapseEight" class="panel-collapse collapse">
 			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="rta" id="textAdministrator" name="textAdministrator">
+				<textarea rows="6" cols="60" class="textbox" id="textAdministrator" name="textAdministrator">
 				</textarea>      
 			    </div>
 			</div>
@@ -241,7 +240,7 @@ $this->headTitle($title);
 	
 			<div id="collapseNine" class="panel-collapse collapse">
 			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="rta" id="textAnalysisMethod" name="textAnalysisMethod">
+				<textarea rows="6" cols="60" class="textbox" id="textAnalysisMethod" name="textAnalysisMethod">
 				</textarea>      
 			    </div>
 			</div>
@@ -256,7 +255,7 @@ $this->headTitle($title);
 	
 			<div id="collapseTen" class="panel-collapse collapse">
 			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="rta" id="textScope" name="textScope">
+				<textarea rows="6" cols="60" class="textbox" id="textScope" name="textScope">
 				</textarea>      
 			    </div>
 			</div>
@@ -271,7 +270,7 @@ $this->headTitle($title);
 	
 			<div id="collapseEleven" class="panel-collapse collapse">
 			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="rta" id="textFeedback" name="textFeedback">
+				<textarea rows="6" cols="60" class="textbox" id="textFeedback" name="textFeedback">
 				</textarea>      
 			    </div>
 			</div>
@@ -286,7 +285,7 @@ $this->headTitle($title);
 	
 			<div id="collapseTwelve" class="panel-collapse collapse">
 			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="rta" id="textFeedbackFlag" name="textFeedbackFlag">
+				<textarea rows="6" cols="60" class="textbox" id="textFeedbackFlag" name="textFeedbackFlag">
 				</textarea>      
 			    </div>
 			</div>					    
@@ -301,7 +300,7 @@ $this->headTitle($title);
 	
 			<div id="collapseThirteen" class="panel-collapse collapse">
 			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="rta" id="textPlanStatus" name="textPlanStatus">				    
+				<textarea rows="6" cols="60" class="textbox" id="textPlanStatus" name="textPlanStatus">				    
 				</textarea>      
 			    </div>
 			</div>					    
@@ -311,7 +310,6 @@ $this->headTitle($title);
 		<button type="submit" name="formSubmit" value="formSavePlan" class="btn btn-success pull-right">Submit</button>
 		<button type="submit" name="formSubmit" value="formSaveDraft" class="btn btn-primary pull-right">Save Draft</button>
 		<a class="btn btn-primary btn-md pull-right" href="../img/userguide.pdf"><?php echo $this->translate ('Preview') ?> &raquo;</a>
-	
 
 	    </div>
 	</form>		
@@ -419,6 +417,14 @@ $errorsHelper
 <script src="../js/bootstrap-select.js"></script>
 
 <script>
+
+$(document).on('change', '#metaFlag', function () {
+    
+    $action = $('#metaFlag').val();
+    if ($action=="yes") {
+        $(this).closest('form').submit();
+    }
+});
 
 // load actions based on user privileges
 $(document).ready(function() {

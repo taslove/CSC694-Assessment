@@ -100,7 +100,8 @@ class AllTables extends AbstractTableGateway
     
     
     // TODO-Scott Added, these all need to go to the plans model - BEGIN
-    public function getYears()
+
+      public function getYears()
     {
 /*    
 SELECT year from assessment.plans
@@ -120,6 +121,7 @@ group by year
         
         return $result;
     }
+    
     
     public function getPlans($unit_id, $names, $year)
     {
@@ -162,7 +164,7 @@ group by pl.id
     public function getOutcomes($unit_id, $names, $year)
     {
 /*
-SELECT o.id, pl.id, o.outcome_text from assessment.units un
+SELECT p.name, o.id, pl.id, o.outcome_text from assessment.units un
 	inner join assessment.programs p
 		on p.unit_id = un.id
     inner join assessment.outcomes o
@@ -172,14 +174,15 @@ SELECT o.id, pl.id, o.outcome_text from assessment.units un
 	inner join assessment.plans pl
 		on pl.id = po.plan_id
 where un.id = 'CSC'
-	and p.name = 'BS Computer Science'
+	and p.name in ('BS Computer Science', 'BA Computer Science') 
 	and pl.year = 2011
-group by o.id, pl.id, o.outcome_text
+group by p.name, o.id, pl.id, o.outcome_text
 ;
 */	
         $sql = new Sql($this->adapter);
         $select = $sql->select()
-                      ->columns(array('outcomeId' => new Expression('outcomes.id'),
+                      ->columns(array('program' => new Expression('programs.name'),
+                                      'outcomeId' => new Expression('outcomes.id'),
 				      'planId' => new Expression('plans.id'),
 				      'outcomeText' => new Expression('outcomes.outcome_text'),
 				      ))
@@ -189,7 +192,8 @@ group by o.id, pl.id, o.outcome_text
 		      ->join('plan_outcomes', 'plan_outcomes.outcome_id = outcomes.id')
 		      ->join('plans', 'plans.id = plan_outcomes.plan_id')		      
 		      ->where(array('units.id' => $unit_id, 'programs.name' => $names, 'plans.year' => $year))
-		      ->group (array('outcomeId' => new Expression('outcomes.id'),
+		      ->group (array('program' => new Expression('programs.name'),
+                                     'outcomeId' => new Expression('outcomes.id'),
 				     'planId' => new Expression('plans.id'),
 				     'outcomeText' => new Expression('outcomes.outcome_text'),
 				      ))
@@ -200,7 +204,7 @@ group by o.id, pl.id, o.outcome_text
 
 	$entities = array();
         foreach ($resultSet as $row) {
-            $entity = new Entity\Outcome($row['outcomeId'],$row['planId'],$row['outcomeText']);
+            $entity = new Entity\Outcome($row['program'],$row['outcomeId'],$row['planId'],$row['outcomeText']);
             $entities[] = $entity;
         }
         return $entities;
@@ -240,7 +244,7 @@ group by pl.id, o.outcome_text
 
 	$entities = array();
         foreach ($resultSet as $row) {
-            $entity = new Entity\Outcome($row['outcomeId'],$row['planId'],$row['outcomeText']);
+            $entity = new Entity\Outcome("",$row['outcomeId'],$row['planId'],$row['outcomeText']);
             $entities[] = $entity;
         }
         return $entities;
@@ -289,7 +293,8 @@ group by o.id, o.outcome_text
                 
         $sql = new Sql($this->adapter);
         $select = $sql->select()
-                      ->columns(array('outcomeId' => new Expression('outcomes.id'),
+                      ->columns(array('program' => new Expression('programs.name'),
+                                      'outcomeId' => new Expression('outcomes.id'),
 				      'outcomeText' => new Expression('outcomes.outcome_text'),
 				      ))
                       ->from('units')
@@ -298,7 +303,8 @@ group by o.id, o.outcome_text
 		      ->join('plan_outcomes', 'plan_outcomes.outcome_id = outcomes.id')
 		      ->join('plans', 'plans.id = plan_outcomes.plan_id')		      
 		      ->where(array('units.id' => $unit_id, 'programs.name' => $names, 'plans.year' => $year))
-		      ->group (array('outcomeId' => new Expression('outcomes.id'),
+		      ->group (array('program' => new Expression('programs.name'),
+                                     'outcomeId' => new Expression('outcomes.id'),
 				     'outcomeText' => new Expression('outcomes.outcome_text'),
 				      ))
 		   ;
@@ -308,7 +314,7 @@ group by o.id, o.outcome_text
 
 	$entities = array();
         foreach ($resultSet as $row) {
-            $entity = new Entity\Outcome($row['outcomeId'], 0,$row['outcomeText']);
+            $entity = new Entity\Outcome($row['program'], $row['outcomeId'], 0,$row['outcomeText']);
             $entities[] = $entity;
         }
         return $entities;

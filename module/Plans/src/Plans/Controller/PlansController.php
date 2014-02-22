@@ -24,11 +24,12 @@ class PlansController extends AbstractActionController
 {
 
    protected $tableResults;
+   protected $tableResultsPlans;
    
        // get these values from the session namespace
 //    protected $userRole = null;
     protected $userRole = 3;
-    protected $userID = 9;
+    protected $userID = 19;   //9 = ACC, 19 = CSC
 
     /**
      * @var Container
@@ -55,11 +56,11 @@ class PlansController extends AbstractActionController
     */
    public function getDatabaseData()
    {
-       if (!$this->$tableResults) {
-           $this->$tableResults = $this->getServiceLocator()
+       if (!$this->tableResultsPlans) {
+           $this->tableResultsPlans = $this->getServiceLocator()
                                        ->get('Plans\Model\DatabaseSql');
        }
-       return $this->$tableResults;
+       return $this->tableResultsPlans;
    }
 
    /**
@@ -85,6 +86,7 @@ class PlansController extends AbstractActionController
     */
    public function indexAction()
    {
+      
       // get and check the request type
       $request = $this->getRequest();
       if ($request->isPost()) {
@@ -332,27 +334,27 @@ class PlansController extends AbstractActionController
       
          if ($button == "formSavePlan" || $button == "formSaveDraft") {
 
-            // set the draft flag
-            $draftFlag = "N";
-            if ($button == "formSavePlan") {
-               $draftFlag = "Y";
-            }
+               // set the draft flag
+               $draftFlag = 0;
+               if ($button == "formSaveDraft") {
+                  $draftFlag = 1;
+               }
          
-            $planId = $request->getPost('planId');
-            $assessmentMethod = $request->getPost('textAssessmentMethod');
-            $population = $request->getPost('textPopulation');
-            $sampleSize = $request->getPost('textSamplesize');
-            $assessmentDate = $request->getPost('textAssessmentDate');
-            $cost = $request->getPost('textCost');
-            $analysisType = $request->getPost('textAnalysisType');
-            $administrator = $request->getPost('textAdministrator');
-            $analysisMethod = $request->getPost('textAnalysisMethod');
-            $scope = $request->getPost('textScope');
-            $feedback = $request->getPost('textFeedback');
-            $feedbackFlag = $request->getPost('textFeedbackFlag');
-            $planStatus = $request->getPost('textPlanStatus');
+            $planId = trim($request->getPost('planId'));
+            $assessmentMethod = trim($request->getPost('textAssessmentMethod'));
+            $population = trim($request->getPost('textPopulation'));
+            $sampleSize = trim($request->getPost('textSamplesize'));
+            $assessmentDate = trim($request->getPost('textAssessmentDate'));
+            $cost = trim($request->getPost('textCost'));
+            $analysisType = trim($request->getPost('textAnalysisType'));
+            $administrator = trim($request->getPost('textAdministrator'));
+            $analysisMethod = trim($request->getPost('textAnalysisMethod'));
+            $scope = trim($request->getPost('textScope'));
+            $feedback = trim($request->getPost('textFeedback'));
+            $feedbackFlag = trim($request->getPost('textFeedbackFlag'));
+            $planStatus = trim($request->getPost('textPlanStatus'));
 
-            $this->getDatabaseData()->updatePlan($planId,$assessmentMethod,$population,$sampleSize,$assessmentDate,$cost,$analysisType,$administrator,$analysisMethod,$scope,$feedback,$feedbackFlag,$planStatus,$draftFlag);
+            $this->getDatabaseData()->updatePlan($planId,0,"",$assessmentMethod,$population,$sampleSize,$assessmentDate,$cost,$analysisType,$administrator,$analysisMethod,$scope,$feedback,$feedbackFlag,$planStatus,$draftFlag,$this->userID);
             return $this->redirect()->toRoute('plans');
          }
          else {
@@ -381,7 +383,7 @@ class PlansController extends AbstractActionController
             // iterate over database results forming a php array
             foreach ($results as $result){
                $yeararray[] = $result;
-            }
+            }         
             
          // Initial Page Load, get request
          return new ViewModel(array(
@@ -413,134 +415,129 @@ class PlansController extends AbstractActionController
          // get session data
        	 $planSession = new Container('planSession');	 
          $year = $planSession->year;
+         $useractions = $planSession->useractions;
          
          // get button form data       
          $button = $request->getPost('formSubmit');
-                  
-         if ($button == "formUpload") {
-            
-            $fileInput = $request->getPost('fileInput');
+         $outcomeCount = $request->getPost('outcomeCount');
 
-
-            var_dump($button);
-            var_dump($fileInput);
+         // load the checked outcome box values into an array
+         for ($x = 1; $x <= $outcomeCount; $x++)
+         {
+            $checkboxName = "checkboxOutcomes" . $x;
+            $checkboxValue = $request->getPost($checkboxName);
             
-            exit();
-         
+            if ($checkboxValue != null) {
+               $outcomeIds[] = $checkboxValue;
+            }
          }
+                  
          
                    
-        if ($this->getRequest()->isPost()) {
-            // Postback
-            $data = array_merge_recursive(
-                $this->getRequest()->getPost()->toArray(),
-                $this->getRequest()->getFiles()->toArray()
-            );
+                   
+                   
+//        if ($this->getRequest()->isPost()) {
+//            // Postback
+//            $data = array_merge_recursive(
+//                $this->getRequest()->getPost()->toArray(),
+//                $this->getRequest()->getFiles()->toArray()
+//            );
             
-            $form->setData($data);            
+//            $form->setData($data);            
             
-            if ($form->isValid()) {
-                //
-                // ...Save the form...
-                //
-                
-//            var_dump("valid");
-//            exit();
-            
-                return $this->redirectToSuccessPage($form->getData());
-            }
-            
-            //var_dump("in-valid");
-            //exit();
-        }
-        
-        
+//            if ($form->isValid()) {
+//                // ...Save the form...
+//                return $this->redirectToSuccessPage($form->getData());
+//            }
+//        }
          
+         $metaFlag = $request->getPost('metaFlag');        
+         if ($metaFlag == "yes") {
+            return $this->redirect()->toRoute('plans', array('action'=>'addplanmeta'));
+         }
+         else {
          
-         if ($button == "formSavePlan" || $button == "formSaveDraft") {
-
-            $metaFlag = $request->getPost('metaFlag');
-            $outcomeId = $request->getPost('radioOutcomes');
-
-            if ($metaFlag == "yes") {
+            if ($button == "formSavePlan" || $button == "formSaveDraft") {
+   
+               $metaFlag = $request->getPost('metaFlag');
+   
+                  // set the draft flag
+                  $draftFlag = 0;
+                  if ($button == "formSaveDraft") {
+                     $draftFlag = 1;
+                  }
                
-               //set session variable
-               $planSession = new Container('planSession');	 
-               $planSession->outcomeId = $outcomeId;
-
-               return $this->redirect()->toRoute('plans', array('action'=>'addplanmeta'));
-            }
-            else {
-         
-               // set the draft flag
-               $draftFlag = "N";
-               if ($button == "formSaveDraft") {
-                  $draftFlag = "Y";
-               }
-            
-               // get form data    
-               $assessmentMethod = $request->getPost('textAssessmentMethod');
-               $population = $request->getPost('textPopulation');
-               $sampleSize = $request->getPost('textSamplesize');
-               $assessmentDate = $request->getPost('textAssessmentDate');
-               $cost = $request->getPost('textCost');
-               $analysisType = $request->getPost('textAnalysisType');
-               $administrator = $request->getPost('textAdministrator');
-               $analysisMethod = $request->getPost('textAnalysisMethod');
-               $scope = $request->getPost('textScope');
-               $feedback = $request->getPost('textFeedback');
-               $feedbackFlag = $request->getPost('textFeedbackFlag');
-               $planStatus = $request->getPost('textPlanStatus');
-                                 
-               // insert into plan table and obtain the primary key of the insert
-               $planId = $this->getDatabaseData()->insertPlan(0, "", $year, $assessmentMethod,$population,$sampleSize,$assessmentDate,$cost,$analysisType,$administrator,$analysisMethod,$scope,$feedback,$feedbackFlag,$planStatus,$draftFlag);                  
-              
-               // insert into the outcome table
-               $this->getDatabaseData()->insertPlanOutcome($outcomeId, $planId['maxId']);
-                     
-               return $this->redirect()->toRoute('plans');
+                  // get form data    
+                  $assessmentMethod = trim($request->getPost('textAssessmentMethod'));
+                  $population = trim($request->getPost('textPopulation'));
+                  $sampleSize = trim($request->getPost('textSamplesize'));
+                  $assessmentDate = trim($request->getPost('textAssessmentDate'));
+                  $cost = trim($request->getPost('textCost'));
+                  $analysisType = trim($request->getPost('textAnalysisType'));
+                  $administrator = trim($request->getPost('textAdministrator'));
+                  $analysisMethod = trim($request->getPost('textAnalysisMethod'));
+                  $scope = trim($request->getPost('textScope'));
+                  $feedback = trim($request->getPost('textFeedback'));
+                  $feedbackFlag = trim($request->getPost('textFeedbackFlag'));
+                  $planStatus = trim($request->getPost('textPlanStatus'));
+   
+                                
+                  // insert into plan table and obtain the primary key of the insert
+                  $planId = $this->getDatabaseData()->insertPlan(0, "", $year, $assessmentMethod,$population,$sampleSize,$assessmentDate,$cost,$analysisType,$administrator,$analysisMethod,$scope,$feedback,$feedbackFlag,$planStatus,$draftFlag,$this->userID);                  
+   
+                  // insert one entry for each outcome id selected              
+                  foreach ($outcomeIds as $outcomeId) :
+                     // insert into the outcome table
+                     $this->getDatabaseData()->insertPlanOutcome($outcomeId, $planId);
+                  endforeach;
+                                          
+                  return $this->redirect()->toRoute('plans');
             }
          }
       }
       else {
-               // get session data
-       		$planSession = new Container('planSession');
-		$action = $planSession->action; 
-                $unit = $planSession->unit;
-                $programs = $planSession->programs;
-                $year = $planSession->year;
-                $useractions = $planSession->useractions;
-         
-                     // Initial Page Load, get request
-            // get units
-            $results = $this->getGenericQueries()->getUnits();
-            // iterate over database results forming a php array
-            foreach ($results as $result){
-               $unitarray[] = $result;
-            }
-           
-            // get years
-            $results = $this->getGenericQueries()->getYears();
-            // iterate over database results forming a php array
-            foreach ($results as $result){
-               $yeararray[] = $result;
-            }
-            
-         // Initial Page Load, get request
-         return new ViewModel(array(
-            'form' => $form ,
-            'units' => $unitarray,
-            'years' => $yeararray,
+                  // get session data
+                   $planSession = new Container('planSession');
+                   $action = $planSession->action; 
+                   $unit = $planSession->unit;
+                   $programs = $planSession->programs;
+                   $year = $planSession->year;
+                   $useractions = $planSession->useractions;
+                   
+                        // Initial Page Load, get request
+               // get units
+               $results = $this->getGenericQueries()->getUnits();
+               // iterate over database results forming a php array
+               foreach ($results as $result){
+                  $unitarray[] = $result;
+               }
+              
+               // get years
+               $results = $this->getGenericQueries()->getYears();
+               // iterate over database results forming a php array
+               foreach ($results as $result){
+                  $yeararray[] = $result;
+               }
                
-            'action' => $action,
-            'unit' => $unit,
-            'programs' => $programs,
-            'year' => $year,
-            'useractions' => $useractions,
-            
-            'outcomes' => $this->getGenericQueries()->getUniqueOutcomes($unit, $programs, $year),
-         ));
-      }
+               foreach ($programs as $data) :
+                  $dbData = $this->getGenericQueries()->getUniqueOutcomes($unit, $data, $year);
+                  $outcomes[] = $dbData;
+               endforeach;
+               
+               // Initial Page Load, get request
+               return new ViewModel(array(
+                  'form' => $form ,
+                  'units' => $unitarray,
+                  'years' => $yeararray,
+                     
+                  'action' => $action,
+                  'unit' => $unit,
+                  'programs' => $programs,
+                  'year' => $year,
+                  'useractions' => $useractions,
+                  'outcomes' => $outcomes,
+               ));
+         }
    }
    
    
@@ -566,7 +563,7 @@ class PlansController extends AbstractActionController
          
          // get button form data       
          $button = $request->getPost('formSubmitMeta');
-                                         
+                                  
          if ($button == "formSavePlan" || $button == "formSaveDraft") {
 
             $outcomeId = $request->getPost('outcomeId');
@@ -596,6 +593,7 @@ class PlansController extends AbstractActionController
                 $programs = $planSession->programs;
                 $year = $planSession->year;
                 $outcomeId = $planSession->outcomeId;
+              $useractions = $planSession->useractions;
          
                      // Initial Page Load, get request
             // get units
@@ -621,6 +619,7 @@ class PlansController extends AbstractActionController
             'unit' => $unit,
             'programs' => $programs,
             'year' => $year,
+            'useractions' => $useractions,
             'outcomeId' => $outcomeId,
          ));
       }

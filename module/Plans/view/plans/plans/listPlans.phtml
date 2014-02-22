@@ -135,12 +135,13 @@ $this->headTitle($title);
 						?>				
 								<tr>
 								    <th><?php getCount($outcomeCount) ?>.</th> <td> <?php echo $outcome->getOutcomeText() ?></td>
+								    <input type="hidden" name="outcomeId<?php getCount($outcomeCount) ?>" value="<?php echo $outcome->getOutcomeId() ?>">
 								</tr>
 						<?php
 							    }
 							endforeach;
 						    }
-						?>				
+						?>						
 					    </table>
 					</div>
 				    </div>
