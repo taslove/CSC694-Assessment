@@ -26,29 +26,26 @@ class PlansController extends AbstractActionController
    protected $tableResults;
    protected $tableResultsPlans;
    
-       // get these values from the session namespace
-//    protected $userRole = null;
-    protected $userRole = 3;
-    protected $userID = 19;   //9 = ACC, 19 = CSC
+   // get these values from the session namespace
+//   protected $userRole = null;
+   protected $userRole = 3;
+   protected $userID = 19;   //9 = ACC, 19 = CSC
 
-    /**
-     * @var Container
-     */
-    protected $sessionContainer;
+   /**
+    * @var Container
+    */
+   protected $sessionContainer;
 
     
-        public function __construct()
-    {
-        $this->sessionContainer = new Container('fileUpload');
-    }
+   public function __construct()
+   {
+      $this->sessionContainer = new Container('fileUpload');
+   }
 
 // Sample dump logic used for debugging, use as needed   
 //      foreach ($this->getDatabaseData()->getAllYears() as $data) :
 //          var_dump($data);
 //      endforeach;
-//      exit();
-
-//      var_dump($request);
 //      exit();
 
    /**
@@ -78,11 +75,9 @@ class PlansController extends AbstractActionController
    /**
     * This is the controller that gets called upon loading the plans page
     *
-    * Post Request
-    *
-    * Get Request
-    *  1)
-    * 
+    * Processes
+    * 1) Post Request
+    * 2) Get Request
     */
    public function indexAction()
    {
@@ -122,13 +117,9 @@ class PlansController extends AbstractActionController
          // if general user - only view
          // get all units, since only view option is displayed
          if ($this->userRole == null){
-            $results = $this->getGenericQueries()->getUnits();
-         
-            // iterate over database results forming a php array
-            foreach ($results as $result){
-               $unitarray[] = $result;
-            }
-                        
+            $unitarray[] = $this->getInitialUnits();
+                       
+            // set the correct user actions and create a session variable       
             $useractions = array('View');
             $planSession->useractions = $useractions;
                    
@@ -139,6 +130,7 @@ class PlansController extends AbstractActionController
          }
          else{
             
+            // set the correct user actions and create a session variable       
             $useractions = array('View', 'Add', 'Modify');
             $planSession->useractions = $useractions;
             
@@ -151,157 +143,162 @@ class PlansController extends AbstractActionController
       }
    }
    
-   
-       // Creates list of available units (departments/programs)
-    // based on user role and privileges.
-    public function getUnitsAction()
-    {
-        // get action from id in url
-        $actionChosen = $this->params()->fromRoute('id', 0);
+   /**
+    * Creates list of available units (departments/programs)
+    * based on user role and privileges.
+    */
+   public function getUnitsAction()
+   {
+      // get action from id in url
+      $actionChosen = $this->params()->fromRoute('id', 0);
      
-        // get units for that action
-        if ($actionChosen == 'View'){
-            $results = $this->getGenericQueries()->getUnits();
-        }
-        else{
-            $results = $this->getGenericQueries()->getUnitsByPrivId($this->userID);
-        }
+      // get units for that action
+      if ($actionChosen == 'View'){
+         $results = $this->getGenericQueries()->getUnits();
+      }
+      else{
+         $results = $this->getGenericQueries()->getUnitsByPrivId($this->userID);
+      }
       
-        // iterate through results forming a php array
-        foreach ($results as $result){
-            $unitData[] = $result;
-        }
+      // iterate through results forming a php array
+      foreach ($results as $result){
+         $unitData[] = $result;
+      }
       
-        // encode results as json object
-        $jsonData = new JsonModel($unitData);
-        return $jsonData;
-    }
-    
-    public function getProgramsAction()
-    {
-        // get unit from id in url
-        $unitChosen = $this->params()->fromRoute('id', 0);
-        // get programs for that unit
-        $results = $this->getGenericQueries()->getProgramsByUnitId($unitChosen);
-      
-        // iterate through results forming a php array
-        foreach ($results as $result){
-            $programData[] = $result;
-        }
-      
-        // encode results as json object
-        $jsonData = new JsonModel($programData);
-        return $jsonData;
-    }
-    
-    public function getYearsAction()
-    {
-        // get unit from id in url
-        $yearsChosen = $this->params()->fromRoute('id', 0);
-        // get programs for that unit
-        $results = $this->getGenericQueries()->getYears();
-      
-        // iterate through results forming a php array
-        foreach ($results as $result){
-            $yearsData[] = $result;
-        }
-      
-        // encode results as json object
-        $jsonData = new JsonModel($yearsData);
-        return $jsonData;
-    }
-    
-    
-    
-    
-    
-    
+      // encode results as json object
+      $jsonData = new JsonModel($unitData);
+      return $jsonData;
+   }
    
+   /**
+    * Creates a list of available programs base on the
+    * user supplied department
+    */
+   public function getProgramsAction()
+   {
+      // get unit from id in url
+      $unitChosen = $this->params()->fromRoute('id', 0);
+      // get programs for that unit
+      $results = $this->getGenericQueries()->getProgramsByUnitId($unitChosen);
+      
+      // iterate through results forming a php array
+      foreach ($results as $result){
+         $programData[] = $result;
+      }
+      
+      // encode results as json object
+      $jsonData = new JsonModel($programData);
+      return $jsonData;
+   }
+    
+   /**
+    * Creates a list of all the available years present
+    * on the plans table
+    */
+   public function getYearsAction()
+   {
+      // get unit from id in url
+      $yearsChosen = $this->params()->fromRoute('id', 0);
+
+      // get all the years
+      $results = $this->getGenericQueries()->getYears();
+      
+      // iterate through results forming a php array
+      foreach ($results as $result){
+         $yeararray[] = $result;
+      }
+  
+      // encode results as json object
+      $jsonData = new JsonModel($yeararray);
+      return $jsonData;
+   }
+
+   /**
+    * Controls listing of the plans
+    * both the user actions of view and modify will come here
+    *
+    * Processes
+    *  1) Get request
+    */
    public function listPlansAction()
    {
       $request = $this->getRequest();
-            
-        if ($request->isPost()) {
+      
+      // currenlty there is not post request      
+      if ($request->isPost()) {
 
-         }
-         else {
-            
-            // get session data
-       		$planSession = new Container('planSession');
-		$action = $planSession->action; 
-                $unit = $planSession->unit;
-                $programs = $planSession->programs;
-                $year = $planSession->year;
-                $useractions = $planSession->useractions;
+      }
+      else {
+         // process the get request
+         
+         // get session data
+       	 $planSession = new Container('planSession');
+	 $action = $planSession->action; 
+         $unit = $planSession->unit;
+         $programs = $planSession->programs;
+         $year = $planSession->year;
+         $useractions = $planSession->useractions;
                 
-            
-            // Initial Page Load, get request
-            // get units
-            $results = $this->getGenericQueries()->getUnits();
-            // iterate over database results forming a php array
-            foreach ($results as $result){
-               $unitarray[] = $result;
-            }
+         // Initial Page Load, get request
+         // get units
+         $unitarray[] = $this->getInitialUnits();
            
-            // get years
-            $results = $this->getGenericQueries()->getYears();
-            // iterate over database results forming a php array
-            foreach ($results as $result){
-               $yeararray[] = $result;
-            }         
+         // get years
+         $yeararray[] = $this->getInitialYears();    
                   
-            // pass array to view
-            return new ViewModel(array(
-               'units' => $unitarray,
-               'years' => $yeararray,
+         // pass array to view
+         return new ViewModel(array(
+            'units' => $unitarray,
+            'years' => $yeararray,
                               
-               'action' => $action,
-               'unit' => $unit,
-               'programs' => $programs,
-               'year' => $year,
-               'useractions' => $useractions,
+            'action' => $action,
+            'unit' => $unit,
+            'programs' => $programs,
+            'year' => $year,
+            'useractions' => $useractions,
             
-               // get outcome and plans data
-               'outcomes' => $this->getGenericQueries()->getOutcomes($unit, $programs, $year),
-               'plans' => $this->getGenericQueries()->getPlans($unit, $programs, $year),   
+            // get outcome and plans data
+            'outcomes' => $this->getGenericQueries()->getOutcomes($unit, $programs, $year),
+            'plans' => $this->getGenericQueries()->getPlans($unit, $programs, $year),   
             ));
          }
    }
 
-
+   /**
+    * Controller for the view plans page
+    * 
+    * Processes
+    * 1) Get request
+    */
    public function viewOnlyPlanAction()
    {
       // pull data from the route url
       $planId = (int) $this->params()->fromRoute('id', 0);                      
             
       $request = $this->getRequest();
+      
+      // no post requestd
       if ($request->isPost()) {
-         /* perfomr post request action here */   
+         // process post request
       }
       else {
-                           // get session data
-       		$planSession = new Container('planSession');
-		$action = $planSession->action; 
-                $unit = $planSession->unit;
-                $programs = $planSession->programs;
-                $year = $planSession->year;
-                $useractions = $planSession->useractions;
+         // process get request
          
-                     // Initial Page Load, get request
-            // get units
-            $results = $this->getGenericQueries()->getUnits();
-            // iterate over database results forming a php array
-            foreach ($results as $result){
-               $unitarray[] = $result;
-            }
-           
-            // get years
-            $results = $this->getGenericQueries()->getYears();
-            // iterate over database results forming a php array
-            foreach ($results as $result){
-               $yeararray[] = $result;
-            }
-            
+         // get session data
+       	 $planSession = new Container('planSession');
+	 $action = $planSession->action; 
+         $unit = $planSession->unit;
+         $programs = $planSession->programs;
+         $year = $planSession->year;
+         $useractions = $planSession->useractions;
+         
+         // Initial Page Load, get request
+         // get units
+         $unitarray[] = $this->getInitialUnits();
+
+         // get years
+         $yearsData[] = getInitialYears();
+
          // Initial Page Load, get request
          return new ViewModel(array(
             'units' => $unitarray,
@@ -320,26 +317,32 @@ class PlansController extends AbstractActionController
       }
    }
    
-   
+   /**
+    * Controller used for the modify plans page
+    *
+    * Processess
+    *    1) Post Request
+    *    2) Get Request
+    */
    public function modifyPlanAction()
    {
       // pull data from the route url
       $planId = (int) $this->params()->fromRoute('id', 0);
       
-      $request = $this->getRequest();      
-      
+      $request = $this->getRequest();            
       if ($request->isPost()) {
+         // process the post request
           
+         // identify which button was presses 
          $button = $request->getPost('formSubmit');             
       
+         // process the submit button and the save draft button
          if ($button == "formSavePlan" || $button == "formSaveDraft") {
 
-               // set the draft flag
-               $draftFlag = 0;
-               if ($button == "formSaveDraft") {
-                  $draftFlag = 1;
-               }
+            // set the draft flag
+            $draftFlag = $this->getDraftFlag($button);
          
+            // get all the data from the form
             $planId = trim($request->getPost('planId'));
             $assessmentMethod = trim($request->getPost('textAssessmentMethod'));
             $population = trim($request->getPost('textPopulation'));
@@ -354,6 +357,7 @@ class PlansController extends AbstractActionController
             $feedbackFlag = trim($request->getPost('textFeedbackFlag'));
             $planStatus = trim($request->getPost('textPlanStatus'));
 
+            //update the database
             $this->getDatabaseData()->updatePlan($planId,0,"",$assessmentMethod,$population,$sampleSize,$assessmentDate,$cost,$analysisType,$administrator,$analysisMethod,$scope,$feedback,$feedbackFlag,$planStatus,$draftFlag,$this->userID);
             return $this->redirect()->toRoute('plans');
          }
@@ -362,28 +366,22 @@ class PlansController extends AbstractActionController
          }
       }
       else {
-               // get session data
-       		$planSession = new Container('planSession');
-		$action = $planSession->action; 
-                $unit = $planSession->unit;
-                $programs = $planSession->programs;
-                $year = $planSession->year;               
-                $useractions = $planSession->useractions;
+         // process the get request
+               
+         // get session data
+       	 $planSession = new Container('planSession');
+	 $action = $planSession->action; 
+         $unit = $planSession->unit;
+         $programs = $planSession->programs;
+         $year = $planSession->year;               
+         $useractions = $planSession->useractions;
          
-                     // Initial Page Load, get request
-            // get units
-            $results = $this->getGenericQueries()->getUnits();
-            // iterate over database results forming a php array
-            foreach ($results as $result){
-               $unitarray[] = $result;
-            }
-           
-            // get years
-            $results = $this->getGenericQueries()->getYears();
-            // iterate over database results forming a php array
-            foreach ($results as $result){
-               $yeararray[] = $result;
-            }         
+         // Initial Page Load, get request
+         // get units
+         $unitarray[] = $this->getInitialUnits();
+
+         // get years
+	 $yeararray[] = $this->getInitialYears();        
             
          // Initial Page Load, get request
          return new ViewModel(array(
@@ -403,14 +401,21 @@ class PlansController extends AbstractActionController
       }
    }
    
+   /**
+    * Controller used for the add page
+    *
+    * Processes
+    *    1) Post Request
+    *    2) Get Request
+    */
    public function addplanAction()
    {
-       
+      // form for uploading documents 
       $form = new CollectionUpload('file-form');
        
       $request = $this->getRequest();
-      
       if ($request->isPost()) {
+         //process the post request
          
          // get session data
        	 $planSession = new Container('planSession');	 
@@ -431,11 +436,8 @@ class PlansController extends AbstractActionController
                $outcomeIds[] = $checkboxValue;
             }
          }
-                  
-         
                    
-                   
-                   
+// used of the luplaoding of files                   
 //        if ($this->getRequest()->isPost()) {
 //            // Postback
 //            $data = array_merge_recursive(
@@ -451,164 +453,139 @@ class PlansController extends AbstractActionController
 //            }
 //        }
          
+         // if the meta flag option was pressed go directly to the meta add page
          $metaFlag = $request->getPost('metaFlag');        
          if ($metaFlag == "yes") {
             return $this->redirect()->toRoute('plans', array('action'=>'addplanmeta'));
          }
          else {
-         
+            // process the submit and save draft button
             if ($button == "formSavePlan" || $button == "formSaveDraft") {
    
-               $metaFlag = $request->getPost('metaFlag');
-   
-                  // set the draft flag
-                  $draftFlag = 0;
-                  if ($button == "formSaveDraft") {
-                     $draftFlag = 1;
-                  }
+               // set the draft flag
+               $draftFlag = $this->getDraftFlag($button);
                
-                  // get form data    
-                  $assessmentMethod = trim($request->getPost('textAssessmentMethod'));
-                  $population = trim($request->getPost('textPopulation'));
-                  $sampleSize = trim($request->getPost('textSamplesize'));
-                  $assessmentDate = trim($request->getPost('textAssessmentDate'));
-                  $cost = trim($request->getPost('textCost'));
-                  $analysisType = trim($request->getPost('textAnalysisType'));
-                  $administrator = trim($request->getPost('textAdministrator'));
-                  $analysisMethod = trim($request->getPost('textAnalysisMethod'));
-                  $scope = trim($request->getPost('textScope'));
-                  $feedback = trim($request->getPost('textFeedback'));
-                  $feedbackFlag = trim($request->getPost('textFeedbackFlag'));
-                  $planStatus = trim($request->getPost('textPlanStatus'));
-   
+               // get form data    
+               $assessmentMethod = trim($request->getPost('textAssessmentMethod'));
+               $population = trim($request->getPost('textPopulation'));
+               $sampleSize = trim($request->getPost('textSamplesize'));
+               $assessmentDate = trim($request->getPost('textAssessmentDate'));
+               $cost = trim($request->getPost('textCost'));
+               $analysisType = trim($request->getPost('textAnalysisType'));
+               $administrator = trim($request->getPost('textAdministrator'));
+               $analysisMethod = trim($request->getPost('textAnalysisMethod'));
+               $scope = trim($request->getPost('textScope'));
+               $feedback = trim($request->getPost('textFeedback'));
+               $feedbackFlag = trim($request->getPost('textFeedbackFlag'));
+               $planStatus = trim($request->getPost('textPlanStatus'));
                                 
-                  // insert into plan table and obtain the primary key of the insert
-                  $planId = $this->getDatabaseData()->insertPlan(0, "", $year, $assessmentMethod,$population,$sampleSize,$assessmentDate,$cost,$analysisType,$administrator,$analysisMethod,$scope,$feedback,$feedbackFlag,$planStatus,$draftFlag,$this->userID);                  
+               // insert into plan table and obtain the primary key of the insert
+               $planId = $this->getDatabaseData()->insertPlan(0, "", $year, $assessmentMethod,$population,$sampleSize,$assessmentDate,$cost,$analysisType,$administrator,$analysisMethod,$scope,$feedback,$feedbackFlag,$planStatus,$draftFlag,$this->userID);                  
    
-                  // insert one entry for each outcome id selected              
-                  foreach ($outcomeIds as $outcomeId) :
-                     // insert into the outcome table
-                     $this->getDatabaseData()->insertPlanOutcome($outcomeId, $planId);
-                  endforeach;
+               // insert one entry for each outcome id selected              
+               foreach ($outcomeIds as $outcomeId) :
+                  // insert into the outcome table
+                  $this->getDatabaseData()->insertPlanOutcome($outcomeId, $planId);
+               endforeach;
                                           
-                  return $this->redirect()->toRoute('plans');
+               return $this->redirect()->toRoute('plans');
             }
          }
       }
       else {
-                  // get session data
-                   $planSession = new Container('planSession');
-                   $action = $planSession->action; 
-                   $unit = $planSession->unit;
-                   $programs = $planSession->programs;
-                   $year = $planSession->year;
-                   $useractions = $planSession->useractions;
-                   
-                        // Initial Page Load, get request
-               // get units
-               $results = $this->getGenericQueries()->getUnits();
-               // iterate over database results forming a php array
-               foreach ($results as $result){
-                  $unitarray[] = $result;
-               }
-              
-               // get years
-               $results = $this->getGenericQueries()->getYears();
-               // iterate over database results forming a php array
-               foreach ($results as $result){
-                  $yeararray[] = $result;
-               }
+         // process the get request
+         
+         // get session data
+         $planSession = new Container('planSession');
+         $action = $planSession->action; 
+         $unit = $planSession->unit;
+         $programs = $planSession->programs;
+         $year = $planSession->year;
+         $useractions = $planSession->useractions;
+                  
+         // Initial Page Load, get request
+         // get units
+         $unitarray[] = $this->getInitialUnits();
+
+         // get years
+	 $yeararray[] = $this->getInitialYears();    
+
+         // get an array of outcome entities for each program
+         // the outcomes array is an array of entity arrays
+         foreach ($programs as $data) :
+            $dbData = $this->getGenericQueries()->getUniqueOutcomes($unit, $data, $year);
+            $outcomes[] = $dbData;
+         endforeach;
                
-               foreach ($programs as $data) :
-                  $dbData = $this->getGenericQueries()->getUniqueOutcomes($unit, $data, $year);
-                  $outcomes[] = $dbData;
-               endforeach;
-               
-               // Initial Page Load, get request
-               return new ViewModel(array(
-                  'form' => $form ,
-                  'units' => $unitarray,
-                  'years' => $yeararray,
-                     
-                  'action' => $action,
-                  'unit' => $unit,
-                  'programs' => $programs,
-                  'year' => $year,
-                  'useractions' => $useractions,
-                  'outcomes' => $outcomes,
-               ));
-         }
+         // Initial Page Load, get request
+         return new ViewModel(array(
+            'form' => $form ,
+            'units' => $unitarray,
+            'years' => $yeararray,
+                
+            'action' => $action,
+            'unit' => $unit,
+            'programs' => $programs,
+            'year' => $year,
+            'useractions' => $useractions,
+            'outcomes' => $outcomes,
+         ));
+      }
    }
-   
-   
-   protected function redirectToSuccessPage($formData = null)
-    {
-        $this->sessionContainer->formData = $formData;
-        $response = $this->redirect()->toRoute('plans');
-        $response->setStatusCode(303);
-        return $response;
-    }
     
-    
+   /**
+    * Controller used for the add plan meta page
+    */
    public function addplanmetaAction()
    {
                
       $request = $this->getRequest();
-      
       if ($request->isPost()) {
+         // process post request
          
          // get session data
        	 $planSession = new Container('planSession');	 
          $year = $planSession->year;
          
-         // get button form data       
+         // get button from form
          $button = $request->getPost('formSubmitMeta');
-                                  
+                                
+         // process the submit and save draft form                                  
          if ($button == "formSavePlan" || $button == "formSaveDraft") {
 
-            $outcomeId = $request->getPost('outcomeId');
+            $draftFlag = $this->getDraftFlag($button);
           
-            // set the draft flag
-            $draftFlag = "N";
-            if ($button == "formSaveDraft") {
-               $draftFlag = "Y";
-            }
-               // get form data    
-               $metaDescription = $request->getPost('textMetaDescription');
+            // get form data    
+            $metaDescription = $request->getPost('textMetaDescription');
                                  
-               // insert into plan table and obtain the primary key of the insert
-               $planId = $this->getDatabaseData()->insertPlan(1, $metaDescription, $year, "","","","","","","","","","","","",$draftFlag);                  
+            // insert into plan table and obtain the primary key of the insert
+            $planId = $this->getDatabaseData()->insertPlan(1, $metaDescription, $year, "","","","","","","","","","","","",$draftFlag);                  
               
-               // insert into the outcome table
-               $this->getDatabaseData()->insertPlanOutcome($outcomeId, $planId['maxId']);
+            // insert into the meta plans table
+            // TODO SCOTT
+            //$this->getDatabaseData()->insertPlanOutcome($outcomeId, $planId['maxId']);
                      
-               return $this->redirect()->toRoute('plans');
+            return $this->redirect()->toRoute('plans');
          }
       }
       else {
-               // get session data
-       		$planSession = new Container('planSession');
-		$action = $planSession->action; 
-                $unit = $planSession->unit;
-                $programs = $planSession->programs;
-                $year = $planSession->year;
-                $outcomeId = $planSession->outcomeId;
-              $useractions = $planSession->useractions;
+         // process the get request
          
-                     // Initial Page Load, get request
-            // get units
-            $results = $this->getGenericQueries()->getUnits();
-            // iterate over database results forming a php array
-            foreach ($results as $result){
-               $unitarray[] = $result;
-            }
-           
-            // get years
-            $results = $this->getGenericQueries()->getYears();
-            // iterate over database results forming a php array
-            foreach ($results as $result){
-               $yeararray[] = $result;
-            }
+         // get session data
+       	 $planSession = new Container('planSession');
+	 $action = $planSession->action; 
+         $unit = $planSession->unit;
+         $programs = $planSession->programs;
+         $year = $planSession->year;
+         $outcomeId = $planSession->outcomeId;
+         $useractions = $planSession->useractions;
+         
+         // Initial Page Load, get request
+         // get units
+         $unitarray[] = $this->getInitialUnits();
+
+         // get years
+	 $yeararray[] = $this->getInitialYears();
             
          // Initial Page Load, get request
          return new ViewModel(array(
@@ -623,5 +600,63 @@ class PlansController extends AbstractActionController
             'outcomeId' => $outcomeId,
          ));
       }
+   }
+   
+   /**
+    * Used for the upload process
+    */
+   protected function redirectToSuccessPage($formData = null)
+   {
+      $this->sessionContainer->formData = $formData;
+      $response = $this->redirect()->toRoute('plans');
+      $response->setStatusCode(303);
+      return $response;
+   }
+   
+   /**
+    * Private Class function to get all the initial departments
+    *
+    * Return an array of all the departments
+    */
+   private function getInitialUnits()
+   {
+      // get units
+      $results = $this->getGenericQueries()->getUnits();
+      // iterate over database results forming a php array
+      foreach ($results as $result){
+         $unitarray[] = $result;
+      }
+      return $unitarray;
+   }
+
+   /**
+    * Private Class function to get all the initial years
+    *
+    * Return an array of all the years
+    */
+   private function getInitialYears()
+   {
+      // get all years
+      $results = $this->getGenericQueries()->getYears();
+      
+      // iterate through results forming a php array
+      foreach ($results as $result){
+         $yearsarray[] = $result;
+      }
+            
+      return $yearsarray;
+   }
+   
+   /**
+    * Set and return the draft flag based on the type of button pressed
+    */
+   private function getDraftFlag($button)
+   {
+      // set the draft flag
+      $draftFlag = 0;
+      if ($button == "formSaveDraft") {
+         $draftFlag = 1;
+      }
+      return $draftFlag;
    }
 }

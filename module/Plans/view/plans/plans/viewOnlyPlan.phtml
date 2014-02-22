@@ -13,21 +13,21 @@ $this->headTitle($title);
 		<div class="container">
 		    <br />
 		    <br />
+		    
 		    <!-- Choose Action -->
 		    <select class="selectpicker" id="action-menu" data-style="btn-primary" title='<?php echo $action ?>'>
 			<option data-hidden="true"></option>
-			<option>View</option>
-			<option>Add</option>
-			<option>Modify</option>
 		    </select>  
 		    <br />
 		    <br />
+
 		    <!-- Choose Department/Unit -->
 		    <select class="selectpicker" id="unit-menu" data-style="btn-primary" title='Choose Department/Unit'>
 			<option data-hidden="true"></option>
 		    </select>  
 		    <br />
 		    <br />
+
 		    <!-- Choose Program/Degree -->
 		    <select class="selectpicker" id="prog-menu" name="prog-menu[]" data-style="btn-primary"
 			    title='Choose Program/Degree
@@ -41,10 +41,11 @@ $this->headTitle($title);
 				    ?>
 				  '
 			    multiple>
-		       <option data-hidden="true"></option>
+		        <option data-hidden="true"></option>
 		    </select>
 		    <br />
 		    <br />
+		    
 		    <!-- Choose Years -->
 		    <select class="selectpicker" id="year-menu" data-style="btn-primary" title='Choose Year'>
 		       <option data-hidden="true"></option>
@@ -72,18 +73,8 @@ $this->headTitle($title);
 		    <colgroup><col class="col-xs-8"></colgroup>
 		    <div class="bs-example">
 			<table class="table">
-
-						    <?php
-				$allPrograms = "";
-					    if (!empty($programs)) {
-						foreach ($programs as $program) :
-						    $allPrograms = $allPrograms . $program . ", ";
-						endforeach;
-					    }
-			    ?>
-
-			    <h4>VIEW PLAN FOR: <?php echo $unit . ", " . $allPrograms . $year ?></h4>
-
+			    <!-- create header line -->
+			    <h4>VIEW PLAN FOR: <?php echo $unit . ", " . displayPrograms($programs) . $year ?></h4>
 			    <div class="controls">
 				<div class="panel-group" id="accordion">
 				    <div class="panel panel-default">
@@ -101,7 +92,8 @@ $this->headTitle($title);
 							if (!empty($outcomes)) {
 							    foreach ($outcomes as $outcome) :
 								$outcomeCount++;
-						?>				
+						?>
+								<!-- display the outcome information -->
 								<p><?php getCount($outcomeCount) ?>. <?php echo $outcome->getOutcomeText() ?></td></p>
 						<?php
 							    endforeach;
@@ -112,6 +104,7 @@ $this->headTitle($title);
 				    </div>
 				</div>
 
+				<!-- all the database attributes are listed below -->
 				<div class="panel panel-default">
 				    <div class="panel-heading">
 					<h4 class="panel-title">
@@ -320,18 +313,31 @@ $this->headTitle($title);
     </div>
 </div>
     
-	<?php
-	    // All php functions
-	    function getValue($value)
-	    {
-		echo "value=\"$value\"";
-	    }
+<?php
+    // All php functions
+    function getValue($value)
+    {
+	echo "value=\"$value\"";
+    }
 	    
-	    function getCount($count)
-	    {
-		echo $count;
-	    }
-	?>
+    function getCount($count)
+    {
+	echo $count;
+    }
+    
+    // create a list of all the programs to display
+    function displayPrograms($programs)
+    {
+	// create an all program label to be displayed to the user
+	$allPrograms = "";
+	if (!empty($programs)) {
+	    foreach ($programs as $program) :
+		$allPrograms = $allPrograms . $program . ", ";
+	    endforeach;
+	}
+	return $allPrograms;
+    }
+?>
  
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>

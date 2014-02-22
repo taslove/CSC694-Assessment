@@ -20,18 +20,16 @@ class DatabaseSql extends AbstractTableGateway
         $this->initialize();
     }
   
-
-    
-    
-
-  
 // Sample dump used in debugging, used as needed    
 //        foreach ($result as $data) :
 //            var_dump($data);
 //        endforeach;
 //        exit();
     
-    
+
+    /**
+     * Update a tuple on the plans table by id
+     */
     public function updatePlan($id,$metaFlag,$metaDescription,$assessmentMethod,$population,$sampleSize,$assessmentDate,$cost,$analysisType,$administrator,$analysisMethod,$scope,$feedbackText,$feedbackFlag,$planStatus,$draftFlag,$userID)
     {
 /*
@@ -41,10 +39,11 @@ where id = 1175
 ;
 */
 	// database timestamp format    
-      //"1970-01-01 00:00:01";
-      // gets the current timezone - date_default_timezone_get()
-      
-      $currentTimestamp = date("Y-m-d H:i:s", time());
+        //"1970-01-01 00:00:01";
+        // gets the current timezone - date_default_timezone_get()
+	
+	// create the sytem timestamp
+	$currentTimestamp = date("Y-m-d H:i:s", time());
       
         $sql = new Sql($this->adapter);
 	$update = $sql->update()
@@ -74,22 +73,19 @@ where id = 1175
         $statement->execute();
     }
     
+    /**
+     * Insert a new tuple into the plans table
+     */
     public function insertPlan($metaFlag,$metaDescription,$year,$assessmentMethod,$population,$sampleSize,$assessmentDate,$cost,$analysisType,$administrator,$analysisMethod,$scope,$feedbackText,$feedbackFlag,$planStatus,$draftFlag,$userID)
     {
-	
-//	var_dump($metaFlag);
-//	var_dump($metaDescription);
-//	var_dump($year);
-//	var_dump($assessmentMethod);
-//	exit;
-
 	// database timestamp format    
-      //"1970-01-01 00:00:01";
-      // gets the current timezone - date_default_timezone_get()
+        //"1970-01-01 00:00:01";
+        // gets the current timezone - date_default_timezone_get()
       
-      $currentTimestamp = date("Y-m-d H:i:s", time());
+	// create the sytem timestamp
+	$currentTimestamp = date("Y-m-d H:i:s", time());
       
-        $sql = new Sql($this->adapter);
+	$sql = new Sql($this->adapter);
 	$data = array('created_ts' => $currentTimestamp,
 		      'submitted_ts' => null,
 		      'modified_ts' => null,
@@ -114,19 +110,26 @@ where id = 1175
 	$insert = $sql->insert('plans');
 	$insert->values($data);		    
 		
+	// create an automic database operation for the tuple insert and retreival of the auto-generated primary key		
 	$connection = $this->adapter->getDriver()->getConnection();
 	$connection->beginTransaction();
 
+	// perform the insert
         $statement = $sql->prepareStatementForSqlObject($insert);
         $statement->execute();
 
+	// get the primary key id
 	$rowId = $this->adapter->getDriver()->getConnection()->getLastGeneratedValue();
 		
+	// finish the transaction		
 	$connection->commit();
   
         return $rowId;
     }
     
+    /**
+     * Insert a tuple into the plan outcomes table
+     */
     public function insertPlanOutcome($outcomeId, $planId)
     {
         $sql = new Sql($this->adapter);

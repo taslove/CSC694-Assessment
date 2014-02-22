@@ -2,6 +2,9 @@
 
 namespace Plans\Model\Entity;
 
+/**
+ * Entity used to store the outcome results from the database
+ */
 class Outcome {
 
     protected $outcomeId;
