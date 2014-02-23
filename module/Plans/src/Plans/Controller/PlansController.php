@@ -18,7 +18,9 @@ use Zend\Db\Adapter\Adapter;
 use Zend\View\Model\JsonModel;
 use Zend\Session\Container;
 
-
+use Plans\Form;
+use Plans\InputFilter;
+use Zend\Debug\Debug;
 
 class PlansController extends AbstractActionController
 {
@@ -436,22 +438,6 @@ class PlansController extends AbstractActionController
                $outcomeIds[] = $checkboxValue;
             }
          }
-                   
-// used of the luplaoding of files                   
-//        if ($this->getRequest()->isPost()) {
-//            // Postback
-//            $data = array_merge_recursive(
-//                $this->getRequest()->getPost()->toArray(),
-//                $this->getRequest()->getFiles()->toArray()
-//            );
-            
-//            $form->setData($data);            
-            
-//            if ($form->isValid()) {
-//                // ...Save the form...
-//                return $this->redirectToSuccessPage($form->getData());
-//            }
-//        }
          
          // if the meta flag option was pressed go directly to the meta add page
          $metaFlag = $request->getPost('metaFlag');        
@@ -487,8 +473,48 @@ class PlansController extends AbstractActionController
                   // insert into the outcome table
                   $this->getDatabaseData()->insertPlanOutcome($outcomeId, $planId);
                endforeach;
-                                          
-               return $this->redirect()->toRoute('plans');
+               
+               // upload the files
+               $data = array_merge_recursive(
+                  $this->getRequest()->getPost()->toArray(),
+                  $this->getRequest()->getFiles()->toArray()
+               );
+
+               // set the form data
+               $form->setData($data);
+               
+               if ($form->isValid()) {
+
+                  // get the data from the upload form
+                  $data = $form->getData();
+                  
+                  /*
+                   * create an array of file information
+                   *  1) name
+                   *  2) type
+                   *  3) tmp_name - server location & filename
+                   *  4) error
+                   *  5) size
+                   */              
+                  $fileCollection = $data['file-collection'];
+                  
+                  // loop through each element and create an array of file names with extensions                 
+                  foreach ($fileCollection as $file) :
+                      if (!empty($file['name'])) {  
+                        $fileNames[] = $file['name'];
+                      }
+                  endforeach;
+                  
+                  //get the file description
+                  $fileDescription = $data['text'];
+                                    
+                  // insert into the plans document table by looping through the file name array
+                  foreach ($fileNames as $fileName) :
+                     $this->getDatabaseData()->insertPlanDocuments($planId, $fileName, $fileDescription);
+                  endforeach;
+                                      
+                  return $this->redirect()->toRoute('plans');
+               }
             }
          }
       }
@@ -601,18 +627,7 @@ class PlansController extends AbstractActionController
          ));
       }
    }
-   
-   /**
-    * Used for the upload process
-    */
-   protected function redirectToSuccessPage($formData = null)
-   {
-      $this->sessionContainer->formData = $formData;
-      $response = $this->redirect()->toRoute('plans');
-      $response->setStatusCode(303);
-      return $response;
-   }
-   
+     
    /**
     * Private Class function to get all the initial departments
     *
