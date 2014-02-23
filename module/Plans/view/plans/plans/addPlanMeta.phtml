@@ -10,62 +10,8 @@ $this->headTitle($title);
 	</center>
         <p></p>  
         <div class="row">
-            <div class="col-md-4">
-		<form action="<?php echo $this->url('plans', array('action'=>'index'));?>" method="post">                                    				
-		    <div class="container">
-			<br />
-			<br />
-			
-			<!-- Choose Action -->
-			<select class="selectpicker" name="action-menu" id="action-menu" data-style="btn-primary" title='<?php echo $action ?>'>
-			    <option data-hidden="true"></option>
-			</select>  
-			<br />
-			<br />
-			
-			<!-- Choose Department/Unit -->
-			<select class="selectpicker" name="unit-menu" id="unit-menu" data-style="btn-primary" title='Choose Department/Unit'>
-			    <option data-hidden="true"></option>
-			</select>  
-			<br />
-			<br />
-			
-			<!-- Choose Program/Degree -->
-			<select class="selectpicker" id="prog-menu" name="prog-menu[]" data-style="btn-primary"
-				title='Choose Program/Degree
-					<?php
-					    // loop through all the outcomes
-					//		if (!empty($programs)) {
-					//		    foreach ($programs as $program) :
-					//			echo $program . ", ";
-					//		    endforeach;
-					//		}
-					?>
-				      '
-				multiple>
-			   <option data-hidden="true"></option>
-			</select>
-			<br />
-			<br />
-			
-			<!-- Choose Years -->
-			<select class="selectpicker" name="year-menu" id="year-menu" data-style="btn-primary" title='Choose Year'>
-			   <option data-hidden="true"></option>
-			</select>
-			<br />
-			<br />
-    
-			<!-- Submit Button used to get the plan data from the database -->
-			<button type="submit" name="formGetPlan" value="formGetPlan" class="btn btn-success btn-md">Submit &raquo;</button>
-			<p></p>
-    
-			<!-- Back to Main Button used to return to the main page -->
-			<a class="btn btn-primary btn-md" href="../mock">&laquo;<?php echo $this->translate ('Back to Main') ?>
-			</a>
-			<p></p>
-		    </div><!--close container-->
-                </form>
-	    </div>
+	    <!-- Build the left hand side of the page -->                                 				
+	    <?php echo $this->partial('plans/plans/plansLeftSidePartial.phtml', array()); ?>
 	    
 	    <!--column 2-->
 	    <p></p>
@@ -89,33 +35,6 @@ $this->headTitle($title);
 		
 		
 
-<?php
-    // All php functions
-    function getValue($value)
-    {
-	echo "value=\"$value\"";
-    }
-	    
-    function getCount($count)
-    {
-	echo $count;
-    }
-	    
-    // create a list of all the programs to display
-    function displayPrograms($programs)
-    {
-	// create an all program label to be displayed to the user
-	$allPrograms = "";
-	if (!empty($programs)) {
-	    foreach ($programs as $program) :
-		$allPrograms = $allPrograms . $program . ", ";
-	    endforeach;
-	}
-	return $allPrograms;
-    }
-?>
- 
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/bootstrap-rta.min.js"></script>
@@ -127,13 +46,7 @@ $this->headTitle($title);
 // load actions based on user privileges
 $(document).ready(function() {
      $.rta(); // load rta features - simplest implementation
-
-   // clear selectorlist before adding unit/department options
-   var oldSelections = $('#action-menu option');
-   for (var i = 0; i < oldSelections.length; i++){
-      oldSelections.remove();
-   }
-   
+  
    var actions = <?php print json_encode($useractions); ?>;
    for (var i = 0; i < actions.length; i++){
       $('#action-menu').append('<option>' + actions[i] + '</option>');
