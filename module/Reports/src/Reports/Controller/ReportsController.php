@@ -11,7 +11,9 @@ namespace Reports\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Reports\Model\UnitTable;
+use Reports\Model\ReportTable;
+use Reports\Model\PlanTable;
+
 
 
 class ReportsController extends AbstractActionController
@@ -19,17 +21,65 @@ class ReportsController extends AbstractActionController
    protected $tableResults;
 
    public function indexAction()
-   {
-      echo "In Reports Controller";  
-   }
-public function addreportAction()
     {
-     
+      return new ViewModel();
+    }
+    
+    public function viewAllReportsAction()
+    {
+                  $planId = 370;
 
-    {
-        return new ViewModel(array(
-            'reports' => $this->getUnitTable()->getAllUnits(),
+      return new ViewModel(array(
+            'reports' => $this->getReports($planId)->getReports($planId),
+            //'plans' => $this->getPlans()->getPlans(),
         ));
+    }
+    
+    public function addReportAction()
+    {
+        return new ViewModel();
+    }
+    
+    public function viewReportAction()
+    {
+      $planId = $this->params()->fromRoute('pid');
+      $results = $this->getReports($planId)->getReports($planId);
+         foreach ($results as $result){
+            $reportArray[] = $result;
+         }
+        return new ViewModel(array(
+         'report' => $reportArray,
+        ));
+    }
+    
+    public function modifyReportAction()
+    {
+      $planId = $this->params()->fromRoute('pid');
+      $results = $this->getReports($planId)->getReports($planId);
+         foreach ($results as $result){
+            $reportArray[] = $result;
+         }
+        return new ViewModel(array(
+         'report' => $reportArray,
+        ));
+    }
+    
+    public function getPlans()
+    {
+
+      if (!$this->tableResults) {
+            $this->tableResults = $this->getServiceLocator()
+                       ->get('PlanTable');
+        }
+        return $this->tableResults;
+    }
+    
+    public function getReports(){
+      if (!$this->tableResults) {
+            $this->tableResults = $this->getServiceLocator()
+                       ->get('ReportTable');
+        }
+        return $this->tableResults;
     }
     
     public function getUnitTable()
@@ -40,11 +90,5 @@ public function addreportAction()
                     
         }
         return $this->tableResults;
-    }
-    }
-    public function modifyreportAction()
-    {
-     
-
     }
 }
