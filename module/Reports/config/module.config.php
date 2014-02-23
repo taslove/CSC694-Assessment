@@ -23,10 +23,9 @@
              'reports' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/reports[/][:action][/:id]',
+                     'route'    => '/reports[/][:action]',
                      'constraints' => array(
                          'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                         'id'     => '[0-9]+',
                      ),
                      'defaults' => array(
                          'controller' => 'Reports\Controller\Reports',
@@ -34,6 +33,21 @@
                      ),
                  ),
              ),
+             
+             'reports' => array(
+                 'type'    => 'segment',
+                 'options' => array(
+                     'route'    => '/reports[/][:action][/][:pid]',
+                     'constraints' => array(
+                         'pid' => '[0-9]+',
+                     ),
+                     'defaults' => array(
+                         'controller' => 'Reports\Controller\Reports',
+                     ),
+                 ),
+             ),
+             
+             
          ),
      ),
 
