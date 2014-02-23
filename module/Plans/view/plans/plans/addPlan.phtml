@@ -7,62 +7,8 @@ $this->headTitle($title);
     <center><h3>Assessment Plans-ADD</h3></center>
     <p></p>  
     <div class="row">
-        <div class="col-md-4">
-            <form action="<?php echo $this->url('plans', array('action'=>'index'));?>" method="post">                                    				
-		<div class="container">
-		    <br />
-		    <br />
-		    
-		    <!-- Choose Action -->
-		    <select class="selectpicker" name="action-menu" id="action-menu" data-style="btn-primary" title='<?php echo $action ?>'>
-			<option data-hidden="true"></option>
-		    </select>  
-		    <br />
-		    <br />
-		    
-		    <!-- Choose Department/Unit -->
-		    <select class="selectpicker" name="unit-menu" id="unit-menu" data-style="btn-primary" title='Choose Department/Unit'>
-			<option data-hidden="true"></option>
-		    </select>  
-		    <br />
-		    <br />
-		    
-		    <!-- Choose Program/Degree -->
-		    <select class="selectpicker" id="prog-menu" name="prog-menu[]" data-style="btn-primary"
-			    title='Choose Program/Degree
-				    <?php
-					// loop through all the outcomes
-					//	    if (!empty($programs)) {
-					//		foreach ($programs as $program) :
-					//		    echo $program . ", ";
-					//		endforeach;
-					//	    }
-				    ?>
-				  '
-			    multiple>
-		        <option data-hidden="true"></option>
-		    </select>
-		    <br />
-		    <br />
-		    
-		    <!-- Choose Years -->
-		    <select class="selectpicker" name="year-menu" id="year-menu" data-style="btn-primary" title='Choose Year'>
-		        <option data-hidden="true"></option>
-		    </select>
-		    <br />
-		    <br />
-
-		    <!-- Submit Button used to get the plan data from the database -->
-		    <button type="submit" name="formGetPlan" value="formGetPlan" class="btn btn-success btn-md">Submit &raquo;</button>
-		    <p></p>
-
-		    <!-- Back to Main Button used to return to the main page -->
-		    <a class="btn btn-primary btn-md" href="../mock">&laquo;<?php echo $this->translate ('Back to Main') ?>
-		    </a>
-		    <p></p>
-		</div><!--close container-->
-	    </form>
-        </div><!--close column-->
+	<!-- Build the left hand side of the page -->                                 				
+	<?php echo $this->partial('plans/plans/plansLeftSidePartial.phtml', array()); ?>
 		
 	<!--column 2-->
 	<p></p>
@@ -90,7 +36,13 @@ $errorsHelper
 		<input type="hidden" name="year" value="<?php echo $returnYear ?>">
 
 		<!-- create header row -->
-		<h4>ADD PLAN FOR: <?php echo $unit . ", " . displayPrograms($programs) . $year ?></h4>
+		<?php $label = "ADD PLAN FOR:" ?>
+		<?php echo $this->partial('plans/plans/displayAllPrograms.phtml', array('programs' => $programs,
+											'label' => $label,
+											'unit' => $unit,
+											'year' => $year,
+											))
+		?>
 		<p></p>
 		
 		<!-- create meta assessment block -->
@@ -137,7 +89,7 @@ $errorsHelper
 							<p><input type="checkbox" id="checkboxOutcomes" name="checkboxOutcomes<?php echo $outcomeCount ?>" value="<?php echo $entity->getOutcomeId() ?>">
 							
 							<!-- add the counter with the outcome text to the row -->
-							<?php getCount($entityCount) ?>. <?php echo $entity->getOutcomeText() ?></td></p>
+							<?php echo $entityCount; ?>. <?php echo $entity->getOutcomeText() ?></td></p>
 				    <?php
 						    endforeach;
 						endforeach;
@@ -398,32 +350,6 @@ $errorsHelper
     </div>       
 </div>
 
-<?php
-    // All php functions
-    function getValue($value)
-    {
-	echo "value=\"$value\"";
-    }
-	    
-    function getCount($count)
-    {
-	echo $count;
-    }
-	    
-    // create a list of all the programs to display
-    function displayPrograms($programs)
-    {
-	// create an all program label to be displayed to the user
-	$allPrograms = "";
-	if (!empty($programs)) {
-	    foreach ($programs as $program) :
-		$allPrograms = $allPrograms . $program . ", ";
-	    endforeach;
-	}
-	return $allPrograms;
-    }
-?>
- 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
@@ -443,13 +369,7 @@ $(document).on('change', '#metaFlag', function () {
 // load actions based on user privileges
 $(document).ready(function() {
      $.rta(); // load rta features - simplest implementation
-
-   // clear selectorlist before adding unit/department options
-   var oldSelections = $('#action-menu option');
-   for (var i = 0; i < oldSelections.length; i++){
-      oldSelections.remove();
-   }
-   
+  
    var actions = <?php print json_encode($useractions); ?>;
    for (var i = 0; i < actions.length; i++){
       $('#action-menu').append('<option>' + actions[i] + '</option>');
