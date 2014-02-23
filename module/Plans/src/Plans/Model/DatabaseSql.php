@@ -142,4 +142,30 @@ where id = 1175
         $statement = $sql->prepareStatementForSqlObject($insert);
         $statement->execute();
     }
+    
+    /**
+     * Insert a tuple into the plan document table
+     */
+    public function insertPlanDocuments($planId, $fileName, $fileDescription)
+    {
+	/*
+	 * split the file name into
+	 *  1) File Name
+	 *  2) File Ext
+	 */
+	$fileNameSplit = preg_split('/\./', $fileName, null, PREG_SPLIT_NO_EMPTY);
+	
+        $sql = new Sql($this->adapter);
+	$data = array('plan_id' => $planId,
+		      'file_name' => $fileNameSplit[0],
+		      'file_ext' => $fileNameSplit[1],
+		      'file_description' => $fileDescription,
+		      );
+
+	$insert = $sql->insert('plan_documents');
+	$insert->values($data);		    
+    
+        $statement = $sql->prepareStatementForSqlObject($insert);
+        $statement->execute();
+    }
 }
