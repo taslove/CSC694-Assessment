@@ -302,6 +302,34 @@ $this->headTitle($title);
 			    </div> <!-- controls -->
 
 			    <div id="divNoPrint2">
+				<div>
+				    <?php
+					// loop through all the outcomes
+					$planDocumentsCount = 0;
+					if (!empty($planDocuments)) {
+					    foreach ($planDocuments as $planDocument) :
+						$planDocumentsCount++;
+						
+						// combine the file name and file ext
+						$filename = $planDocument['file_name'] . "." . $planDocument['file_ext'];
+				    ?>
+						<!-- display the plan document information -->
+						<p><?php getCount($planDocumentsCount)?>.
+						
+						<a  href="<?php echo $this->url('plans',
+										 array('action'=>'downloadFile',
+										'id' => $filename,
+										));
+							  ?>"
+						>
+						<?php echo $filename ?></a>
+						<?php echo "  Description: ". $planDocument['file_description']?></p>
+				    <?php
+					    endforeach;
+					}
+				    ?>
+				</div>
+				
 				<a class="btn btn-primary" href="<?php echo $this->url('plans', array('action'=>'index')); ?>">Back to Plans</a>&nbsp;
 				<button type="button" class="btn btn-primary" onclick="printPage()">Print</button>&nbsp;  <!--window.print()-->
 			    </div>

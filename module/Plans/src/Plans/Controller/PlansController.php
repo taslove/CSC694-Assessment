@@ -22,6 +22,9 @@ use Plans\Form;
 use Plans\InputFilter;
 use Zend\Debug\Debug;
 
+use Zend\Http\Headers;
+use Zend\Http\Response\Stream;
+
 class PlansController extends AbstractActionController
 {
 
@@ -203,7 +206,7 @@ class PlansController extends AbstractActionController
       $yearsChosen = $this->params()->fromRoute('id', 0);
 
       // get all the years
-      $results = $this->getGenericQueries()->getYears();
+      $results = $this->getDatabaseData()->getYears();
       
       // iterate through results forming a php array
       foreach ($results as $result){
@@ -260,8 +263,8 @@ class PlansController extends AbstractActionController
             'useractions' => $useractions,
             
             // get outcome and plans data
-            'outcomes' => $this->getGenericQueries()->getOutcomes($unit, $programs, $year),
-            'plans' => $this->getGenericQueries()->getPlans($unit, $programs, $year),   
+            'outcomes' => $this->getDatabaseData()->getOutcomes($unit, $programs, $year),
+            'plans' => $this->getDatabaseData()->getPlans($unit, $programs, $year),   
             ));
          }
    }
@@ -299,7 +302,7 @@ class PlansController extends AbstractActionController
          $unitarray[] = $this->getInitialUnits();
 
          // get years
-         $yearsData[] = getInitialYears();
+         $yeararray[] = $this->getInitialYears();
 
          // Initial Page Load, get request
          return new ViewModel(array(
@@ -313,8 +316,9 @@ class PlansController extends AbstractActionController
             'year' => $year,
             'useractions' => $useractions,
             
-            'outcomes' => $this->getGenericQueries()->getOutcomesByPlanId($planId),
-            'plan' => $this->getGenericQueries()->getPlanByPlanId($planId),
+            'outcomes' => $this->getDatabaseData()->getOutcomesByPlanId($planId),
+            'plan' => $this->getDatabaseData()->getPlanByPlanId($planId),
+            'planDocuments' => $this->getDatabaseData()->getPlanDocumentsByPlanId($planId),
          ));
       }
    }
@@ -397,8 +401,8 @@ class PlansController extends AbstractActionController
             'year' => $year,
             'useractions' => $useractions,
             
-            'outcomes' => $this->getGenericQueries()->getOutcomesByPlanId($planId),
-            'plan' => $this->getGenericQueries()->getPlanByPlanId($planId),
+            'outcomes' => $this->getDatabaseData()->getOutcomesByPlanId($planId),
+            'plan' => $this->getDatabaseData()->getPlanByPlanId($planId),
          ));
       }
    }
@@ -539,7 +543,7 @@ class PlansController extends AbstractActionController
          // get an array of outcome entities for each program
          // the outcomes array is an array of entity arrays
          foreach ($programs as $data) :
-            $dbData = $this->getGenericQueries()->getUniqueOutcomes($unit, $data, $year);
+            $dbData = $this->getDatabaseData()->getUniqueOutcomes($unit, $data, $year);
             $outcomes[] = $dbData;
          endforeach;
                
@@ -627,7 +631,32 @@ class PlansController extends AbstractActionController
          ));
       }
    }
-     
+
+   /**
+    *   Download a file from the server
+    */
+   public function downloadFileAction()
+   {
+      // pull the file name from the route url
+      $fileName = $this->params()->fromRoute('id', '');
+
+      $file = './data/tmpuploads/' . $fileName;
+        
+        $response = new Stream();
+        $response->setStream(fopen($file, 'r'));
+        $response->setStatusCode(200);
+        $response->setStreamName(basename($file));
+        $headers = new Headers();
+        $headers->addHeaders(array(
+            'Content-Disposition' => 'attachment; filename="' . basename($file) .'"',
+            'Content-Type' => 'application/octet-stream',
+            'Content-Length' => filesize($file)
+        ));
+        $response->setHeaders($headers);
+        return $response;
+    }
+   
+
    /**
     * Private Class function to get all the initial departments
     *
@@ -652,7 +681,7 @@ class PlansController extends AbstractActionController
    private function getInitialYears()
    {
       // get all years
-      $results = $this->getGenericQueries()->getYears();
+      $results = $this->getDatabaseData()->getYears();
       
       // iterate through results forming a php array
       foreach ($results as $result){
