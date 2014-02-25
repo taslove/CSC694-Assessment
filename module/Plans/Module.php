@@ -2,8 +2,7 @@
 
 namespace Plans;
 
-use Plans\Model\Plans;
-use Plans\Model\PlansTable;
+use Plans\Model\DatabaseSql;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -25,22 +24,16 @@ class Module
 
     public function getServiceConfig()
     {
-        /*return array(
-            'factories' => array(
-                'Admin\Model\AdminTable' => function($sm) {
-                    $tableGateway = $sm->get('AdminTableGateway');
-                    $table = new AdminTable($tableGateway);
-                    return $table;
-                },
-                'AdminTableGateway' => function ($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new Admin());
-                    return new TableGateway('Admin', $dbAdapter, null, $resultSetPrototype);
-                },
+        // set up each model table in factories
+        return array(
+            'factories' =>  array(
+                'Plans\Model\DatabaseSql' => function($sm) {
+                    $dbAdapter = $sm->get('dbAdapter');
+                    $tableMock = new DatabaseSql($dbAdapter);
+                    return $tableMock;                    
+                },                    
             ),
         );
-        */
     }
 
     public function getConfig()

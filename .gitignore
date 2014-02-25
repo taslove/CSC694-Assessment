@@ -10,3 +10,5 @@ nbproject
 vendor
 config/autoload/local.php.dist
 public/.htaccess
+
+/data/tmpuploads
