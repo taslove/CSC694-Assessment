@@ -15,11 +15,20 @@ $this->headTitle($title);
 	    
 	    <!--column 2-->
 	    <p></p>
+	    <!-- create header row -->
+	    <?php $label = "ADD META PLAN FOR:" ?>
+	    <?php echo $this->partial('plans/plans/displayAllPrograms.phtml', array('programs' => $programs,
+										    'label' => $label,
+										    'unit' => $unit,
+										    'year' => $year,
+										    ))
+	    ?>
+		
 	    <form action="<?php echo $this->url('plans', array('action'=>'addplanmeta'));?>" method="post">
-		<input type="hidden" name="outcomeId" id="outcomeId" value="<?php echo $outcomeId ?>">
+		<input type="hidden" name="programId" id="programId" value="<?php echo $programId ?>">
 		<div class="col-md-6">
 		    <div class="controls">
-			<h6>Describe the Meta Assessment Plan & Rationale</h6>
+			<h4>Describe the Meta Assessment Plan & Rationale</h4>
 			<p></p>
 			
 			<div class="controls">

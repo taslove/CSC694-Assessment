@@ -500,21 +500,23 @@ class PlansController extends AbstractActionController
                    *  4) error
                    *  5) size
                    */              
-                  $fileCollection = $data['file-collection'];
                   
-                  // loop through each element and create an array of file names with extensions                 
+                  // loop through each element and create an array of file names with extensions
+                  $fileCollection = $data['file-collection'];
                   foreach ($fileCollection as $file) :
                       if (!empty($file['name'])) {  
                         $fileNames[] = $file['name'];
                       }
                   endforeach;
-                  
-                  //get the file description
-                  $fileDescription = $data['text'];
+
+                  // get the array of file descriptions
+                  $fileDescription = $data['text-collection'];
                                     
                   // insert into the plans document table by looping through the file name array
+                  $fileCount=0;
                   foreach ($fileNames as $fileName) :
-                     $this->getDatabaseData()->insertPlanDocuments($planId, $fileName, $fileDescription);
+                     $this->getDatabaseData()->insertPlanDocuments($planId, $fileName, $fileDescription[$fileCount]);
+                     $fileCount++;
                   endforeach;
                                       
                   return $this->redirect()->toRoute('plans');
@@ -576,6 +578,7 @@ class PlansController extends AbstractActionController
          // get session data
        	 $planSession = new Container('planSession');	 
          $year = $planSession->year;
+         $programs = $planSession->programs;
          
          // get button from form
          $button = $request->getPost('formSubmitMeta');
@@ -589,12 +592,16 @@ class PlansController extends AbstractActionController
             $metaDescription = $request->getPost('textMetaDescription');
                                  
             // insert into plan table and obtain the primary key of the insert
-            $planId = $this->getDatabaseData()->insertPlan(1, $metaDescription, $year, "","","","","","","","","","","","",$draftFlag);                  
+            $planId = $this->getDatabaseData()->insertPlan(1, $metaDescription, $year, "","","","","","","","","","","","",$draftFlag,$this->userID);                  
               
-            // insert into the meta plans table
-            // TODO SCOTT
-            //$this->getDatabaseData()->insertPlanOutcome($outcomeId, $planId['maxId']);
-                     
+            // get all the program ids based on the array of program  
+            $programIds = $this->getDatabaseData()->getProgramIdsByProgram($programs);
+              
+            // loop through the array of programs inserting each value into the meta plans table  
+            foreach ($programIds as $program) :
+               $this->getDatabaseData()->insertMetaPlans($program['programId'], $planId);
+            endforeach;
+              
             return $this->redirect()->toRoute('plans');
          }
       }

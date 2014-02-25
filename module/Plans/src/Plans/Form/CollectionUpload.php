@@ -21,7 +21,7 @@ class CollectionUpload extends Form
     {
         // File Input
         $file = new Element\File('file');
-        $file->setLabel('Multi File');
+        $file->setLabel('  ');
 
         $fileCollection = new Element\Collection('file-collection');
         $fileCollection->setOptions(array(
@@ -31,11 +31,21 @@ class CollectionUpload extends Form
              'target_element' => $file,
         ));
         $this->add($fileCollection);
-
+        
+        
         // Text Input
         $text = new Element\Text('text');
-        $text->setLabel('Text Entry');
-        $this->add($text);
+        $text->setLabel('File Description');
+
+        $textCollection = new Element\Collection('text-collection');
+        $textCollection->setOptions(array(
+             'count'          => $this->numFileElements,
+             'allow_add'      => false,
+             'allow_remove'   => false,
+             'target_element' => $text,
+        ));
+        $this->add($textCollection);
+
     }
 
     public function createInputFilter()
@@ -44,6 +54,7 @@ class CollectionUpload extends Form
 
         // File Collection
         $fileCollection = new InputFilter\InputFilter();
+        $textCollection = new InputFilter\InputFilter();
         for ($i = 0; $i < $this->numFileElements; $i++) {
             $file = new InputFilter\FileInput($i);
             $file->setRequired(false);
@@ -56,14 +67,15 @@ class CollectionUpload extends Form
                 )
             );
             $fileCollection->add($file);
+            
+            // Text Collection
+            $text = new InputFilter\Input($i);
+            $text->setRequired(false);
+            $textCollection->add($text);
         }
         $inputFilter->add($fileCollection, 'file-collection');
-
-        // Text Input
-        $text = new InputFilter\Input('text');
-        $text->setRequired(false);
-        $inputFilter->add($text);
-
+        $inputFilter->add($textCollection, 'text-collection');
+        
         return $inputFilter;
     }
 }

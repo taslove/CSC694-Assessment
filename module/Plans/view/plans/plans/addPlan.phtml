@@ -2,7 +2,22 @@
 
 $title = 'Add New Assessment Plan';
 $this->headTitle($title);
-?>	
+?>
+
+<?php
+    // Init Form
+    $form = $this->form;
+    $form->setAttribute('class', 'form-horizontal');
+    $form->prepare();
+	
+    // Configure Errors Helper
+    $errorsHelper  = $this->plugin('formelementerrors');
+    $errorsHelper
+	->setMessageOpenFormat('<div class="help-block">')
+	->setMessageSeparatorString('</div><div class="help-block">')
+	->setMessageCloseString('</div>');
+?>
+	
 <div class="container">
     <center><h3>Assessment Plans-ADD</h3></center>
     <p></p>  
@@ -12,28 +27,10 @@ $this->headTitle($title);
 		
 	<!--column 2-->
 	<p></p>
-	
-<?php
-// Init Form
-$form = $this->form;
-$form->setAttribute('class', 'form-horizontal');
-$form->prepare();
+	<?php echo $this->form()->openTag($form); ?>
 
-// Configure Errors Helper
-$errorsHelper  = $this->plugin('formelementerrors');
-$errorsHelper
-    ->setMessageOpenFormat('<div class="help-block">')
-    ->setMessageSeparatorString('</div><div class="help-block">')
-    ->setMessageCloseString('</div>');
-?>
-<?php echo $this->form()->openTag($form); ?>
-
-
-
-
-<!--	<form action="<?php //echo $this->url('plans', array('action'=>'addplan'));?>" method="post">  -->
 	    <div class="col-md-6">
-		<input type="hidden" name="year" value="<?php echo $returnYear ?>">
+		<input type="hidden" name="year" value="<?php echo $year ?>">
 
 		<!-- create header row -->
 		<?php $label = "ADD PLAN FOR:" ?>
@@ -293,60 +290,74 @@ $errorsHelper
 	    </div>
 
 
+	    <!-- create the list of upload components -->
+	    <fieldset>
+		<div class="row">
+		    <div class="col-md-5">
+			<?php
+			    $fileCollection = $form->get('file-collection');
+			    foreach ($fileCollection as $elem) {
+			        $elem->setLabelAttributes(array('class' => 'control-label'));
+			        $errors = $elem->getMessages();
+			        $errorClass = (!empty($errors)) ? ' error' : '';
+			?>
+			        <div class="control-group<?php echo $errorClass ?>">
+				    <?php echo $this->formLabel($elem); ?>
+				    <div class="controls">
+					<?php echo $this->formFile($elem); ?>
+					<?php echo $errorsHelper($elem); ?>
+				    </div>
+				</div>
+			<?php
+			    }
+			?>
+			<?php
+			    if (!empty($this->tempFiles)) { ?>
+				<div class="control-group"><div class="controls">
+				    <div class="help-block">
+					Uploaded:
+					<ul>
+					    <?php foreach ($this->tempFiles as $tempFile) { ?>
+					    <li><?php echo $this->escapeHtml($tempFile['name']) ?></li>
+			<?php
+			    }
+			?>
+					</ul>
+				    </div>
+				    </div>
+				</div>
+			<?php
+			    }
+			?>
+			
+			
+		    </div>
+		    
+		    <!-- create the list of description text boxes -->
+		    <div class="col-md-5">
+			<?php
+			    $textCollection = $form->get('text-collection');
+			    foreach ($textCollection as $elem) {
+				$elem->setLabelAttributes(array('class' => 'control-label'));
+				$errors = $elem->getMessages();
+				$errorClass = (!empty($errors)) ? ' error' : '';
+			?>
+				<div class="control-group<?php echo $errorClass ?>">
+				    <?php echo $this->formLabel($elem); ?>
+				    <div class="controls">
+					<?php echo $this->formText($elem); ?>
+					<?php echo $errorsHelper($elem); ?>
+				    </div>
+				</div>
+			<?php
+			    }
+			?>
+		    </div>
+		</div>
+	    </fieldset>		
 
-<fieldset>
+	<?php echo $this->form()->closeTag($form); ?>
 
-    <?php
-    $elem = $form->get('text');
-    $elem->setLabelAttributes(array('class' => 'control-label'));
-    $errors = $elem->getMessages();
-    $errorClass = (!empty($errors)) ? ' error' : '';
-    ?>
-    <div class="control-group<?php echo $errorClass ?>">
-        <?php echo $this->formLabel($elem); ?>
-        <div class="controls">
-            <?php echo $this->formText($elem); ?>
-            <?php echo $errorsHelper($elem); ?>
-        </div>
-    </div>
-
-    <?php
-    $collection = $form->get('file-collection');
-    foreach ($collection as $elem) {
-        $elem->setLabelAttributes(array('class' => 'control-label'));
-        $errors = $elem->getMessages();
-        $errorClass = (!empty($errors)) ? ' error' : '';
-        ?>
-        <div class="control-group<?php echo $errorClass ?>">
-            <?php echo $this->formLabel($elem); ?>
-            <div class="controls">
-                <?php echo $this->formFile($elem); ?>
-                <?php echo $errorsHelper($elem); ?>
-            </div>
-        </div>
-        <?php
-    }
-    ?>
-    <?php if (!empty($this->tempFiles)) { ?>
-    <div class="control-group"><div class="controls">
-        <div class="help-block">
-            Uploaded: <ul>
-            <?php foreach ($this->tempFiles as $tempFile) { ?>
-            <li><?php echo $this->escapeHtml($tempFile['name']) ?></li>
-            <?php } ?>
-            </ul>
-        </div>
-    </div></div>
-    <?php } ?>	
-</fieldset>
-<?php echo $this->form()->closeTag($form); ?>
-
-
-
-
-
-
-<!--	</form>		-->
     </div>       
 </div>
 

@@ -436,4 +436,45 @@ group by o.id, o.outcome_text
         return $entities;
     }
     
+    /**
+     * get all the programs ids for the array of programs
+     */
+    public function getProgramIdsByProgram($names)
+    {
+/*
+select id from `assessment`.`programs`
+where name in ('BA Computer Science','BS Computer Science')
+;
+*/	
+                
+        $sql = new Sql($this->adapter);
+        $select = $sql->select()
+                      ->columns(array('programId' => new Expression('programs.id'),
+				      ))
+                      ->from('programs')
+		      ->where(array('programs.name' => $names,))
+		   ;
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $resultSet = $statement->execute();
+
+        return $resultSet;
+    }
+    
+    /**
+     * Insert a tuple into the meta plans table
+     */
+    public function insertMetaPlans($programId, $planId)
+    {
+        $sql = new Sql($this->adapter);
+	$data = array('plan_id' => $planId,
+		      'program_id' => $programId,
+		      );
+		      
+	$insert = $sql->insert('meta_plans');
+	$insert->values($data);		    
+    
+        $statement = $sql->prepareStatementForSqlObject($insert);
+        $statement->execute();
+    }
 }
