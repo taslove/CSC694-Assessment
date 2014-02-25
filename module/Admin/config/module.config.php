@@ -36,9 +36,9 @@
              'user' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/admin/user[/][:action][/:id]',
+                     'route'    => '/admin/user[/][page/:page][:action][/:id]',
                      'constraints' => array(
-                         'action' => '(?!\bpage\b)(?!\border_by\b)[a-zA-Z][a-zA-Z0-9_-]*',
+                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                          'id'     => '[0-9]+',
                          'page' => '[0-9]+',
                      ),
