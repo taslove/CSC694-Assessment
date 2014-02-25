@@ -12,20 +12,54 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Form\LoginForm;
+use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Adapter\Ldap as AuthAdapter;
+use Zend\Config\Reader\Ini as ConfigReader;
+use Zend\Config\Config;
+use Zend\Log\Logger;
+use Zend\Log\Writer\Stream as LogWriter;
+use Zend\Log\Filter\Priority as LogFilter;
 
 
 class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
-      
+    
         $form = new LoginForm();
-        
         return array('form' => $form);
     }
     
     public function authenticateAction()
     {
+        $form = new LoginForm();
+        $request = $this->getRequest();
+        
+        if ($request->isPost()) {
+            $username = $request->getPost('userName', null);
+            $password = $request->getPost('password', null);
+        }
+        
+        $auth = new AuthenticationService();
+
+        $configReader = new ConfigReader();
+        $configData = $configReader->fromFile('ldap-config.ini');
+        $config = new Config($configData, true);
+        
+        //$log_path = $config->production->ldap->log_path;
+        $options = $config->production->ldap->toArray();
+        unset($options['log_path']);
+        
+        $adapter = new AuthAdapter($options,
+                                   $username,
+                                   $password);
+        
+        $result = $auth->authenticate($adapter);
+        
         
     }
 }
+
+
+//var_dump($request);
+        //exit();
