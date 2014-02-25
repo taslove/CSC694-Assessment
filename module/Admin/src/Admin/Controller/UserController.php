@@ -25,13 +25,9 @@ class UserController extends AbstractActionController
     protected $tableResults;
 
    public function indexAction()
-    {
-       
-       
+    { 
         $page = $this->params()->fromRoute('page') ? (int) $this->params()->fromRoute('page') : 1;
 
-
-        
         $users = $this->getUserQueries()->fetchAll();
         $itemsPerPage = 10;
 

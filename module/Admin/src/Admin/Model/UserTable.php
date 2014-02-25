@@ -47,7 +47,7 @@ class UserTable extends AbstractTableGateway
                       ->from('user_roles');
         
         $where = new Where();
-        $where->equalTo('owner_id',$id);
+        $where->equalTo('user_id',$id);
         $select->where($where);
         
         $statement = $sql->prepareStatementForSqlObject($select);
