@@ -7,18 +7,16 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Application\Controller;
+namespace Authenticate\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Application\Form\LoginForm;
 
-class IndexController extends AbstractActionController
+class AuthenticateController extends AbstractActionController
 {
     public function indexAction()
-    {
-      
-        $form = new LoginForm();
+    {      
+        
         return new ViewModel();
     }
     
