@@ -38,8 +38,9 @@
                  'options' => array(
                      'route'    => '/admin/user[/][:action][/:id]',
                      'constraints' => array(
-                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                         'action' => '(?!\bpage\b)(?!\border_by\b)[a-zA-Z][a-zA-Z0-9_-]*',
                          'id'     => '[0-9]+',
+                         'page' => '[0-9]+',
                      ),
                      'defaults' => array(
                          '__NAMESPACE__' => 'Admin\Controller',

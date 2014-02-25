@@ -16,8 +16,8 @@ use Zend\View\Model\ViewModel;
 use Zend\Db\Sql\Select;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Adapter;
+use Zend\Paginator\Adapter\ArrayAdapter;
 use Zend\Paginator\Paginator;
-use Zend\Paginator\Adapter\Iterator as paginatorIterator;
 
 
 class UserController extends AbstractActionController
@@ -30,12 +30,12 @@ class UserController extends AbstractActionController
        
         $page = $this->params()->fromRoute('page') ? (int) $this->params()->fromRoute('page') : 1;
 
+
+        
         $users = $this->getUserQueries()->fetchAll();
         $itemsPerPage = 10;
 
-        
-        $paginator = new Paginator($users);
-        $paginator = Zend_Paginator::factory($users);
+        $paginator = new \Zend\Paginator\Paginator(new \Zend\Paginator\Adapter\ArrayAdapter($users));
         $paginator->setCurrentPageNumber($page)
                 ->setItemCountPerPage($itemsPerPage)
                 ->setPageRange(7);
