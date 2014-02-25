@@ -11,7 +11,11 @@ class LoginForm extends Form
         // we want to ignore the name passed
         parent::__construct('login');
         $this->setAttribute('method', 'post');
+<<<<<<< HEAD
         $this->setAttribute('action', 'authenticate');
+=======
+
+>>>>>>> ldap_task
         
         $this->add(array(
             'name' => 'userName',
