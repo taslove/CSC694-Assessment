@@ -5,6 +5,12 @@ namespace Plans\Form;
 use Zend\InputFilter;
 use Zend\Form\Form;
 use Zend\Form\Element;
+use Zend\InputFilter\Input;
+use Zend\InputFilter\FileInput;
+use Zend\Validator;
+use Zend\Validator\File\Size;  
+use Zend\Validator\File\Extension;
+
 
 class CollectionUpload extends Form
 {
@@ -22,7 +28,9 @@ class CollectionUpload extends Form
         // File Input
         $file = new Element\File('file');
         $file->setLabel('  ');
-
+        $file->setAttribute('multiple', true); // allow for multiple user selection in one scree
+        $file->setAttribute('accept', '.pdf'); // only allow PDF file to be selected
+                                 
         $fileCollection = new Element\Collection('file-collection');
         $fileCollection->setOptions(array(
              'count'          => $this->numFileElements,
