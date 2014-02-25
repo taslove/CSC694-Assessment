@@ -34,8 +34,8 @@ echo $this->form()->openTag($form);
         <?php echo $this->formInput($form->get('middle_init')); ?>
     </div>
     <div class="form-group">
-        <?php echo $this->formLabel($form->get('user_role')->setLabelAttributes(array('class'=>'control-label'))); ?>
-        <?php echo $this->formMultiCheckbox($form->get('user_role')); ?>
+        <?php echo $this->formLabel($form->get('user_roles')->setLabelAttributes(array('class'=>'control-label'))); ?>
+        <?php echo $this->formMultiCheckbox($form->get('user_roles')); ?>
     </div>
     <div class="form-group">
         <?php echo $this->formInput($form->get('id')); ?>

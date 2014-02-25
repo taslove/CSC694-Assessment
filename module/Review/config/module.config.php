@@ -33,7 +33,8 @@
                       ),
                      'defaults' => array(
                          'controller' => 'Review\Controller\Review',
-                         'action'     => 'index',
+                         /*added action so we don't have to type "/index" */
+                         'action' => 'index',
                      ),
                  ),
              ),

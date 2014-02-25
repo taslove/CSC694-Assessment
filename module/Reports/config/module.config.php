@@ -43,6 +43,7 @@
                      ),
                      'defaults' => array(
                          'controller' => 'Reports\Controller\Reports',
+                         'action'     => 'index',
                      ),
                  ),
              ),
@@ -51,9 +52,8 @@
          ),
      ),
 
-     'view_manager' => array(
-         'template_path_stack' => array(
-             'reports' => __DIR__ . '/../view',
-         ),
+     'strategies' => array(
+            'ViewJsonStrategy',
+         
      ),
  );
