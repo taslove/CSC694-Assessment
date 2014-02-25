@@ -21,9 +21,7 @@ class IndexController extends AbstractActionController
       
         $form = new LoginForm();
         
-        var_dump($form);
-        exit();
-        return new ViewModel();
+        return array('form' => $form);
     }
     
     public function authenticateAction()
