@@ -1,55 +1,61 @@
 <?php
 
-$title = 'Assessment Plan Home';
+$title = 'Assessment Meta Plan';
 $this->headTitle($title);
 ?>	
-	
-<div class="container">
-    <center><h3>Assessment Plans-HOME</h3></center>
-    <p></p>  
-    <div class="row">
-	<!-- Build the left hand side of the page -->
-        <?php echo $this->partial('plans/plans/plansLeftSidePartial.phtml', array()); ?>
 
-	
-	<!--column 2-->
-	<div class="col-md-6">
-	    <p>This is where the plan or report will pop up with a feedback box.</p>
-	    <style>
-	       textarea {
-		  width: 400px;
-	       }
-	    </style>
-	    <div class="container">
-	       <form class="form-horizontal" name="rtaform" id="rtaform" method="GET" action="#">
-		  <div class="control-group">
-		    <label class="control-label" for="ta_sample">Feedback Response</label>
+    <div class="container">
+	<center>
+	    <h3>Assessment Plans-ADD Meta</h3>	
+	</center>
+        <p></p>  
+        <div class="row">
+	    <!-- Build the left hand side of the page -->                                 				
+	    <?php echo $this->partial('plans/plans/plansLeftSidePartial.phtml', array()); ?>
+	    
+	    <!--column 2-->
+	    <p></p>
+	    <!-- create header row -->
+	    <?php $label = "ADD META PLAN FOR:" ?>
+	    <?php echo $this->partial('plans/plans/displayAllPrograms.phtml', array('programs' => $programs,
+										    'label' => $label,
+										    'unit' => $unit,
+										    'year' => $year,
+										    ))
+	    ?>
+		
+	    <form action="<?php echo $this->url('plans', array('action'=>'addplanmeta'));?>" method="post">
+		<input type="hidden" name="programId" id="programId" value="<?php echo $programId ?>">
+		<div class="col-md-6">
 		    <div class="controls">
-		       <textarea rows="8" cols="60" class="rta" id="ta_sample" name="ta_sample"></textarea>
+			<h4>Describe the Meta Assessment Plan & Rationale</h4>
+			<p></p>
+			
+			<div class="controls">
+			    <textarea rows="6" cols="60" class="rta" id="textMetaDescription" name="textMetaDescription" ></textarea>
+			</div> <!-- controls -->
+			<button type="submit" name="formSubmitMeta" value="formSaveDraft" class="btn btn-primary pull-left">Save Draft</button>
+			<button type="submit" name="formSubmitMeta" value="formSavePlan" class="btn btn-success pull-left">Submit</button>
 		    </div>
-		  </div>
-	       </form>
-	    </div>
+		</div>
+	    </form>
 	</div>
     </div>
-</div>
+		
+		
 
- 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="./js/bootstrap.min.js"></script> 
-<script src="./js/bootstrap-rta.min.js"></script>
-<script src="./js/bootstrap-select.js"></script>
-
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/bootstrap-rta.min.js"></script>
 <script src="../js/bootstrap-select.js"></script>
+
 
 <script>
 
 // load actions based on user privileges
 $(document).ready(function() {
      $.rta(); // load rta features - simplest implementation
-
+  
    var actions = <?php print json_encode($useractions); ?>;
    for (var i = 0; i < actions.length; i++){
       $('#action-menu').append('<option>' + actions[i] + '</option>');

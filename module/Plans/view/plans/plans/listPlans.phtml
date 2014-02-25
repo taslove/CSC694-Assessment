@@ -1,45 +1,115 @@
 <?php
 
-$title = 'Assessment Plan Home';
+$title = 'Assessment Plan View List';
 $this->headTitle($title);
 ?>	
 	
 <div class="container">
-    <center><h3>Assessment Plans-HOME</h3></center>
+    <center><h3>Assessment Plans-VIEW List</h3></center>
     <p></p>  
     <div class="row">
-	<!-- Build the left hand side of the page -->
-        <?php echo $this->partial('plans/plans/plansLeftSidePartial.phtml', array()); ?>
+	<!-- Build the left hand side of the page -->                                 				
+	<?php echo $this->partial('plans/plans/plansLeftSidePartial.phtml', array()); ?>
 
-	
-	<!--column 2-->
+	<!--column 2 Right side of the acreen-->
+	<p></p>
 	<div class="col-md-6">
-	    <p>This is where the plan or report will pop up with a feedback box.</p>
-	    <style>
-	       textarea {
-		  width: 400px;
-	       }
-	    </style>
-	    <div class="container">
-	       <form class="form-horizontal" name="rtaform" id="rtaform" method="GET" action="#">
-		  <div class="control-group">
-		    <label class="control-label" for="ta_sample">Feedback Response</label>
-		    <div class="controls">
-		       <textarea rows="8" cols="60" class="rta" id="ta_sample" name="ta_sample"></textarea>
+	    <?php
+		// identify the action to determine the next page to navigate to view or modify
+		// dynamically set the label
+		$nextPage="modifyplan";
+		$label="Select a plan to modify for: ";
+		if ($action == "View"){
+		    $nextPage="viewonlyplan";
+		    $label="Select a plan to view for: ";
+		}
+		
+		// create a label if no plans exist for the selection
+		if (sizeof($plans) == 0) {
+		    $label="There are no plans for: ";
+		}
+	    ?>
+			
+	    <!-- create a header line -->			
+	    <?php echo $this->partial('plans/plans/displayAllPrograms.phtml', array('programs' => $programs,
+									      'label' => $label,
+									      'unit' => $unit,
+									      'year' => $year,
+									      ))
+	    ?>
+	     <div class="input-group">
+		<div class="panel-group" id="accordion">
+		    <div class="panel panel-success">
+				    
+			<?php					    			
+			    // Loop through all the returned plans
+			    $planCount = 0;
+			    if (!empty($plans)) {
+				foreach ($plans as $plan) :
+				    $planCount++;
+			?>
+				    <!-- Create the plan row -->
+				    <div class="panel-heading">
+					<h4 class="title">					
+					    <a data-toggle="collapse" data-parent="#accordion"
+						   href="#collapse<?php echo $planCount; ?>">
+						    Plan # <?php echo $planCount; ?> &nbsp; </a>
+					
+					<!-- Create a select button for each row -->
+					<a class="btn btn-primary btn-xs" href="<?php echo $this->url('plans',
+												    array('action'=>$nextPage,
+													  'id' => $plan['planId'],
+												  ));
+									        ?>"><?php echo $this->translate ('Select') ?> &raquo;</a>&nbsp;
+					
+					</h4>
+				    </div>
+
+			    <!-- Create the outcome data for each row -->
+			    <div id="collapse<?php echo $planCount; ?>" class="pane<?php echo $planCount; ?>-collapse collapse">
+				<div class="panel-body">
+				    <div class="control-group">
+					<div class="controls">
+					    <table class="table">							  
+						<?php
+						    // loop through all the outcomes
+						    $outcomeCount = 0;
+						    if (!empty($outcomes)) {
+							foreach ($outcomes as $outcome) :
+
+							    //Check to see if the outcome exists for the plan id
+							    if($plan['planId'] == $outcome->getPlanId()) {
+								$outcomeCount++;
+						?>
+								<!-- create a row in the table -->
+								<tr>
+								    <th><?php echo $outcomeCount; ?>.</th> <td> <?php echo $outcome->getOutcomeText() ?></td>
+								    <input type="hidden" name="outcomeId<?php echo $outcomeCount; ?>" value="<?php echo $outcome->getOutcomeId() ?>">
+								</tr>
+						<?php
+							    }
+							endforeach;
+						    }
+						?>						
+					    </table>
+					</div>
+				    </div>
+				</div>
+			    </div>
+		<?php
+				endforeach;
+			    }
+		?>
 		    </div>
-		  </div>
-	       </form>
+		</div>
 	    </div>
 	</div>
+
     </div>
 </div>
 
  
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="./js/bootstrap.min.js"></script> 
-<script src="./js/bootstrap-rta.min.js"></script>
-<script src="./js/bootstrap-select.js"></script>
-
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/bootstrap-rta.min.js"></script>
 <script src="../js/bootstrap-select.js"></script>
@@ -49,7 +119,7 @@ $this->headTitle($title);
 // load actions based on user privileges
 $(document).ready(function() {
      $.rta(); // load rta features - simplest implementation
-
+   
    var actions = <?php print json_encode($useractions); ?>;
    for (var i = 0; i < actions.length; i++){
       $('#action-menu').append('<option>' + actions[i] + '</option>');
