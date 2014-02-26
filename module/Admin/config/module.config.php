@@ -12,6 +12,7 @@
          'invokables' => array(
              'Admin\Controller\Admin' => 'Admin\Controller\AdminController',
              'Admin\Controller\User' => 'Admin\Controller\UserController',
+             'Admin\Controller\Program' => 'Admin\Controller\ProgramController',
          ),
      ),
      'view_manager' => array(
@@ -35,14 +36,30 @@
              'user' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/admin/user[/][:action][/:id]',
+                     'route'    => '/admin/user[/][page/:page][:action][/:id]',
+                     'constraints' => array(
+                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                         'id'     => '[0-9]+',
+                         'page' => '[0-9]+',
+                     ),
+                     'defaults' => array(
+                         '__NAMESPACE__' => 'Admin\Controller',
+                         'controller' => 'User',
+                         'action'     => 'index',
+                     ),
+                 ),
+             ),
+             'program' => array(
+                 'type'    => 'segment',
+                 'options' => array(
+                     'route'    => '/admin/programs[/][:action][/:id]',
                      'constraints' => array(
                          'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                          'id'     => '[0-9]+',
                      ),
                      'defaults' => array(
                          '__NAMESPACE__' => 'Admin\Controller',
-                         'controller' => 'User',
+                         'controller' => 'Program',
                          'action'     => 'index',
                      ),
                  ),

@@ -13,7 +13,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Reports\Model\ReportTable;
 use Reports\Model\PlanTable;
-
+use Zend\View\Model\JsonModel;
 
 
 class ReportsController extends AbstractActionController
@@ -21,10 +21,56 @@ class ReportsController extends AbstractActionController
    protected $tableResults;
 
    public function indexAction()
+
     {
-      return new ViewModel();
+       // get units
+        $results = $this->getGenericQueries()->getUnits();
+        // iterate over database results forming a php array
+        foreach ($results as $result){
+            $unitarray[] = $result;
+        }
+        // pass array to view
+        return new ViewModel(array(
+            'units' => $unitarray,
+        ));
     }
     
+    public function getAction()
+    {
+        // get unit from id in url
+        $unitChosen = $this->params()->fromRoute('id', 0);
+        // get programs for that unit
+        $results = $this->getGenericQueries()->getProgramsByUnitId($unitChosen);
+        // iterate through results forming a php array
+        foreach ($results as $result){
+            $programData[] = $result;
+        }
+        // encode results as json object
+        $jsonData = new JsonModel($programData);
+        return $jsonData;
+     
+    }
+    
+    public function getGenericQueries()
+    {
+        if (!$this->tableResults) {
+            $this->tableResults = $this->getServiceLocator()
+                                       ->get('Application\Model\AllTables');
+                    
+        }
+        return $this->tableResults;
+    }
+    public function getReviewQueries()
+    {
+        if (!$this->tableResults) {
+            $this->tableResults = $this->getServiceLocator()
+                                       ->get('Review\Model\ReviewTables');
+                    
+        }
+        return $this->tableResults;
+    }
+    
+ 
     public function viewAllReportsAction()
     {
                   $planId = 370;
@@ -90,5 +136,6 @@ class ReportsController extends AbstractActionController
                     
         }
         return $this->tableResults;
+
     }
 }
