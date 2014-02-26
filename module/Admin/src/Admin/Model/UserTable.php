@@ -65,7 +65,7 @@ class UserTable extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         $delete = $sql->delete()
                       ->from('user_roles')
-                      ->where('owner_id', $id);
+                      ->where('user_id = ?', $id);
         $deleteString = $sql->getSqlStringForSqlObject($delete);
         $this->adapter->query($deleteString, Adapter::QUERY_MODE_EXECUTE);
     }
@@ -74,7 +74,7 @@ class UserTable extends AbstractTableGateway
        //add role(s)
        foreach($roles as $row => $value){
             $role = array(
-                'owner_id' => $userID,
+                'user_id' => $userID,
                 'role' => $value
             );
             $sql = new Sql($this->adapter);
@@ -131,8 +131,9 @@ class UserTable extends AbstractTableGateway
         //get the user id
         $id = (int)$user->id;
         
+        
         //if user doesn't exists
-        if ($id == 0) {
+        if ($id == 0 OR empty($id)) {
             //insert user
             $this->insert($data);
             
