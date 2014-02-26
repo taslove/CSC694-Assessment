@@ -56,7 +56,7 @@ class OutcomesTable extends AbstractTableGateway
         $select = $sql->select()
                       ->from($this->table)
                     //  ->where('id = 1')
-                      ->order('active DESC');
+                      ->order('active_flag DESC');
                      
          
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -83,13 +83,77 @@ class OutcomesTable extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         $select = $sql->select()
                       ->from('programs')
-                      ->where('unit_id = $unitId');
+                      ->where('unit_id ="' . $unitId . '"');
                      
          
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         
         return $result;   
+    }
+    
+        public function getAllOutcomesForProgram($programId){
+                  $sql = new Sql($this->adapter);
+        $select = $sql->select()
+                      ->from('outcomes')
+                      ->where('program_id ="' . $programId . '"');
+                     
+         
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        
+        return $result;   
+        }
+    
+    
+    
+    // used to retrieve an outcome by its ID (if it exists)
+        public function getOutcome($id)
+    {
+        $id  = (int) $id;
+
+        $rowset = $this->select(array(
+            'id' => $id,
+        ));
+
+        $row = $rowset->current();
+
+        if (!$row) {
+            throw new \Exception("Could not find row $id");
+        }
+
+        return $row;
+    }
+    
+    
+    // called when done adding or editing an outcome
+        public function saveOutcome(Outcomes $outcome)
+    {
+        $data = array(
+            'id' => $outcome->oid,
+            'program_id' => $outcome->programId,
+            'outcome_text' => $outcome->outcomeText,
+            'active_flag' => $outcome->activeFlag,
+        );
+
+        $id = (int)$outcome->oid;
+        // if it doesn't have an id yet (meaning it's new)
+        if ($id == false) {
+            $this->insert($data);
+        } else {
+            if ($this->getOutcome($id)) {
+                $this->tableGateway->update($data, array('id' => $id));
+            } else {
+                throw new \Exception('Form id does not exist');
+            }
+        }
+    }
+    
+
+        public function deleteOutcome($id)
+    {
+        $id = (int) $id;
+        $this->delete(array('id' => $id));
     }
     
 }
