@@ -38,11 +38,7 @@ class AllTables extends AbstractTableGateway
         $select = $sql->select()
                       ->from('units')
                       ->where(array('active_flag' => 1));
-<<<<<<< HEAD
-                      
-=======
- 
->>>>>>> 56f725bbde5c68b34e4e1b1541686176c9c4d7fd
+
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         
@@ -68,7 +64,8 @@ class AllTables extends AbstractTableGateway
                     ->where(array('liaison_privs.user_id' => $userID));
         
         // union results from both selects
-        //$select1->combine($select2);
+        $select1->combine($select2);
+
 
         $statement = $sql->prepareStatementForSqlObject($select1);
         $result = $statement->execute();

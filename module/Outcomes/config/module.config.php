@@ -17,6 +17,9 @@
          'template_path_stack' => array(
              'outcomes' => __DIR__ . '/../view',
          ),
+        'strategies' => array(
+            'ViewJsonStrategy',
+        ),
      ),
        'router' => array(
          'routes' => array(
@@ -26,7 +29,6 @@
                      'route'    => '/outcomes[/][:action][/:id]',
                      'constraints' => array(
                          'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                         'id'     => '[0-9]+',
                      ),
                      'defaults' => array(
                          'controller' => 'Outcomes\Controller\Outcomes',
@@ -34,12 +36,6 @@
                      ),
                  ),
              ),
-         ),
-     ),
-
-     'view_manager' => array(
-         'template_path_stack' => array(
-             'outcomes' => __DIR__ . '/../view',
          ),
      ),
  );
