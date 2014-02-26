@@ -16,20 +16,22 @@ class LoginForm extends Form
         $this->add(array(
             'name' => 'userName',
             'attributes' => array(
-                'type' => 'text',
+                'type' => 'text',                
             ),
             'options' => array(
-                'label' => 'User Name',
+                'label' => 'User Name',                
             ),
+            'class' => 'jumbotron',
         ));
         $this->add(array(
             'name' => 'password',
             'attributes' => array(
-                'type' => 'password',
+                'type' => 'password',                
             ),
             'options' => array(
-                'label' => 'Password',
+                'label' => 'Password',                
             ),
+            'class' => 'jumbotron',
         ));
         $this->add(array(
             'name' => 'submit',

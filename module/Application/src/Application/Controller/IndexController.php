@@ -56,7 +56,9 @@ class IndexController extends AbstractActionController
         
         $result = $auth->authenticate($adapter);
         
-        
+        $messages = $result->getMessages();
+        var_dump($messages);
+        exit();
     }
 }
 
