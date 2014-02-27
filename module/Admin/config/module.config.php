@@ -53,7 +53,7 @@
              'program' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/admin/programs[/][:action][/:id]',
+                     'route'    => '/admin/programs[/][page/:page][:action][/:id]',
                      'constraints' => array(
                          'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                          'id'     => '[0-9]+',
