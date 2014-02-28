@@ -99,6 +99,12 @@ $this->headTitle($title);
       </colgroup>
      
   <div class="bs-example">
+    <?php
+    $form->setAttribute('action', $this->url('reports', array('action' => 'updateReport')));
+    $form->prepare();
+    echo $this->form()->openTag($form);
+    echo $this->formHidden($form->get('id')->setAttribute('value', $report[0]['id']));
+    ?>
     <table class="table">
       
           <h6>View Report</h6>
@@ -117,8 +123,17 @@ $this->headTitle($title);
     </div>
     <div id="collapseOne" class="panel-collapse collapse">
       <div class="panel-body">
-<textarea rows="10" cols="60" class="textbox" id="" name=""
-		  >TBD</textarea>      </div>
+	<div>
+	<?php $ctr = 0;?>
+
+	<?php foreach($outcomes as $outcome) : ?>
+	    <?php $ctr++;?>
+	     <?php echo($ctr); ?>.<?php echo $outcome;?>
+	    </br>
+	    
+	    <?php endforeach; ?>
+	</div>
+      </div>
     </div>
   </div>
   </br>
@@ -135,8 +150,8 @@ $this->headTitle($title);
     </div>
     <div id="collapseTwo" class="panel-collapse collapse">
       <div class="panel-body">
-<textarea rows="10" cols="60" class="textbox" id="" name=""
-		  >TBD</textarea>      </div>
+<textarea readonly rows="10" cols="60" class="textbox" id="" name=""
+		  ><?php echo $report[0]['assessment_method']?></textarea>      </div>
     </div>
   </div>
   <div class="panel panel-default">
@@ -149,8 +164,7 @@ $this->headTitle($title);
     </div>
     <div id="collapseThree" class="panel-collapse collapse">
       <div class="panel-body">
-<textarea rows="10" cols="60" class="textbox" id="" name=""
-		  ><?php echo $report[0]['population']?></textarea>      </div>
+		  <?php echo $this->formRow($form->get('population')->setAttribute('value', $report[0]['population']))?>      </div>
     </div>
   </div>
   
@@ -164,8 +178,7 @@ $this->headTitle($title);
     </div>
     <div id="collapseFour" class="panel-collapse collapse">
       <div class="panel-body">
-<textarea  rows="6" cols="60" class="textbox" id="" name=""
-		  ><?php echo $report[0]['results']?></textarea>      </div>
+		  <?php echo $this->formRow($form->get('results')->setAttribute('value', $report[0]['results']))?>      </div>
     </div>
   </div>
   
@@ -179,8 +192,7 @@ $this->headTitle($title);
     </div>
     <div id="collapseFive" class="panel-collapse collapse">
       <div class="panel-body">
-<textarea rows="6" cols="60" class="textbox" id="" name=""
-		  ><?php echo $report[0]['conclusions']?></textarea>      </div>
+<?php echo $this->formRow($form->get('conclusions')->setAttribute('value', $report[0]['conclusions']))?>     </div>
     </div>
   </div>
   
@@ -194,8 +206,7 @@ $this->headTitle($title);
     </div>
     <div id="collapseSix" class="panel-collapse collapse">
       <div class="panel-body">
-<textarea rows="10" cols="60" class="textbox" id="" name=""
-		  ><?php echo $report[0]['actions']?></textarea>      </div>
+<?php echo $this->formRow($form->get('actions')->setAttribute('value', $report[0]['actions']))?>    </div>
     </div>
   </div>
   
@@ -203,13 +214,15 @@ $this->headTitle($title);
 <a href="#">AttachedFile.pdf</a><P></P>
 	
         </div> <!-- controls -->
-        <button type="button" class="btn btn-primary">Back to Reports</button>&nbsp;
-	<button type="button" class="btn btn-primary">Print</button>&nbsp;
+	<?php echo $this->formRow($form->get('submit'))?>
+
 
       <tbody>
        
       </tbody>
     </table></table>
+    <?php echo $this->form()->closeTag();?>
+
   </div><!-- /example -->
    
                    
