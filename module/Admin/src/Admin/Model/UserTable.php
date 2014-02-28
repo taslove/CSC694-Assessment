@@ -59,6 +59,48 @@ class UserTable extends AbstractTableGateway
         }
         return $roles;
     }
+<<<<<<< HEAD
+=======
+    
+    public function deleteRoles($id)
+    {
+        $sql = new Sql($this->adapter);
+        $delete = $sql->delete()
+                      ->from('user_roles')
+                      ->where('user_id = ?', $id);
+        $deleteString = $sql->getSqlStringForSqlObject($delete);
+        $this->adapter->query($deleteString, Adapter::QUERY_MODE_EXECUTE);
+    }
+    function addRoles($userID,$roles)
+    {
+       //add role(s)
+       foreach($roles as $row => $value){
+            $role = array(
+                'user_id' => $userID,
+                'role' => $value
+            );
+            $sql = new Sql($this->adapter);
+            $insert = $sql->insert('user_roles');
+            $insert->values($role);
+            $insertString = $sql->getSqlStringForSqlObject($insert);
+            $this->adapter->query($insertString, Adapter::QUERY_MODE_EXECUTE);
+       }
+    }
+    
+    public function getRoleTerm($id){
+      if(!$id){
+          return;
+      }  
+        $roles = array(
+          '1' => 'Admin',
+          '2' => 'Chair',
+          '3' => 'User',
+          '4' => 'Assessor',
+          '5' => 'Committee',
+        );
+        return $roles[$id];
+    }
+>>>>>>> fb5ae052afdd1f904a9ad82c07c9a280fc9b6ba4
 
 
     public function getUser($id)
@@ -98,7 +140,15 @@ class UserTable extends AbstractTableGateway
         $role = $user->role;
 
         $id = (int)$user->id;
+<<<<<<< HEAD
         if ($id == 0) {
+=======
+        
+        
+        //if user doesn't exists
+        if ($id == 0 OR empty($id)) {
+            //insert user
+>>>>>>> fb5ae052afdd1f904a9ad82c07c9a280fc9b6ba4
             $this->insert($data);
         } else {
             if ($this->getUser($id)) {

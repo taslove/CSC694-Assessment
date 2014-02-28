@@ -36,7 +36,11 @@ class AllTables extends AbstractTableGateway
         $select = $sql->select()
                       ->from('units')
                       ->where(array('active_flag' => 1));
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> fb5ae052afdd1f904a9ad82c07c9a280fc9b6ba4
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         
@@ -63,6 +67,10 @@ class AllTables extends AbstractTableGateway
         
         // union results from both selects
         $select1->combine($select2);
+<<<<<<< HEAD
+=======
+
+>>>>>>> fb5ae052afdd1f904a9ad82c07c9a280fc9b6ba4
 
         $statement = $sql->prepareStatementForSqlObject($select1);
         $result = $statement->execute();
