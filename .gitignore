@@ -1,7 +1,7 @@
 /conf/
 nbproject
 ._*
-.~lock.*  
+.~lock.*
 .buildpath
 .DS_Store
 .idea
@@ -10,7 +10,3 @@ nbproject
 vendor
 config/autoload/local.php.dist
 public/.htaccess
-
-<<<<<<< HEAD
-
-/data/tmpuploads

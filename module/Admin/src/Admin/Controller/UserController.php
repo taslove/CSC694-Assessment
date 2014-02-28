@@ -16,8 +16,6 @@ use Zend\View\Model\ViewModel;
 use Zend\Db\Sql\Select;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Adapter;
-use Zend\Paginator\Adapter\ArrayAdapter;
-use Zend\Paginator\Paginator;
 
 
 class UserController extends AbstractActionController
@@ -25,25 +23,10 @@ class UserController extends AbstractActionController
     protected $tableResults;
 
    public function indexAction()
-    { 
-        $page = $this->params()->fromRoute('page') ? (int) $this->params()->fromRoute('page') : 1;
-
-        $users = $this->getUserQueries()->fetchAll();
-        $itemsPerPage = 10;
-
-        $paginator = new \Zend\Paginator\Paginator(new \Zend\Paginator\Adapter\ArrayAdapter($users));
-        $paginator->setCurrentPageNumber($page)
-                ->setItemCountPerPage($itemsPerPage)
-                ->setPageRange(7);
-
+    {
         return new ViewModel(array(
-                    'page' => $page,
-                    'paginator' => $paginator,
-                ));
-       
-      /*  return new ViewModel(array(
             'users' => $this->getUserQueries()->fetchAll(),
-        ));*/
+        ));
     }
    public function addAction()
    {
@@ -76,17 +59,9 @@ class UserController extends AbstractActionController
         }
         $user = $this->getUserQueries()->getUser($id);
 
-
-        $user->dbroles = $user->user_roles;
-
-        foreach($user->user_roles as $role => $value){
-            $user->user_roles[] = $role;
-        }
- 
-        
         $form = new UserForm();
         $form->bind($user);
-        $form->get('submit')->setAttribute('value', 'Save');
+        $form->get('submit')->setAttribute('value', 'Edit');
 
         $request = $this->getRequest();
         if ($request->isPost()) {

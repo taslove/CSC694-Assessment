@@ -34,6 +34,13 @@ class Module
                         return $table;
                     },
                 ),
+                'factories' =>  array(
+                    'Review\Model\ReviewTables' => function($sm) {
+                        $dbAdapter = $sm->get('dbAdapter');
+                        $table = new ReviewTables($dbAdapter);
+                        return $table;
+                    },
+                ),
         );
         
     }

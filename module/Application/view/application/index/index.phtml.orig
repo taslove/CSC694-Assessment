@@ -1,11 +1,22 @@
 <?php
 // module/Student/view/mock/mock/index.phtml:
-<<<<<<< HEAD
 
 $title = 'Mock-up Login';
 $this->headTitle($title);
+<<<<<<< HEAD
+
+
+$form = $this->form;
+$form->setAttribute('action', $this->url('authenticate'));
+$form->prepare();
+
+echo $this->form()->openTag($form);
+echo $this->formCollection($form);
+echo $this->form()->closeTag($form);
+
 ?>
-<!--
+=======
+?>
 <p></p>
 <html><body>
     <div class="container">
@@ -13,7 +24,7 @@ $this->headTitle($title);
           
           <div class="container">
 <div class="jumbotron">
-       <form action='application' method="post" accept-charset="UTF-8">
+       <form action='authenticate' method="post" accept-charset="UTF-8">
   <input id="user_username" style="margin-bottom: 15px;" type="text" name="user[username]" size="30" />
   <p></p>
   <input id="user_password" style="margin-bottom: 15px;" type="password" name="user[password]" size="30" />
@@ -23,32 +34,9 @@ $this->headTitle($title);
   <input class="btn btn-primary" type="submit" name="commit" value="Login" />
 </form>
 </div>
-    </div> <!-- /container 
+    </div> <!-- /container -->
       
     </div>
      </center>
 </html>
-
--->
-
-<?php
-=======
-
-$title = 'Mock-up Login';
-$this->headTitle($title);
-
->>>>>>> ldap_task
-
-$form = $this->form;
-$form->setAttribute('action', $this->url('authenticate'));
-$form->prepare();
-
-echo $this->form()->openTag($form);
-<<<<<<< HEAD
-echo $this->form;
-=======
-echo $this->formCollection($form);
->>>>>>> ldap_task
-echo $this->form()->closeTag($form);
-
-?>
+>>>>>>> test
