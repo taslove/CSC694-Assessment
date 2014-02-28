@@ -16,9 +16,6 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Adapter\Ldap as AuthAdapter;
 use Zend\Config\Reader\Ini as ConfigReader;
 use Zend\Config\Config;
-use Zend\Log\Logger;
-use Zend\Log\Writer\Stream as LogWriter;
-use Zend\Log\Filter\Priority as LogFilter;
 
 
 class IndexController extends AbstractActionController
@@ -39,17 +36,17 @@ class IndexController extends AbstractActionController
             $username = $request->getPost('userName', null);
             $password = $request->getPost('password', null);
         }
-        
-        $auth = new AuthenticationService();
-
+     
+        //this code reads the configuration file for the LDAP server
         $configReader = new ConfigReader();
         $configData = $configReader->fromFile('ldap-config.ini');
         $config = new Config($configData, true);
         
-        //$log_path = $config->production->ldap->log_path;
         $options = $config->production->ldap->toArray();
         unset($options['log_path']);
         
+        //this sets up the
+        $auth = new AuthenticationService();
         $adapter = new AuthAdapter($options,
                                    $username,
                                    $password);

@@ -16,22 +16,23 @@ class LoginForm extends Form
         $this->add(array(
             'name' => 'userName',
             'attributes' => array(
-                'type' => 'text',                
+                'type' => 'text',
+                'class' => 'jumbotron',
             ),
             'options' => array(
                 'label' => 'User Name',                
             ),
-            'class' => 'jumbotron',
         ));
         $this->add(array(
             'name' => 'password',
             'attributes' => array(
-                'type' => 'password',                
+                'type' => 'password',
+                'class' => 'jumbotron',               
             ),
             'options' => array(
                 'label' => 'Password',                
             ),
-            'class' => 'jumbotron',
+            
         ));
         $this->add(array(
             'name' => 'submit',
@@ -39,6 +40,7 @@ class LoginForm extends Form
                 'type' => 'submit',
                 'value' => 'Go',
                 'id' => 'submitbutton',
+                'class' => 'btn btn-primary',
             ),
         ));
     }
