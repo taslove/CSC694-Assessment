@@ -22,7 +22,7 @@ class Outcomes implements InputFilterAwareInterface
         $this->oid = (isset($data['id'])) ? $data['id'] : null;
         $this->programId = (isset($data['program_id'])) ? $data['program_id'] : null;
         $this->outcomeText = (isset($data['outcome_text'])) ? $data['outcome_text'] : null;
-        $this->activeFlag = (isset($data['active'])) ? $data['active'] : null;
+        $this->activeFlag = (isset($data['active_flag'])) ? $data['active_flag'] : null;
     }
 
      // Add the following method:
@@ -74,7 +74,7 @@ class Outcomes implements InputFilterAwareInterface
             )));
 
             $inputFilter->add($factory->createInput(array(
-                'name' => 'active',
+                'name' => 'active_flag',
                 'required' => true,
                 'filters' => array(
                     array('name' => 'Int'),

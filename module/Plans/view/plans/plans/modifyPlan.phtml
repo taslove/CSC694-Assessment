@@ -1,0 +1,425 @@
+<?php
+
+$title = 'Plans Modify';
+$this->headTitle($title);
+?>
+
+<div class="container">
+    <center><h3>Assessment Plans-MODIFY</h3></center>
+    <p></p>  
+    <div class="row">
+	<!-- Build the left hand side of the page -->                                 				
+	<?php echo $this->partial('plans/plans/plansLeftSidePartial.phtml', array()); ?>
+	
+	<!--column 2-->
+	<p></p>
+	<form action="<?php echo $this->url('plans', array('action'=>'modifyplan'));?>" method="post">
+	    <input type="hidden" name="planId" id="planId" value="<?php echo $planId ?>">
+	    <div class="col-md-8">
+		<div class="table-responsive">
+		<table class="table table-bordered table-striped">
+		    <colgroup><col class="col-xs-8"></colgroup>
+		    <div class="bs-example">
+			<table class="table">
+			    <!-- create a header line -->
+			    <?php $label="MODIFY PLAN: ";?>
+			    <?php echo $this->partial('plans/plans/displayAllPrograms.phtml', array('programs' => $programs,
+												    'label' => $label,
+												    'unit' => $unit,
+												    'year' => $year,
+												    ))	
+			    ?>
+				<div class="controls">
+				    <div class="panel-group" id="accordion">
+					<div class="panel panel-default">
+					    <div class="panel-heading">
+						<h4 class="panel-title">
+						    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Outcomes</a>
+						</h4>
+					    </div>
+	
+					    <div id="collapseOne" class="panel-collapse collapse in">
+						<div class="panel-body">
+						    <?php
+							// loop through all the outcomes
+							$outcomeCount = 0;
+							    if (!empty($outcomes)) {
+								foreach ($outcomes as $outcome) :
+								    $outcomeCount++;
+						    ?>
+								    <!-- display the counter with the outcome text -->
+								    <p><?php echo $outcomeCount; ?>. <?php echo $outcome->getOutcomeText() ?></td></p>
+						    <?php
+								endforeach;
+							    }
+						    ?>
+						</div>
+					    </div>
+					</div>
+				    </div>
+	
+				    <!-- listing of all the database attributes that can be updated -->
+				    <div class="panel panel-default">
+					<div class="panel-heading">
+					    <h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+						    1. Describe assessment method.
+						</a>
+					    </h4>
+					</div>
+	
+					<div id="collapseTwo" class="panel-collapse collapse">
+					    <div class="panel-body">
+						<textarea rows="6" cols="60" class="textbox" id="textAssessmentMethod" name="textAssessmentMethod">
+						    <?php echo $this->escapeHtml($plan['assessment_method']) ?>
+						</textarea>  
+					    </div>
+					</div>
+	
+					<div class="panel-heading">
+					    <h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+						    2. Describe population assessed.
+						</a>
+					    </h4>
+					</div>
+	
+					<div id="collapseThree" class="panel-collapse collapse">
+					    <div class="panel-body">
+						<textarea rows="6" cols="60" class="textbox" id="textPopulation" name="textPopulation">
+						    <?php echo $this->escapeHtml($plan['population']) ?>
+						</textarea>      
+					    </div>
+					</div>
+	
+					<div class="panel-heading">
+					    <h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+						    3. Describe sample size assessed.
+						</a>
+					    </h4>
+					</div>
+	
+					<div id="collapseFour" class="panel-collapse collapse">
+					    <div class="panel-body">
+						<textarea rows="6" cols="60" class="textbox" id="textSamplesize" name="textSamplesize">
+						    <?php echo $this->escapeHtml($plan['sample_size']) ?>
+						</textarea>      
+					    </div>
+					</div>
+	
+					<div class="panel-heading">
+					    <h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
+						    4. Describe assessment date assessed.
+						</a>
+					    </h4>
+					</div>
+	
+					<div id="collapseFive" class="panel-collapse collapse">
+					    <div class="panel-body">
+						<textarea rows="6" cols="60" class="textbox" id="textAssessmentDate" name="textAssessmentDate">
+						    <?php echo $this->escapeHtml($plan['assessment_date']) ?>
+						</textarea>      
+					    </div>
+					</div>
+	
+					<div class="panel-heading">
+					    <h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion" href="#collapseSix">
+						    5. Describe cost assessed.
+						</a>
+					    </h4>
+					</div>
+	
+					<div id="collapseSix" class="panel-collapse collapse">
+					    <div class="panel-body">
+						<textarea rows="6" cols="60" class="textbox" id="textCost" name="textCost">
+						    <?php echo $this->escapeHtml($plan['cost']) ?>
+						</textarea>      
+					    </div>
+					</div>
+	
+					<div class="panel-heading">
+					    <h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion" href="#collapseSeven">
+						    6. Describe analysis type assessed.
+						</a>
+					    </h4>
+					</div>
+	
+					<div id="collapseSeven" class="panel-collapse collapse">
+					    <div class="panel-body">
+						<textarea rows="6" cols="60" class="textbox" id="textAnalysisType" name="textAnalysisType">
+						    <?php echo $this->escapeHtml($plan['analysis_type']) ?>
+						</textarea>      
+					    </div>
+					</div>
+	
+					<div class="panel-heading">
+					    <h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion" href="#collapseEight">
+						    7. Describe administrator assessed.
+						</a>
+					    </h4>
+					</div>
+	
+					<div id="collapseEight" class="panel-collapse collapse">
+					    <div class="panel-body">
+						<textarea rows="6" cols="60" class="textbox" id="textAdministrator" name="textAdministrator">
+						    <?php echo $this->escapeHtml($plan['administrator']) ?>
+						</textarea>      
+					    </div>
+					</div>
+	
+					<div class="panel-heading">
+					    <h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion" href="#collapseNine">
+						    8. Describe analysis method assessed.
+						</a>
+					    </h4>
+					</div>
+	
+					<div id="collapseNine" class="panel-collapse collapse">
+					    <div class="panel-body">
+						<textarea rows="6" cols="60" class="textbox" id="textAnalysisMethod" name="textAnalysisMethod">
+						    <?php echo $this->escapeHtml($plan['analysis_method']) ?>
+						</textarea>      
+					    </div>
+					</div>
+	
+					<div class="panel-heading">
+					    <h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion" href="#collapseTen">
+						    9. Describe scope assessed.
+						</a>
+					    </h4>
+					</div>
+	
+					<div id="collapseTen" class="panel-collapse collapse">
+					    <div class="panel-body">
+						<textarea rows="6" cols="60" class="textbox" id="textScope" name="textScope">
+						    <?php echo $this->escapeHtml($plan['scope']) ?>
+						</textarea>      
+					    </div>
+					</div>
+	
+					<div class="panel-heading">
+					    <h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion" href="#collapseEleven">
+						    10. Describe feedback assessed.
+						</a>
+					    </h4>
+					</div>
+	
+					<div id="collapseEleven" class="panel-collapse collapse">
+					    <div class="panel-body">
+						<textarea rows="6" cols="60" class="textbox" id="textFeedback" name="textFeedback">
+						    <?php echo $this->escapeHtml($plan['feedback_text']) ?>
+						</textarea>      
+					    </div>
+					</div>
+	
+					<div class="panel-heading">
+					    <h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwelve">
+						    11. Describe feedback flag assessed.
+						</a>
+					    </h4>
+					</div>
+	
+					<div id="collapseTwelve" class="panel-collapse collapse">
+					    <div class="panel-body">
+						<textarea rows="6" cols="60" class="textbox" id="textFeedbackFlag" name="textFeedbackFlag">
+						    <?php echo $this->escapeHtml($plan['feedback']) ?>
+						</textarea>      
+					    </div>
+					</div>					    
+	
+					<div class="panel-heading">
+					    <h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion" href="#collapseThirteen">
+						    12. Describe plan status flag assessed.
+						</a>
+					    </h4>
+					</div>
+	
+					<div id="collapseThirteen" class="panel-collapse collapse">
+					    <div class="panel-body">
+						<textarea rows="6" cols="60" class="textbox" id="textPlanStatus" name="textPlanStatus">
+						    <?php echo $this->escapeHtml($plan['plan_status']) ?>
+						</textarea>      
+					    </div>
+					</div>					    
+	
+				    </div>
+	
+				    <div class="panel panel-default">
+					<div class="panel-heading">
+					    <h4 class="panel-title">
+					      <a data-toggle="collapse" data-parent="#accordion" href="#collapseFourteen">
+						Feedback
+					      </a>
+					    </h4>
+					</div>
+	
+					<div id="collapseFourteen" class="panel-collapse collapse">
+					    <div class="panel-body">
+					       <div class="input-group">
+						    <span class="input-group-addon">
+							<input type="radio" placeholder="">In need of revision &nbsp;
+							<input type="radio" placeholder="">Ready to be carried out
+						    </span>
+						</div>
+						<textarea rows="6" cols="60" class="rta" id="ta_sample" name="ta_sample"
+							placeholder="Enter feedback..."></textarea>
+					    </div>
+					</div>
+				    </div>
+				</div> <!-- controls -->    
+	
+				<a class="btn btn-primary" href="<?php echo $this->url('plans', array('action'=>'index')); ?>">Back to Plans</a>&nbsp;
+				<button type="button" class="btn btn-primary">Preview</button>&nbsp;
+				
+				<!-- only display the save draft button if the plan is currenlty set as a draft in the database once the plan is submitted it can no longer be modified as a draft -->
+				<?php
+				    if($plan['draft_flag'] == "1"){
+					echo "<button type=\"submit\" name=\"formSubmit\" value=\"formSaveDraft\" class=\"btn btn-primary\">Save Draft</button>&nbsp;";
+				    }
+				?>
+				<button type="submit" name="formSubmit" value="formSavePlan" class="btn btn-success">Submit</button>&nbsp;
+			</table>
+		    </div>
+		</table>
+	    </div>
+	</form>
+    </div>
+</div>
+	    
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="../../js/bootstrap.min.js"></script>
+<script src="../../js/bootstrap-rta.min.js"></script>
+<script src="../../js/bootstrap-select.js"></script>
+<script src="../../js/customPlan.js"></script>
+
+
+<script>
+
+// load actions based on user privileges
+$(document).ready(function() {
+     $.rta(); // load rta features - simplest implementation
+  
+   var actions = <?php print json_encode($useractions); ?>;
+   for (var i = 0; i < actions.length; i++){
+      $('#action-menu').append('<option>' + actions[i] + '</option>');
+   }
+   
+   // call code to initialize the selectpicker
+   // this must come after the options are initialized
+   $('.selectpicker').selectpicker();
+});
+
+// update unit/department options based on actions
+$(document).on('change', '#action-menu', function () {
+   $action = $('#action-menu option:selected').val();
+   // clear selectorlist before adding unit/department options
+   var oldSelections = $('#unit-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
+   }
+   // data-hidden="true" shows title on button
+   $('#unit-menu').append('<option  data-hidden="true"></option>');
+   $('#unit-menu').selectpicker('refresh');
+   
+   // create url for redirect
+   var urlform = "<?php echo $this->url('plans', array(
+                                    'controller'=>'plans',
+                                    'action'=>'getUnits')); ?>";
+   urlform = urlform + '/' + $action;
+     
+   // asynchronous ajax code to populate unit/department selector
+   $.ajax({
+      url: urlform,
+      type: "GET",
+      dataType: "json",
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+      success: function(unitsJson){
+         for (var i = 0; i < unitsJson.length; i++){
+            $('#unit-menu').append('<option>' + unitsJson[i].id + '</option>');
+         }
+         $('#unit-menu').selectpicker('refresh');
+      },
+   });
+});
+
+// update program options based on unit/department
+$(document).on('change', '#unit-menu', function () {
+   $unit = $('#unit-menu option:selected').val();
+   // clear selectorlist before adding program/degree options
+   var oldSelections = $('#prog-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
+   }
+   $('#prog-menu').selectpicker('refresh');
+   
+   // create url for redirect
+   var urlform = "<?php echo $this->url('plans', array(
+                                    'controller'=>'plans',
+                                    'action'=>'getPrograms')); ?>";
+   urlform = urlform + '/' + $unit;
+   
+   // asynchronous ajax code to populate program/degree selector
+   $.ajax({
+      url: urlform,
+      type: "GET",
+      dataType: "json",
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+      success: function(programsJson){
+         for (var i = 0; i < programsJson.length; i++){
+            $('#prog-menu').append('<option>' + programsJson[i].name + '</option>');
+         }
+         $('#prog-menu').selectpicker('refresh');
+      },
+   });
+});
+
+// load all the year options after the unit/department & unit/department are selected
+$(document).on('change', '#prog-menu', function () {
+   // clear selectorlist before adding all the years
+   var oldSelections = $('#year-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
+   }
+   
+   // data-hidden="true" shows title on button
+   $('#year-menu').append('<option  data-hidden="true"></option>');
+   $('#year-menu').selectpicker('refresh');
+   
+   // create url for redirect
+   var urlform = "<?php echo $this->url('plans', array(
+                                    'controller'=>'plans',
+                                    'action'=>'getYears')); ?>";
+   urlform = urlform;
+   
+   // asynchronous ajax code to populate program/degree selector
+   $.ajax({
+      url: urlform,
+      type: "GET",
+      dataType: "json",
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+      success: function(programsJson){
+         for (var i = 0; i < programsJson.length; i++){
+            $('#year-menu').append('<option>' + programsJson[i].year + '</option>');
+         }
+         $('#year-menu').selectpicker('refresh');
+      },
+   });
+});
+</script>		

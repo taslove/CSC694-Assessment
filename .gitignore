@@ -11,6 +11,6 @@ vendor
 config/autoload/local.php.dist
 public/.htaccess
 
+<<<<<<< HEAD
 
 /data/tmpuploads
-

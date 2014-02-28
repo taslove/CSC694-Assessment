@@ -1,5 +1,6 @@
 <?php
 /**
+ * Review
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
@@ -32,7 +33,8 @@
                       ),
                      'defaults' => array(
                          'controller' => 'Review\Controller\Review',
-                         'action'     => 'index',
+                         /*added action so we don't have to type "/index" */
+                         'action' => 'index',
                      ),
                  ),
              ),
