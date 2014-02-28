@@ -1,14 +1,22 @@
 <?php
 
-// module/Mock/view/mock/mock/reportsindex.phtml:
 
 $title = 'Assessment Report Index';
 $this->headTitle($title);
-?>	
-<html>
-    <body>  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <link rel="stylesheet" href="./css/bootstrap.min.css"> 
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+     <link rel="stylesheet" href="./css/bootstrap.css"> 
     <link rel="stylesheet" href="./css/bootstrap-rta.min.css">
+	    <link rel="stylesheet" href="./css/bootstrap-select.css">
+	    <link rel="stylesheet" href="./css/bootstrap-select.css">
+    
+</head>
+    <body>  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
     <style>
         textarea {
             width: 300px;
@@ -24,15 +32,13 @@ $this->headTitle($title);
                     <!-- Dept typeahead --> <div class="container">
                        
 	<p></p>
-                         <!-- Choose Action -->
+       <!-- Choose Action -->
       <select class="selectpicker" id="action-menu" data-style="btn-primary" title='Choose Action'>
          <option data-hidden="true"></option>
-         <option>View</option>
-         <option>Add</option>
-         <option>Modify</option>
       </select>  
      <br />
      <br />
+   
       <!-- Choose Department/Unit -->
       <select class="selectpicker" id="unit-menu" data-style="btn-primary" title='Choose Department/Unit'>
          <option data-hidden="true"></option>
@@ -40,78 +46,126 @@ $this->headTitle($title);
      <br />
      <br />
    
-   <!--
-      <h6>Enter Department Name</h6>
-      <div class="input-group">
-      <div class="input-group-btn">
-         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Select
-         <span class="caret"></span>
-         </button>
-         <ul class="dropdown-menu" id='unit-menu2' >
-         </ul>
-      </div>
-      <input type="text" id="unit-input" class="form-control" placeholder="Department">
-      </div>
-   -->
       <!-- Choose Program/Degree -->
       <select class="selectpicker" id="prog-menu" data-style="btn-primary" title='Choose Program/Degree' multiple>
-         <option data-hidden="true"></option>
+	 <option data-hidden="true"></option>
+        
+
       </select>
      <br />
      <br />
+      
+      <!-- Choose Program/Degree -->
+     <select class="selectpicker" id="year-menu" data-style="btn-primary" title='Choose Year'>
+         <option data-hidden="true"></option>
+	 <option value="2010">2010</option>
+	 <option value="2011">2011</option>
+         <option value="2012">2012</option>
+         <option value="2013">2013</option>
+         <option value="2014">2014</option>
+     </select>
+     <br />
+     <br />
    
-	  <!-- Get Button trigger modal -->
-<a class="btn btn-primary btn-md" href="reports/view-All-Reports">
-  Find Reports &raquo;
-</a>
 
-<p></p>
-<a class="btn btn-primary btn-md" href="../mock">&laquo;<?php echo
-	    $this->translate ('Back to Main') ?> </a> <p></p>
+
+
+<a class="btn btn-primary btn-md" href=""><?php echo
+	    $this->translate ('Back to Main') ?> </a>
+	  <!-- Get Button trigger modal -->
+<a class="btn btn-primary btn-md" id="submit">
+  Submit
+</a><p></p>
                     </div><!--close container-->
                 </div><!--close column-->
 		
 		<!--column 2-->
-		
+		<div id="content">
+		</div>
 	</div>
 	                    
     </body>
 </html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="./js/bootstrap.min.js"></script>
-<script src="./js/bootstrap-rta.min.js"></script>
-<script src="./js/bootstrap-select.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-rta.min.js"></script>
+<script src="../js/bootstrap-select.js"></script>
+
 <script>
 
-// call loadDepts on page load
-$(document).ready(function() {
-   $.rta(); // load rta features - simplest implementation
-   loadUnits();
+// Submit data to get plans
+$(document).on('click', '#submit', function () {
+    var action = document.getElementById('action-menu').value;
+    var unit = document.getElementById('unit-menu').value;
+    var program = $( "#prog-menu option:selected" ).val();
+    var year = document.getElementById('year-menu').value;
+    alert(program);
+   // asynchronous ajax code to get plans
+   $.ajax({
+      url: 'http://localhost/zendframework/reports/viewPlans/31/2007',
+      type: "GET",
+      dataType: "text",
+      error : function(xhr, status, error) {
+        alert(error);
+      },
+      success: function(html){
+        document.getElementById('content').innerHTML = html;
+      },
+   });
 });
+</script>
+<script>
 
-// function to create department/unit options
-function loadUnits(){
-   
-   // convert php array into javascript array
-   var units = <?php print json_encode($units); ?>;
-   // assign unit ids to html dropdown
-   for (var i = 0; i < units.length; i++){
-      //$('#unit-menu2').append('<li><a>' + units[i].id + '</a></li>');
-      $('#unit-menu').append('<option>' + units[i].id + '</option>');
+// load actions based on user privileges
+$(document).ready(function() {
+   var actions = <?php print json_encode($useractions); ?>;
+   for (var i = 0; i < actions.length; i++){
+      $('#action-menu').append('<option>' + actions[i] + '</option>');
    }
    // call code to initialize the selectpicker
-   // this must come after the options are ini
+   // this must come after the options are initialized
    $('.selectpicker').selectpicker();
-   
-}
-
-// call loadPrograms when user chooses a department/unit
-$(document).on('change', '#unit-menu', function () {
-    loadPrograms($('#unit-menu option:selected').val());
 });
 
-// function to create program options based on department/unit chosen
-function loadPrograms($unit){
+// update unit/department options based on actions
+$(document).on('change', '#action-menu', function () {
+   $action = $('#action-menu option:selected').val();
+   // clear selectorlist before adding unit/department options
+   var oldSelections = $('#unit-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
+   }
+   
+   // data-hidden="true" shows title on button
+   $('#unit-menu').append('<option  data-hidden="true"></option>');
+   $('#unit-menu').selectpicker('refresh');
+   
+   // create url for redirect
+   var urlform = "<?php echo $this->url('default', array(
+                                    'controller'=>'reports',
+                                    'action'=>'getUnits')); ?>";
+
+   urlform = urlform + '/' + $action;
+   // asynchronous ajax code to populate unit/department selector
+   $.ajax({
+      url: urlform,
+      type: "GET",
+      dataType: "json",
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+      success: function(unitsJson){
+         for (var i = 0; i < unitsJson.length; i++){
+            $('#unit-menu').append('<option>' + unitsJson[i].id + '</option>');
+         }
+         $('#unit-menu').selectpicker('refresh');
+      },
+   });
+});
+
+// update program options based on unit/department
+$(document).on('change', '#unit-menu', function () {
+   $unit = $('#unit-menu option:selected').val();
    // clear selectorlist before adding program/degree options
    var oldSelections = $('#prog-menu option');
    for (var i = 0; i < oldSelections.length; i++){
@@ -120,27 +174,33 @@ function loadPrograms($unit){
    $('#prog-menu').selectpicker('refresh');
    
    // create url for redirect
-   var urlform = "<?php echo $this->url('review', array(
-                                    'controller'=>'review',
-                                    'action'=>'get')); ?>";
+   var urlform = "<?php echo $this->url('default', array(
+                                    'controller'=>'reports',
+                                    'action'=>'getPrograms')); ?>";
    urlform = urlform + '/' + $unit;
-   
    // asynchronous ajax code to populate program/degree selector
+   // build stuff here and make it work
+    var stuff = {};
+    //key programs, value = array of programs
    $.ajax({
       url: urlform,
-      type: "GET",
-      dataType: "json",
+      type: "GET", //post
+      dataType: "json",//data 
+      data:stuff,
+      // content type
+      
       error : function(xhr, status, error) {
          console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
       },
       success: function(programsJson){
          for (var i = 0; i < programsJson.length; i++){
+		 
             $('#prog-menu').append('<option>' + programsJson[i].name + '</option>');
          }
          $('#prog-menu').selectpicker('refresh');
       },
    });
-}
+});
 </script>
                      
                             

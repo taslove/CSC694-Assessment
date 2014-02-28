@@ -1,6 +1,10 @@
 <?php
 return array(
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> cc5de1caeb625a2d372a32a4656e7951c18220d5
     // This should be an array of module namespaces used in the application.
     'modules' => array(
         'Application',
