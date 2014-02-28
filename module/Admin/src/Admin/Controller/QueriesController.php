@@ -7,18 +7,17 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Plans\Controller;
+namespace Admin\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-class PlansController extends AbstractActionController
+class QueriesController extends AbstractActionController
 {
-   protected $studentTable;
 
    public function indexAction()
    {
-      echo "In Plans Controller";  
+       return new ViewModel();
    }
 
 }
