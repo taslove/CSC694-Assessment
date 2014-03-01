@@ -66,8 +66,7 @@ class UserTable extends AbstractTableGateway
         }
         return $roles;
     }
-<<<<<<< HEAD
-=======
+
     
     /*
      * deletes all roles a user has
@@ -120,7 +119,6 @@ class UserTable extends AbstractTableGateway
         );
         return $roles[$id];
     }
->>>>>>> fb5ae052afdd1f904a9ad82c07c9a280fc9b6ba4
 
     /*
      * Get user by id
@@ -185,15 +183,9 @@ class UserTable extends AbstractTableGateway
         $role = $user->role;
 
         $id = (int)$user->id;
-<<<<<<< HEAD
-        if ($id == 0) {
-=======
-        
-        
         //if user doesn't exists
         if ($id == 0 OR empty($id)) {
             //insert user
->>>>>>> fb5ae052afdd1f904a9ad82c07c9a280fc9b6ba4
             $this->insert($data);
         } else {
             if ($this->getUser($id)) {
