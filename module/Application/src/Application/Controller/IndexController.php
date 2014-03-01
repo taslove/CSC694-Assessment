@@ -16,6 +16,7 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Adapter\Ldap as AuthAdapter;
 use Zend\Config\Reader\Ini as ConfigReader;
 use Zend\Config\Config;
+use Zend\Ldap;
 
 
 class IndexController extends AbstractActionController
@@ -29,7 +30,6 @@ class IndexController extends AbstractActionController
     
     public function authenticateAction()
     {
-        $form = new LoginForm();
         $request = $this->getRequest();
         
         if ($request->isPost()) {
@@ -40,12 +40,11 @@ class IndexController extends AbstractActionController
         //this code reads the configuration file for the LDAP server
         $configReader = new ConfigReader();
         $configData = $configReader->fromFile('ldap-config.ini');
-        $config = new Config($configData, true);
-        
+        $config = new Config($configData, true);        
         $options = $config->production->ldap->toArray();
         unset($options['log_path']);
         
-        //this sets up the
+        //this sets up the adapter to talk to the LDAP server
         $auth = new AuthenticationService();
         $adapter = new AuthAdapter($options,
                                    $username,
@@ -54,11 +53,19 @@ class IndexController extends AbstractActionController
         $result = $auth->authenticate($adapter);
         
         $messages = $result->getMessages();
-        var_dump($messages);
-        exit();
+        
+        foreach ($messages as $message) {
+            var_dump($message);
+            echo '<br>';
+        }
+        
+        //$ldap = new Zend\Ldap\Ldap($options);
+        //var_dump($ldap);
+        
+        //$schema = $auth->getSchema();
+        
+        
+        
+        exit();        
     }
 }
-
-
-//var_dump($request);
-        //exit();
