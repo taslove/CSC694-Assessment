@@ -22,7 +22,7 @@ use Zend\Paginator\Paginator;
 
 class UserController extends AbstractActionController
 {
-    protected $tableResults;
+   protected $tableResults;
 
    public function indexAction()
     { 
@@ -40,10 +40,6 @@ class UserController extends AbstractActionController
                     'page' => $page,
                     'paginator' => $paginator,
                 ));
-       
-      /*  return new ViewModel(array(
-            'users' => $this->getUserQueries()->fetchAll(),
-        ));*/
     }
    public function addAction()
    {
@@ -131,16 +127,6 @@ class UserController extends AbstractActionController
         }
 
    }
-    
-    public function getGenericQueries()
-    {
-        if (!$this->tableResults) {
-            $this->tableResults = $this->getServiceLocator()
-                                       ->get('Application\Model\AllTables');
-                    
-        }
-        return $this->tableResults;
-    }
    public function getUserQueries()
     {
         if (!$this->tableResults) {
