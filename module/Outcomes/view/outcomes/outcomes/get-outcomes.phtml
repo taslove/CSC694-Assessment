@@ -1,0 +1,112 @@
+    <button class="btn btn-primary pull-right" id="addButton" type="button">Add outcome</button>
+    <br />
+    <br />
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+      
+    <tr>
+    <th>Outcome ID</th>
+    <th>Program ID</th>
+    <th>Description</th>
+    <th>Active</th>
+    <th>Action</th>
+</tr>
+<?php foreach ($outcomes as $outcome) : ?>
+<tr>
+    <td><?php echo $this->escapeHtml($outcome['id']);?></td>
+    <td><?php echo $this->escapeHtml($outcome['program_id']);?></td>
+    <td><?php echo $this->escapeHtml($outcome['outcome_text']);?></td>
+    <td><?php echo $this->escapeHtml($outcome['active_flag']);?></td>
+    <td>
+  <div class="btn-group-vertical">
+        <!-- include an onClick listener on each button that passes the outcome ID as a parameter -->
+        <button class="btn btn-primary" type="button">Edit</button>
+        <button class="btn btn-primary" type="button" onclick="deleteHandler(<?php echo $this->escapeHtml($outcome['id']);?>);">Delete</button>
+  </div>
+    </td>
+</tr>
+<?php endforeach; ?>
+</table>                 
+</div> <!-- Table reponsive div close-->
+  
+  
+<script>
+$(document).ready(function() {
+
+// set the title to reflect the selected program
+var programTitle = $('#prog-menu option:selected').text();
+$("#outcomesTitle").html("Assessment Outcomes - " + programTitle);
+
+// store the id of the selected program
+var selectedProgram = <?php echo $this->escapeHtml($programId);?>;
+
+// handle the add button
+$("#addButton").on('click', function () {
+//alert("You're going to add an outcome to " + selectedProgram);
+
+   // create url for redirect
+   var urlform = "<?php echo $this->url('outcomes', array(
+                                    'controller'=>'outcomes',
+                                    'action'=>'addOutcome')); ?>";
+   urlform = urlform + '/' + selectedProgram;
+      
+   // asynchronous ajax code to populate program/degree selector
+   $.ajax({
+      url: urlform,
+      type: "GET",
+      dataType: "text",
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+      success: function(partialHtml){
+        // clear any existing html in the partial div
+        $('#partialHolder').html(partialHtml);
+      },
+   });
+
+});
+
+
+});
+
+
+
+function deleteHandler(outcomeId){
+    var selectedProgram = <?php echo $this->escapeHtml($programId);?>;
+    
+    // if the user wants to go through with it
+    if (confirm("Are you sure you want to delete outcome " + outcomeId + " from program " + selectedProgram)) {
+   
+   var urlform = "<?php echo $this->url('outcomes', array(
+                                    'controller'=>'outcomes',
+                                    'action'=>'getOutcomes')); ?>";
+   urlform = urlform + '/' + outcomeId;
+      
+   // asynchronous ajax code to populate program/degree selector
+   $.ajax({
+      url: urlform,
+      type: "POST",
+      dataType: "text",
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+      success: function(partialHtml){
+        // clear any existing html in the partial div
+        $('#partialHolder').html(partialHtml);
+      },
+   });
+   
+   
+    } else {
+    // Do nothing!
+    }   
+}
+
+
+function testFunction(prog){
+    alert("clicked in program " + selectedProgram + "!");
+}
+
+
+
+</script>

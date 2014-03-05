@@ -1,0 +1,33 @@
+<?php
+$form = $this->addForm;
+$form->setAttribute('action', $this->url(
+    'outcomes',
+    array(
+        'action' => 'addOutcome',
+     )));
+
+$form->prepare();
+
+echo("<div class='container'>");
+
+echo $this->form()->openTag($form);
+echo $this->formRow($form->get('outcome_text'));
+echo("<br />");
+echo $this->formSubmit($form->get('submit'));
+
+// make sure to include hidden fields
+echo $this->formHidden($form->get('id'));
+echo $this->formHidden($form->get('program_id'));
+echo $this->formHidden($form->get('active_flag'));
+echo $this->form()->closeTag();
+
+echo("</div>"); // end of container
+?>
+
+<script>
+ $(document).ready(function() {
+
+// initialize RTA stuff when page is ready			      
+$.rta(); 
+ });
+</script>

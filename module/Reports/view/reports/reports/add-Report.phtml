@@ -1,95 +1,10 @@
 <?php
-// module/Student/view/mock/mock/viewSO.phtml:
 
-$title = 'Plans';
-$this->headTitle($title);
+if($results){
+    echo '</br></br></br></br>There is already a report for this plan';
+}else{
+
 ?>
-<html>
-    <body>
-	 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/bootstrap.min.css">
-  
-    <link rel="stylesheet" href="../css/bootstrap-rta.min.css">
-        <div class="container">
-            <center><h3>Assessment Reports</h3>
-            
-	    </center>
-	    
-	    
-            <p></p>  
-            <div class="row">
-                <div class="col-md-4">
-                    <!-- Dept typeahead --> <div class="container">
-                       <input type="checkbox">View &nbsp;
-		    <input type="checkbox">Add &nbsp;
-		    <input type="checkbox">Modify
-	<p></p>
-                        <h6>Department Name</h6>
-                       
-                        <div class="input-group">
-                            <input type="text" class="form-control"
-                                   placeholder="Accounting">
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-primary
-                                        dropdown-toggle"
-                                        data-toggle="dropdown">Select
-                                    <span class="caret"></span>
-                                </button> <ul class="dropdown-menu">
-                                    <li><a href="#">Computer Science/BS</a></li>
-                                    <li><a href="#">Computer Science/MS</a></li>
-                                    <li><a href="#">Computer Science/BS</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- Prog/Degree dropdown -->
-                        <h6>Degree/Program</h6>
-                        <div class="input-group">
-                            <input type="text" class="form-control"
-                                   placeholder="MS/Accounting">
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-primary
-                                        dropdown-toggle"
-                                        data-toggle="dropdown">Select
-                                    <span class="caret"></span>
-                                </button> <ul class="dropdown-menu">
-                                    <li><a href="#">Computer Science/BS</a></li>
-                                    <li><a href="#">Computer Science/MS</a></li>
-                                    <li><a href="#">Computer Science/BS</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- Year --> <h6>Academic Year</h6>
-			<div class="input-group">
-                            <input type="text" class="form-control"
-                                   placeholder="2014-15">
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-primary
-                                        dropdown-toggle"
-                                        data-toggle="dropdown">
-
-                                    <span data-bind="label">Select</span>&nbsp;
-                                    <span class="caret"></span>
-                                </button> <ul class="dropdown-menu" >
-                                    <li><a href="#">Current</a></li>
-                                    <li><a href="#">2015-16</a></li>
-                                    <li><a href="#">2016-17</a></li>
-                                    <li><a href="#">2017-18</a></li>
-                                </ul>
-                            </div>			    
-                        </div><p></p>
-			
-	  <!-- Get Button trigger modal -->
-<a class="btn btn-success btn-md" href="./reports">
-  Submit &raquo;
-</a>
-
-<p></p>
-<a class="btn btn-primary btn-md" href="../mock">&laquo;<?php echo
-	    $this->translate ('Back to Main') ?> </a> <p></p>
-                    </div><!--close container-->
-                </div><!--close column-->
-		<!--column 2-->
-		<p></p>
 		<div class="col-md-8">
 		   <div class="table-responsive">
     <table class="table table-bordered table-striped">
@@ -99,10 +14,17 @@ $this->headTitle($title);
       </colgroup>
      
   <div class="bs-example">
+    <?php
+    $form->setAttribute('action', $this->url('reports', array('action' => 'addNewReport')));
+    $form->prepare();
+    echo $this->form()->openTag($form);
+    echo $this->formHidden($form->get('id')->setAttribute('value', $planData[0]['id']));
+    ?>
     <table class="table">
       
-          <h6>View Report</h6>
-       <h4>TBD</h4>
+          <h6>Add New Report</h6>
+       		    <h4><?php echo $planData[0]['unit_id'] . ' - ' . $planData[0]['name'] . ' - ' . $planData[0]['year'];?></h4>
+
       
     
     <div class="controls">
@@ -120,9 +42,9 @@ $this->headTitle($title);
 	<div>
 	<?php $ctr = 0;?>
 
-	<?php foreach($outcomes as $outcome) : ?>
+	<?php foreach($descriptions as $description) : ?>
 	    <?php $ctr++;?>
-	     <?php echo($ctr); ?>.<?php echo $outcome;?>
+	     <?php echo($ctr); ?>.<?php echo $description;?>
 	    </br>
 	    
 	    <?php endforeach; ?>
@@ -137,20 +59,6 @@ $this->headTitle($title);
   <div class="panel panel-default">
     <div class="panel-heading">
       <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-           2. Describe assessment method.
-        </a>
-      </h4>
-    </div>
-    <div id="collapseTwo" class="panel-collapse collapse">
-      <div class="panel-body">
-<textarea readonly rows="10" cols="60" class="textbox" id="" name=""
-		  ><?php echo $report[0]['assessment_method']?></textarea>      </div>
-    </div>
-  </div>
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
         <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
            2. Describe population assessed.
         </a>
@@ -158,8 +66,7 @@ $this->headTitle($title);
     </div>
     <div id="collapseThree" class="panel-collapse collapse">
       <div class="panel-body">
-<textarea readonly rows="10" cols="60" class="textbox" id="" name=""
-		  ><?php echo $report[0]['population']?></textarea>      </div>
+		  <?php echo $this->formRow($form->get('population'))?>      </div>
     </div>
   </div>
   
@@ -173,8 +80,7 @@ $this->headTitle($title);
     </div>
     <div id="collapseFour" class="panel-collapse collapse">
       <div class="panel-body">
-<textarea readonly rows="6" cols="60" class="textbox" id="" name=""
-		  ><?php echo $report[0]['results']?></textarea>      </div>
+		  <?php echo $this->formRow($form->get('results'))?>      </div>
     </div>
   </div>
   
@@ -188,8 +94,7 @@ $this->headTitle($title);
     </div>
     <div id="collapseFive" class="panel-collapse collapse">
       <div class="panel-body">
-<textarea readonly rows="6" cols="60" class="textbox" id="" name=""
-		  ><?php echo $report[0]['conclusions']?></textarea>      </div>
+<?php echo $this->formRow($form->get('conclusions'))?>     </div>
     </div>
   </div>
   
@@ -203,8 +108,7 @@ $this->headTitle($title);
     </div>
     <div id="collapseSix" class="panel-collapse collapse">
       <div class="panel-body">
-<textarea readonly rows="10" cols="60" class="textbox" id="" name=""
-		  ><?php echo $report[0]['actions']?></textarea>      </div>
+<?php echo $this->formRow($form->get('actions'))?>    </div>
     </div>
   </div>
   
@@ -212,30 +116,17 @@ $this->headTitle($title);
 <a href="#">AttachedFile.pdf</a><P></P>
 	
         </div> <!-- controls -->
-        <button type="button" class="btn btn-primary">Back to Reports</button>&nbsp;
-	<button type="button" class="btn btn-primary">Print</button>&nbsp;
+	<?php echo $this->formRow($form->get('submit'))?>
+
 
       <tbody>
        
       </tbody>
     </table></table>
+    <?php echo $this->form()->closeTag();?>
+
   </div><!-- /example -->
-   
-                   
-    </div>
-         
-             <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-                        <script src="../js/jquery.min.js"></script>
-                        <script src="../js/bootstrap3-typeahead.js"></script>
-                        <script src="https://code.jquery.com/jquery.js"></script>
-                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-                        <script src="../js/bootstrap.min.js"></script>
-                        <script src="../js/bootstrap-rta.min.js"></script>
-                        <script>
-                            $(document).ready(function() {
-                                document.getElementById('ta_sample').value = "";
-                                $.rta(); // The simplest initialization... default button set on all class="rta" textarea's
-                            });
-                        </script>
-    </body>
-</html>
+ <?php
+ 
+}
+?>
