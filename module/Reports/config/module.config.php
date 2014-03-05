@@ -17,10 +17,13 @@
          'template_path_stack' => array(
              'reports' => __DIR__ . '/../view',
          ),
+         'strategies' => array(
+            'ViewJsonStrategy',
+        ),
      ),
        'router' => array(
          'routes' => array(
-             'reports' => array(
+             'default' => array(
                  'type'    => 'segment',
                  'options' => array(
                      'route'    => '/reports[/][:action]',
@@ -34,26 +37,57 @@
                  ),
              ),
              
-             'reports' => array(
+             'index' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/reports[/][:action][/][:pid]',
+                     'route'    => '/reports',
                      'constraints' => array(
-                         'pid' => '[0-9]+',
                      ),
                      'defaults' => array(
                          'controller' => 'Reports\Controller\Reports',
-                         'action'     => 'index',
+                        'action'     => 'index',
                      ),
                  ),
              ),
              
+             'id' => array(
+                 'type'    => 'segment',
+                 'options' => array(
+                     'route'    => '/reports[/][:action][/][:id]',
+                     'constraints' => array(
+                     ),
+                     'defaults' => array(
+                         'controller' => 'Reports\Controller\Reports',
+                     ),
+                 ),
+             ),
+             
+             'reports' => array(
+                 'type'    => 'segment',
+                 'options' => array(
+                     'route'    => '/reports[/][:action]',
+                     'constraints' => array(
+                     ),
+                     'defaults' => array(
+                         'controller' => 'Reports\Controller\Reports',
+                          'action'     => 'index',
+
+                     ),
+                 ),
+             ),
+             
+             'plans' => array(
+                 'type'    => 'segment',
+                 'options' => array(
+                     'route'    => '/reports[/][:action][/][:pid][/][:year]',
+                     'constraints' => array(
+                     ),
+                     'defaults' => array(
+                         'controller' => 'Reports\Controller\Reports',
+                     ),
+                 ),
+             ),
              
          ),
-     ),
-
-     'strategies' => array(
-            'ViewJsonStrategy',
-         
      ),
  );

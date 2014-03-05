@@ -53,20 +53,19 @@ class UserForm extends Form
             ),
         ));
          $this->add(array(
-            'name' => 'user_roles',
+            'name' => 'user_role',
             'type' => 'Zend\Form\Element\MultiCheckbox',
             'attributes' => array(
                 'class'=> 'checkbox-inline',
-                'id' => 'user_roles',
+                'id' => 'user_role',
             ),
             'options' => array(
-                'label' => 'User Roles',
+                'label' => 'User Role',
                 'value_options' => array(
-                    '1' => 'Admin',
-                    '2' => 'Chair',
-                    '3' => 'User',
-                    '4' => 'Assessor',
-                    '5' => 'Committee',
+                    1=> 'Admin',
+                    2=> 'Chair',
+                    3=> 'User',
+                    4=> 'Committee',
                 ),
             ),
         ));

@@ -1,0 +1,239 @@
+<center><h3>Administrator Queries</h3></center>
+<div class = "panel panel-default">
+    <div class="panel-body">
+    
+    <div class="col-md-4">
+        <!-- Choose Query -->
+        <dl>
+            <dt>Query 1:<br/>
+            Show programs that have not added a plan for a specific year.
+            </dt>
+            <dd> Enter Year: <input type='text' id="q1year"/>
+            <button type="button" class="btn-primary" id="query1">Run</button>
+            <strong><i><font color="#A00" class="alert alert-error" id="q1error">Please enter a valid year YYYY</font></i></strong>   
+            </dd>
+        </dl>
+        <br />
+        <dl>
+            <dt>Query 2:<br/>
+            Show programs that have not added a report for a specific year.
+            </dt>
+            <dd> Enter Year: <input type='text' id="q2year"/>
+            <button type="button" class="btn-primary" id="query2">Run</button>
+            <strong><i><font color="#A00" class="alert alert-error" id="q2error">Please enter a valid year YYYY</font></i></strong>   
+            </dd>
+        </dl>
+        <br />
+        <dl>
+            <dt>Query 3:<br/>
+            Show programs conducting meta assessment.
+            </dt>
+            <dd> Enter Year: <input type='text' id="q3year"/>
+            <button type="button" class="btn-primary" id="query3">Run</button>
+            <strong><i><font color="#A00" class="alert alert-error" id="q3error">Please enter a valid year YYYY</font></i></strong>   
+            </dd>
+        </dl>
+               <br />
+        <dl>
+            <dt>Query 4:<br/>
+            Show programs requesting funding.
+            </dt>
+            <dd> Enter Year: <input type='text' id="q4year"/>
+            <button type="button" class="btn-primary" id="query4">Run</button>
+            <strong><i><font color="#A00" class="alert alert-error" id="q4error">Please enter a valid year YYYY</font></i></strong>   
+            </dd>
+        </dl>
+         <br />
+         <dl>
+            <dt>Query 5:<br/>
+            Show programs that have modified their outcomes.
+            </dt>
+            <dd> Enter Year: <input type='text' id="q5year"/>
+            <button type="button" class="btn-primary" id="query5">Run</button>
+            <strong><i><font color="#A00" class="alert alert-error" id="q5error">Please enter a valid year YYYY</font></i></strong>   
+            </dd>
+        </dl>
+        <br />
+        <dl>
+            <dt>Query 6:<br/>
+            Show programs that have added or modified their plan for the previous year.
+            </dt>
+            <button type="button" class="btn-primary" id="query6">Run</button>
+            </dd>
+        </dl>
+     
+        <br />
+        <!-- Choose Query -->
+        <dl>
+            <dt>Show all programs that have not added a plan for a specific year.
+             
+            <div class="form-group">
+                <div class='input-group date' id='dp2'>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    <input type='text' class="form-control" id='q5date'/>
+                        
+                </div>
+            </div>
+     
+    </div><!--close column-->
+
+
+    <!--column 2 - this holds the partial-->
+    <div class="col-md-8">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped" id="resultsTable" name="resultsTable">
+            </table>
+        </div> <!-- end of table-responsive -->
+          
+    </div> <!-- end of col-md-8--> 
+  </div>
+</div>
+
+<script>
+
+$(function () {
+    document.getElementById("q1error").style.display="none";
+    document.getElementById("q2error").style.display="none";
+    document.getElementById("q3error").style.display="none";
+    document.getElementById("q4error").style.display="none";
+    document.getElementById("q5error").style.display="none";
+    $('#q5date').datepicker({dateFormat: 'mm-dd-yyyy'});
+});
+
+$(document).on('click', '#dp2', function(){
+    $('#dp2').datepicker().on('changeDate', function(ev){
+       //$('#q5date').val(ev.date.valueOf());
+       $('#q5date').val(ev.date.valueOf());
+    })
+})
+
+$(document).on('click', '#query1', function () {
+    // clear rhs of page
+    $('#resultsTable').html("");
+    
+    // get user entered year
+    var year = $('#q1year').val();
+    
+    if (year){
+        document.getElementById("q1error").style.display="none";
+    
+        // create url for redirect url(route, array(controller, action))
+        var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery1')); ?>";
+        urlform = urlform + '/' + year;
+        ajaxCall(urlform);
+    }
+    else{
+        document.getElementById("q1error").style.display="block";
+    }
+});
+
+$(document).on('click', '#query2', function () {
+    // clear rhs of page
+    $('#resultsTable').html("");
+    
+    // get user entered year
+    var year = $('#q2year').val();
+    
+    if (year){
+        document.getElementById("q2error").style.display="none";
+    
+        // create url for redirect url(route, array(controller, action))
+        var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery2')); ?>";
+        urlform = urlform + '/' + year;
+        ajaxCall(urlform);
+    }
+    else{
+        document.getElementById("q2error").style.display="block";
+    }
+});
+
+$(document).on('click', '#query3', function () {
+    // clear rhs of page
+    $('#resultsTable').html("");
+    
+    // get user entered year
+    var year = $('#q3year').val();
+    
+    if (year){
+        document.getElementById("q3error").style.display="none";
+    
+        // create url for redirect url(route, array(controller, action))
+        var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery3')); ?>";
+        urlform = urlform + '/' + year;
+        ajaxCall(urlform);
+    }
+    else{
+        document.getElementById("q3error").style.display="block";
+    }
+});
+
+$(document).on('click', '#query4', function () {
+    // clear rhs of page
+    $('#resultsTable').html("");
+    
+    // get user entered year
+    var year = $('#q4year').val();
+    
+    if (year){
+        document.getElementById("q4error").style.display="none";
+    
+        // create url for redirect url(route, array(controller, action))
+        var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery4')); ?>";
+        urlform = urlform + '/' + year;
+        ajaxCall(urlform);
+    }
+    else{
+        document.getElementById("q4error").style.display="block";
+    }
+});
+
+
+$(document).on('click', '#query5', function () {
+    // clear rhs of page
+    $('#resultsTable').html("");
+    
+    // get user entered year
+    var year = $('#q5year').val();
+    
+    if (year){
+        document.getElementById("q5error").style.display="none";
+    
+        // create url for redirect url(route, array(controller, action))
+        var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery5')); ?>";
+        urlform = urlform + '/' + year;
+        ajaxCall(urlform);
+    }
+    else{
+        document.getElementById("q5error").style.display="block";
+    }
+});
+
+$(document).on('click', '#query6', function () {
+    // clear rhs of page
+    $('#resultsTable').html("");
+    
+    // create url for redirect url(route, array(controller, action))
+    var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery6')); ?>";
+    ajaxCall(urlform);
+});
+
+function ajaxCall(urlform){
+            // asynchronous ajax code to populate program/degree selector
+        $.ajax({
+          url: urlform,
+          type: "GET",
+          // dataType returned from server
+          dataType: "html",
+          error : function(xhr, status, error) {
+             console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+          },
+          success: function(results){
+            // clear any existing html in the partial div
+            $('#resultsTable').html("");
+            $('#resultsTable').html(results);        
+          },
+       });
+}
+</script>
+

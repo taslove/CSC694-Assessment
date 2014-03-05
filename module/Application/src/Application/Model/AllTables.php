@@ -5,10 +5,8 @@ namespace Application\Model;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
-use Zend\DB\Sql\Select;
+use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
-use Zend\Db\Sql\Expression;
-use Plans\Model\Entity;
 
 
 // This class must be included in the factories array in
@@ -38,7 +36,7 @@ class AllTables extends AbstractTableGateway
         $select = $sql->select()
                       ->from('units')
                       ->where(array('active_flag' => 1));
-
+ 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         
@@ -66,7 +64,6 @@ class AllTables extends AbstractTableGateway
         // union results from both selects
         $select1->combine($select2);
 
-
         $statement = $sql->prepareStatementForSqlObject($select1);
         $result = $statement->execute();
         
@@ -93,4 +90,5 @@ class AllTables extends AbstractTableGateway
         
         return $result;
     }
+  
 }
