@@ -7,7 +7,6 @@ return array(
         'Outcomes',
         'Plans',
         'Reports',
-        'Review',
         'Mock',
     ),
 
