@@ -26,47 +26,22 @@ class OutcomesController extends AbstractActionController
     protected $userRole = 3;
     protected $userID = 9;
     
-    /*
-    public function indexAction()
-    {
-        return new ViewModel(array(
-            'outcomes' => $this->getModelOutcomesTable()->getAllOutcomes(),
-            'units' => $this->getModelOutcomesTable()->getAllUnits(),
-            'programs' => $this->getModelOutcomesTable()->getAllProgramsForUnit('ACC'),
-            'filteredOutcomes' => $this->getModelOutcomesTable()->getAllOutcomesForProgram(1),
-        ));
-    }
-    */
-
         
     public function indexAction()
-    {
-            
-        // if general user - only view
-        // get all units, since only view option is displayed
-        if ($this->userRole == null){
+    {      
             $results = $this->getGenericQueries()->getUnits();
             // iterate over database results forming a php array
             foreach ($results as $result){
                 $unitarray[] = $result;
             }
             return new ViewModel(array(
-                'useractions' => array('View'),
                 'units' => $unitarray,
-                'outcomes' => $this->getOutcomesQueries()->getAllOutcomes(), // just for testing
                 'userRole' => $this->userRole,
                 'userID' => $this->userID,
-            ));
-        }
-        else{  // user in table with role - show actions
-               // wait to populate units until action chosen
-            return new ViewModel(array(
-                'useractions' => array('View', 'Add', 'Modify'),
-                'outcomes' => $this->getOutcomesQueries()->getAllOutcomesForProgram(2), // just for testing
-                'userRole' => $this->userRole,
-                'userID' => $this->userID,
-            ));
-        }
+            ));    
+            
+            
+       
     }
     
     // Creates list of available units (departments/programs)
@@ -113,21 +88,88 @@ class OutcomesController extends AbstractActionController
     
    public function getOutcomesAction()
    {
+         $request = $this->getRequest();
+         
+         // this would be the case if an outcome was just deleted
+         if ($request->isPost()) {
+      
+            $this->getOutcomesQueries()->deactivateOutcome(5014);
+
+         }
+      
+      
         // get programs from id in url
         $programChosen = $this->params()->fromRoute('id', 0);
         // get outcomes for that program
-        $results = $this->getOutcomesQueries()->getAllOutcomesForProgram($programChosen);
+        $results = $this->getOutcomesQueries()->getAllActiveOutcomesForProgram($programChosen);
       
-        // iterate through results forming a php array
-        foreach ($results as $result){
-            $outcomesData[] = $result;
-        }
-      
-        // encode results as json object
-        $jsonData = new JsonModel($outcomesData);
-        return $jsonData;
+         $partialView = new ViewModel(array(
+         'outcomes' => $results,
+         'programId' => $programChosen,
+      ));
+      // ignore the layout template
+      $partialView->setTerminal(true);
+      return $partialView;
     }
    
+   
+   public function addOutcomeAction()
+   {
+      // get programs from id in url
+      $programChosen = $this->params()->fromRoute('id', 0);
+      $request = $this->getRequest();
+      
+      $addForm = new OutcomesForm();
+      $addForm->get('submit')->setValue('Add');
+      
+      // set values that we already know
+      $addForm->get('program_id')->setValue($programChosen);
+      $addForm->get('active_flag')->setValue(1);
+      
+      // handle actually adding an outcome
+        if ($request->isPost()) {
+            $outcome = new Outcomes();
+            $addForm->setInputFilter($outcome->getInputFilter());
+            $addForm->setData($request->getPost());
+
+            if ($addForm->isValid()) {
+                $outcome->exchangeArray($addForm->getData());
+                $this->getOutcomesQueries()->addOutcome($outcome);
+
+                // Redirect to list of students
+                return $this->redirect()->toRoute('outcomes');
+            }
+            else {
+               $fail = "Validation fail";
+               var_dump($addForm->getData());
+               exit;
+            }
+        }  
+      // if it's a get, we render the addOutcome screen
+      $partialView = new ViewModel(array(
+         'addForm' => $addForm,
+      ));
+      // ignore the layout template
+      $partialView->setTerminal(true);
+      return $partialView;
+    }
+   
+   public function deactivateOutcome()
+   {
+      // get programs from id in url
+      $outcomeId = $this->params()->fromRoute('id', 0);
+    //  $this->getOutcomesQueries()->deactivateOutcome($outcomeId);
+      
+         // if it's a get, we render the addOutcome screen
+      $partialView = new ViewModel(array(
+      //   'addForm' => $addForm,
+      ));
+      // ignore the layout template
+      $partialView->setTerminal(true);
+      return $partialView;
+
+      
+   }
    
    // for testing purposes
       public function addAction()
@@ -156,14 +198,6 @@ class OutcomesController extends AbstractActionController
     }
    
    
-   
-   
-   
-   
-   
-   
-      
-    
     public function getGenericQueries()
     {
         if (!$this->tableResults) {

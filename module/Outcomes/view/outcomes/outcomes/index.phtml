@@ -3,18 +3,12 @@
    $title = 'Review Assessment Plans and Reports';
    $this->headTitle($title);
 ?>      
-<center><h3>Review Assessment Outcomes</h3>
+<center><h3 id="outcomesTitle">Assessment Outcomes</h3>
 
 <div class="row">
    <div class="col-md-4">
    <div class="container">
    
-     <br />
-     <br />
-      <!-- Choose Action -->
-      <select class="selectpicker" id="action-menu" data-style="btn-primary" title='Choose Action'>
-         <option data-hidden="true"></option>
-      </select>  
      <br />
      <br />
    
@@ -26,7 +20,7 @@
      <br />
    
       <!-- Choose Program/Degree -->
-      <select class="selectpicker" id="prog-menu" data-style="btn-primary" title='Choose Program/Degree' multiple>
+      <select class="selectpicker" id="prog-menu" data-style="btn-primary" title='Choose Program/Degree'>
          <option data-hidden="true"></option>
       </select>
      <br />
@@ -35,57 +29,18 @@
      
       <p></p>
       <!-- the 'Find Outcome' button -->
-      <a class="btn btn-primary btn-lg" id="find-button"><?php echo $this->translate
-      ('Find Outcomes') ?> &raquo;</a>
-          
+      <a class="btn btn-primary btn-lg" id="submit-button" disabled><?php echo $this->translate
+      ('Submit') ?> &raquo;</a>
+      <br />
+      <br /> <!-- add some space in case the right side is forced below-->
       </div><!--close container-->
 </div><!--close column-->
 
 
 <!--column 2 - this holds the partial-->
-  <div class="col-md-8">
-
-  <div class="table-responsive">
-    <table class="table table-bordered table-striped" id="partialHolder">
-    </table>
-  
-    <?php
-    
- //   if ($test == "I'm a post"){
- //   echo $this->partial('outcomes/outcomes/partial.phtml', array(
- //   'outcomes' => $outcomes,
- //   'userRole' => $userRole,
- //   'userID' => $userID,
-//  ));
-//    }
-?> 
-
-    
-    
+  <div class="col-md-8" id="partialHolder">
     
   </div> <!-- end of col-md-8--> 
-
-  <!--
-<style>
-   textarea {
-      width: 400px;
-   }
-</style>
-<div class="container">
-   <form class="form-horizontal" name="rtaform" id="rtaform" method="GET" action="#">
-      <div class="control-group">
-      <label class="control-label" for="ta_sample">Feedback Response</label>
-      <div class="controls">
-         <textarea rows="8" cols="60" class="rta" id="ta_sample" name="ta_sample"></textarea>
-      </div> 
-      </div> 
-   </form>
-</div>
--->
-
-
-
-
 
 
 
@@ -93,75 +48,57 @@
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/bootstrap-rta.min.js"></script>
-<script src="../js/bootstrap-select.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap-rta.min.js"></script>
+<script src="js/bootstrap-select.js"></script>
 
 
 <script>
 
-// load actions based on user privileges
-$(document).ready(function() {
-   var actions = <?php print json_encode($useractions); ?>;
-   for (var i = 0; i < actions.length; i++){
-      $('#action-menu').append('<option>' + actions[i] + '</option>');
+
+$(document).ready(function() {  
+    // load all the units
+   var units = <?php print json_encode($units); ?>;
+   for (var i = 0; i < units.length; i++){
+      $('#unit-menu').append('<option>' + units[i].id + '</option>');
    }
    // call code to initialize the selectpicker
    // this must come after the options are initialized
-   $('.selectpicker').selectpicker();
-});
-
-// update unit/department options based on actions
-$(document).on('change', '#action-menu', function () {
-   $action = $('#action-menu option:selected').val();
-   // clear selectorlist before adding unit/department options
-   var oldSelections = $('#unit-menu option');
-   for (var i = 0; i < oldSelections.length; i++){
-      oldSelections.remove();
-   }
-   // data-hidden="true" shows title on button
-   $('#unit-menu').append('<option  data-hidden="true"></option>');
-   $('#unit-menu').selectpicker('refresh');
+   $('.selectpicker').selectpicker();   
    
-   // create url for redirect
-   var urlform = "<?php echo $this->url('outcomes', array(
-                                    'controller'=>'outcomes',
-                                    'action'=>'getUnits')); ?>";
-   urlform = urlform + '/' + $action;
-   // asynchronous ajax code to populate unit/department selector
-   $.ajax({
-      url: urlform,
-      type: "GET",
-      dataType: "json",
-      error : function(xhr, status, error) {
-         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
-      },
-      success: function(unitsJson){
-         for (var i = 0; i < unitsJson.length; i++){
-            $('#unit-menu').append('<option>' + unitsJson[i].id + '</option>');
-         }
-         $('#unit-menu').selectpicker('refresh');
-      },
-   });
-});
 
-// update program options based on unit/department
+// handle changes on the first selector
 $(document).on('change', '#unit-menu', function () {
-   $unit = $('#unit-menu option:selected').val();
+    
+    // disable the submit button until a specific program is chosen
+    $("#submit-button").attr("disabled", "disabled");
+    
+   var unit = $('#unit-menu option:selected').val();
+   
    // clear selectorlist before adding program/degree options
    var oldSelections = $('#prog-menu option');
    for (var i = 0; i < oldSelections.length; i++){
-      oldSelections.remove();
+   // don't remove the default message
+   if (!oldSelections.value == "Choose Program/Degree"){
+    oldSelections.remove();
    }
-   $('#prog-menu').selectpicker('refresh');
    
+         // clear selectorlist before adding unit/department options
+   var oldProgSelections = $('#prog-menu option');
+   for (var i = 0; i < oldProgSelections.length; i++){
+      oldProgSelections.remove();
+   }
+   // data-hidden="true" shows title on button
+   $('#prog-menu').append('<option  data-hidden="true"></option>');
+   $('#prog-menu').selectpicker('refresh');   
+   }
+
    // create url for redirect
    var urlform = "<?php echo $this->url('outcomes', array(
                                     'controller'=>'outcomes',
                                     'action'=>'getPrograms')); ?>";
-   urlform = urlform + '/' + $unit;
+   urlform = urlform + '/' + unit;
    
-   // asynchronous ajax code to populate program/degree selector
    $.ajax({
       url: urlform,
       type: "GET",
@@ -179,83 +116,40 @@ $(document).on('change', '#unit-menu', function () {
    });
 });
 
-// play around with button
-$(document).on('click', '#find-button', function () {
-   $program = $('#prog-menu option:selected').val();
+// handle changes on the second selector
+$(document).on('change', '#prog-menu', function () {
+        $("#submit-button").removeAttr("disabled");
+});
+    
+//  handle button clicks
+$(document).on('click', '#submit-button', function () {
+   var program = $('#prog-menu option:selected').val();
 
-   
    // create url for redirect
    var urlform = "<?php echo $this->url('outcomes', array(
                                     'controller'=>'outcomes',
                                     'action'=>'getOutcomes')); ?>";
-   urlform = urlform + '/' + $program;
+   urlform = urlform + '/' + program;
       
    // asynchronous ajax code to populate program/degree selector
    $.ajax({
       url: urlform,
       type: "GET",
-      dataType: "json",
+      dataType: "text",
       error : function(xhr, status, error) {
          console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
       },
-      success: function(outcomesJson){
+      success: function(partialHtml){
         // clear any existing html in the partial div
-        $('#partialHolder').html("");
-      
-
-        
-        for (var i = 0; i < outcomesJson.length; i++){
-        $('#partialHolder').append("<tr><td>" + (i + 1) + "</td><td>" + outcomesJson[i].outcome_text + "</td></tr>");
-         }
-         
-       // $('#prog-menu').selectpicker('refresh');
+        $('#partialHolder').html(partialHtml);
       },
    });
 });
+});
 
-
-
-
-// add a listener to the 'Find Outcomes' button
-var findButton = document.getElementById("find-button");
-// findButton.addEventListener("click", handleFindButton);
-
-
-function handleFindButton(){
-
-//$(document).on('change', '#prog-menu', function () {
-   $program = $('#prog-menu option:selected').val();
-       $('#partialHolder').append($program);
-   // clear selectorlist before adding program/degree options
-   //var oldSelections = $('#prog-menu option');
-   //for (var i = 0; i < oldSelections.length; i++){
-   //   oldSelections.remove();
-  // }
-  // $('#prog-menu').selectpicker('refresh');
-//}
-
-}
-
-// calling this function generates a list on the right hand side of the screen
-
-// old mess around stuff
-function displaySelectedProgramOutcomes(){
-    
-    var partial = <?php echo $this->partial('outcomes/outcomes/partial.phtml', array(
-    'outcomes' => $outcomes,
-    'userRole' => $userRole,
-    'userID' => $userID,
-    )); ?>
-    
-    $('#partialHolder').append(partial);
-
-    if (document.getElementById("prog-menu").value.length < 1) {
-        alert("Idiot..."); 
-    } else {
-   alert("Selected " + document.getElementById("prog-menu").value);
-    }
-}
-
+// notes
+// document.ready should encapsulate all the other jquery stuff
+// need a break below bottom button on left side
 
 </script>
 
