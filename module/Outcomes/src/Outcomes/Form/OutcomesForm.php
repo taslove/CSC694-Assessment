@@ -11,6 +11,8 @@ class OutcomesForm extends Form
         // we want to ignore the name passed
         parent::__construct('outcomes');
         $this->setAttribute('method', 'post');
+        $this->setAttribute('class', 'form-horizontal');
+        $this->setAttribute('name', 'rtaform');
         
         $this->add(array(
             'name' => 'id',
@@ -30,13 +32,17 @@ class OutcomesForm extends Form
             'name' => 'outcome_text',
             'attributes' => array(
                 'type' => 'textarea',
+                'class' => 'rta',
+                'rows' => '6',
+                'cols' => '90',
+                'placeholder' => "",
             ),
             'options' => array(
                 'label' => 'Outcome text',
             ),
         ));
         $this->add(array(
-            'name' => 'active',
+            'name' => 'active_flag',
             'attributes' => array(
                 'type' => 'text',
             ),
