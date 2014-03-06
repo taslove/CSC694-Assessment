@@ -13,10 +13,9 @@ class Program implements InputFilterAwareInterface
 
     public function exchangeArray($data)
     {
-        $this->id = (isset($data['id'])) ? $data['id'] : null;
-        $this->unit_id = (isset($data['unit_id'])) ? $data['unit_id'] : null;
-        $this->name = (isset($data['name'])) ? $data['name'] : null;
-        $this->active_flag = (isset($data['active_flag'])) ? $data['active_flag'] : null;
+        foreach($data as $id => $value){
+            $this->$id = $value;
+        }
     }
 
      // Add the following method:

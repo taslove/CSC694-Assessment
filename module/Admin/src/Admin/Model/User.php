@@ -13,11 +13,9 @@ class User implements InputFilterAwareInterface
 
     public function exchangeArray($data)
     {
-        $this->id = (isset($data['id'])) ? $data['id'] : null;
-        $this->first_name = (isset($data['first_name'])) ? $data['first_name'] : null;
-        $this->last_name = (isset($data['last_name'])) ? $data['last_name'] : null;
-        $this->middle_init = (isset($data['middle_init'])) ? $data['middle_init'] : null;
-        $this->email = (isset($data['email'])) ? $data['email'] : null;
+        foreach($data as $id => $value){
+            $this->$id = $value;
+        }
         $this->user_roles = (isset($data['user_roles'])) ? $data['user_roles'] : null;
     }
 
@@ -98,6 +96,19 @@ class User implements InputFilterAwareInterface
                             'min' => 1,
                             'max' => 1,
                         ),
+                    ),
+                ),
+            )));
+            $inputFilter->add($factory->createInput(array(
+                'name' => 'email',
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'EmailAddress',
                     ),
                 ),
             )));

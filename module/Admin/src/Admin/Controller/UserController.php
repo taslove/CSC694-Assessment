@@ -54,6 +54,10 @@ class UserController extends AbstractActionController
 
             if ($form->isValid()) {
                 $user->exchangeArray($form->getData());
+                
+                //TODO: something to check it email exists
+                
+                //save the user
                 $this->getUserQueries()->saveUser($user);
 
                 // Redirect to list of users

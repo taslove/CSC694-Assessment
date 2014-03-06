@@ -42,6 +42,17 @@ class UserForm extends Form
             ),
         ));
         $this->add(array(
+            'name' => 'email',          
+            'type' => 'Zend\Form\Element\Text',
+            'attributes' => array(
+                'class'=> 'form-control',
+                'id' => 'email',
+            ),
+            'options' => array(
+                'label' => 'Email',
+            ),
+        ));
+        $this->add(array(
             'name' => 'last_name',
             'type' => 'Zend\Form\Element\Text',
             'attributes' => array(

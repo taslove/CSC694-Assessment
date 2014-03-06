@@ -92,7 +92,8 @@ class UserTable extends AbstractTableGateway
        foreach($roles as $row => $value){
             $role = array(
                 'user_id' => $userID,
-                'role' => $value
+                'role' => $value,
+                'created_user' => 21
             );
             $sql = new Sql($this->adapter);
             $insert = $sql->insert('user_roles');
@@ -100,6 +101,16 @@ class UserTable extends AbstractTableGateway
             $insertString = $sql->getSqlStringForSqlObject($insert);
             $this->adapter->query($insertString, Adapter::QUERY_MODE_EXECUTE);
        }
+    }
+    
+    /*
+     *  Updates Users Roles
+     * @userID - id to the user object
+     * @roles - array of role ids
+     */
+    function updateRoles($userID,$roles)
+    {
+
     }
     
     /*
@@ -168,6 +179,8 @@ class UserTable extends AbstractTableGateway
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
             'middle_init' => $user->middle_init,
+            'email' => $user->email,
+            'datatel_id' => 0
         );
         
         //just put users roles into a new array
@@ -193,11 +206,14 @@ class UserTable extends AbstractTableGateway
                 //update user information
                 $this->update($data, array('id' => $id));
                 
-                //delete old roles
+                /*delete old roles
                 $this->deleteRoles($user->id);
                 
                 //add role(s)
-                $this->addRoles($user->id,$roles);
+                $this->addRoles($user->id,$roles);*/
+                
+                //update and add roles
+                $this->updateRoles($user->id,$roles);
   
             } else {
                 throw new \Exception('Form id does not exist');

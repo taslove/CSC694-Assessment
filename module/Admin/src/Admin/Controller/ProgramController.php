@@ -44,11 +44,60 @@ class ProgramController extends AbstractActionController
     }
    public function addAction()
    {
- 
+        $form = new ProgramForm();
+        $form->get('submit')->setValue('Add');
+
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $program = new Program();
+            $form->setInputFilter($program->getInputFilter());
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $program->exchangeArray($form->getData());
+                
+                //TODO: something to check it email exists
+                
+                //save the user
+                $this->getProgramQueries()->saveProgram($user);
+
+                // Redirect to list of users
+                return $this->redirect()->toRoute('program');
+            }
+        }
+        return array('form' => $form);  
    }
    public function editAction()
    {
-       
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('program', array(
+                'action' => 'add'
+            ));
+        }
+        $program = $this->getProgramQueries()->getProgram($id);
+
+        $form = new ProgramForm();
+        $form->bind($program);
+        $form->get('submit')->setAttribute('value', 'Save');
+
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setInputFilter($program->getInputFilter());
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $this->getUserQueries()->saveProgram($form->getData());
+
+                // Redirect to list of users
+                return $this->redirect()->toRoute('program');
+            }
+        }
+
+        return array(
+            'id' => $id,
+            'form' => $form,
+        );
    }
    public function deleteAction()
    {
@@ -56,15 +105,7 @@ class ProgramController extends AbstractActionController
 
    }
     
-    public function getGenericQueries()
-    {
-        if (!$this->tableResults) {
-            $this->tableResults = $this->getServiceLocator()
-                                       ->get('Application\Model\AllTables');
-                    
-        }
-        return $this->tableResults;
-    }
+
    public function getProgramQueries()
     {
         if (!$this->tableResults) {
