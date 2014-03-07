@@ -118,7 +118,7 @@ $(document).on('click', '#submit', function () {
 
 	// asynchronous ajax code to get plans
 	$.ajax({
-	   url: 'http://localhost/zendframework/reports/viewPlans',
+	   url: 'http://localhost/csc694-Assessment/reports/viewPlans',
      
 	   type: "POST",
 	   data: json,
@@ -200,6 +200,7 @@ $(document).on('change', '#unit-menu', function () {
    // build stuff here and make it work
 
     //key programs, value = array of programs
+    var stuff={};
    $.ajax({
       url: urlform,
       type: "GET", //post
@@ -208,6 +209,7 @@ $(document).on('change', '#unit-menu', function () {
       // content type
       
       error : function(xhr, status, error) {
+        alert(error);
          console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
       },
       success: function(programsJson){
@@ -237,8 +239,8 @@ $(document).on('change', '#prog-menu', function () {
                                     'action'=>'getYears')); ?>";
 	var json = '{"programs" : ' + JSON.stringify(programs) + ' }';
 
-	
-    //key programs, value = array of programs
+    
+//key programs, value = array of programs
    $.ajax({
       url: urlform,
       type: "POST", //post
