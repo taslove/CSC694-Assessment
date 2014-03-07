@@ -41,8 +41,8 @@ class IndexController extends AbstractActionController
         $configReader = new ConfigReader();
         $configData = $configReader->fromFile('ldap-config.ini');
         $config = new Config($configData, true);        
-        $options = $config->production->ldap->toArray();
-        unset($options['log_path']);
+        $settings = $config->production->ldap->toArray();
+        unset($settings['log_path']);
         
         //this sets up the adapter to talk to the LDAP server
         $auth = new AuthenticationService();
@@ -59,33 +59,34 @@ class IndexController extends AbstractActionController
             echo '<br>';
         }
         
-        $ldap = new Zend\Ldap\Ldap($options);
-        //var_dump($ldap);
         
-        //$schema = $auth->getSchema();
+        $ldap = new Ldap($options);
+        
+        echo 'That worked';
+        $ldap->bind();
+        $userData = $ldap->getEntry('cn=akalelkar, OU=Napvil, O=NCC');
+          
         
         
-        
-        
-        
-        $container = new Container('namespace');
-        $container->usedID = 'Test ID';
-        $container->role = 2;
-        $container->userEmail = 'testID@foo.com';   
-        $container->logged_in = 'Y';
+        $namespace = new Container('user');
+        $namespace->usedID = 'Test ID';
+        $namespace->role = 2;
+        $namespace->userEmail = 'testID@foo.com';   
+        $namespace->datatelID = 'NCC ID';
 
-        //foreach ($container as $content)
-        //    var_dump($content);
+   
 
 
-        $this->ShowContainer();
+       // $this->ShowContainer();
         exit();        
     }
     
     public function ShowContainer()
     {
         
-        $container = new Container('namespace');
+        $namespace = new Container('user');
+        foreach ($namespace as $content)
+            var_dump($content);
         
     }
 }
