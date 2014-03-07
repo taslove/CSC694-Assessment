@@ -37,6 +37,18 @@
                  ),
              ),
              
+             'index' => array(
+                 'type'    => 'segment',
+                 'options' => array(
+                     'route'    => '/reports',
+                     'constraints' => array(
+                     ),
+                     'defaults' => array(
+                         'controller' => 'Reports\Controller\Reports',
+                        'action'     => 'index',
+                     ),
+                 ),
+             ),
              
              'id' => array(
                  'type'    => 'segment',
@@ -58,6 +70,8 @@
                      ),
                      'defaults' => array(
                          'controller' => 'Reports\Controller\Reports',
+                          'action'     => 'index',
+
                      ),
                  ),
              ),

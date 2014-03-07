@@ -4,13 +4,13 @@ namespace Reports\Model;
 class PlanData 
 {
     public $id;
-    public $form;
+    public $metaFlag;
+    public $descriptions;
     
-    public function __construct($id)
+    public function __construct($id, $meta)
     {
         $this->id = $id;
-        $this->outcomes = array();
+        $this->metaFlag = $meta;
+        $this->descriptions = array();
     }
-    
-    
 }
