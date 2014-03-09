@@ -21,9 +21,12 @@ class UserController extends AbstractActionController
 
    public function onDispatch(\Zend\Mvc\MvcEvent $e) 
    {
-        /* $validUser = new AuthUser();
-         if (!$validUser->Validate()){
+         /* $validUser = new AuthUser();
+        if (!$validUser->Validate()){
             return $this->redirect()->toRoute('application');
+        }
+        else{
+            return parent::onDispatch( $e );
         }*/
         $namespace = new Container('user');
         $namespace->userID = 'Test ID';

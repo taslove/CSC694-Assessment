@@ -35,3 +35,43 @@ div.container a.brand {
     margin-left: 0;
     padding: 8px 20px 12px 40px;
 }
+
+/*
+ * Admin Section
+ */
+
+.user-form-wrapper{
+
+}
+.user-form{
+    border: 1px solid #ddd;;
+    border-radius: 5px;
+    margin-bottom: 2%;
+}
+.user-form .user-roles .head-label{
+    padding:5px 5px 5px 0px;
+    margin-right:20px;
+}
+
+.user-form .user-roles .user-role-options{
+    margin-top: -15px;
+}
+.user-form .control-group{
+    overflow:hidden;
+    padding-top:15px;
+}
+
+.user-table-wrapper{
+    
+}
+.user-content .table-bordered{
+    border-radius: 5px;
+}
+
+.user-content .paginationControl{
+    padding: 5px 0px;
+    float:right;
+}
+.user-content .pagination-controls-wrapper{
+    overflow:hidden;
+}

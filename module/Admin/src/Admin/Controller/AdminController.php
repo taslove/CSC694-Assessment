@@ -13,8 +13,11 @@ class AdminController extends AbstractActionController
    public function onDispatch(\Zend\Mvc\MvcEvent $e) 
    {
         /* $validUser = new AuthUser();
-         if (!$validUser->Validate()){
+        if (!$validUser->Validate()){
             return $this->redirect()->toRoute('application');
+        }
+        else{
+            return parent::onDispatch( $e );
         }*/
         $namespace = new Container('user');
         $namespace->userID = 'Test ID';

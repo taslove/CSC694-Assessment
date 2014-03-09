@@ -77,11 +77,9 @@ class UserForm extends Form
             'name' => 'user_roles',
             'type' => 'Zend\Form\Element\MultiCheckbox',
             'attributes' => array(
-                'class'=> 'checkbox-inline',
                 'id' => 'user_roles',
             ),
             'options' => array(
-                'label' => 'Roles',
                 'value_options' => $this->getroles(),
             ),
         ));
@@ -91,7 +89,7 @@ class UserForm extends Form
                 'type' => 'submit',
                 'value' => 'Go',
                 'id' => 'submitbutton',
-                'class'=> 'btn btn-default',
+                'class'=> 'btn btn-primary btn-lg',
             ),
         ));
     }    
