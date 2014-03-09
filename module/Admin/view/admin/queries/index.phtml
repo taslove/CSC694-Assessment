@@ -50,9 +50,11 @@
         </dl>
         <dl>
             <dt>Query 5:<br/>
-            Show programs that have modified their outcomes.
+            Show programs that have modified their outcomes since (<i>enter date</i>) 
             </dt>
-            <dd> 
+            <dd>
+             <input type="text" class="span2" id="dp5">
+             <button type="button" class="btn-primary" id="query5">Go</button>
             </dd>
         </dl>
         <dl>
@@ -71,20 +73,26 @@
             </dt>
             <dd></dd>
         </dl>
-        <br />
-        <!-- Choose Query -->
         <dl>
-            <dt>Show all programs that have not added a plan for a specific year.
-             
-            <div class="form-group">
-                <div class='input-group date' id='dp5'>
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                <input type='text' class="form-control" id='q5date'/>
-               <input type='text' class="datepicker" id='q5date'/>
-               
-                </div>
-            </div>
-     
+            <dt>Query 8:<br />
+            Show plans/reports needing feedback.
+            </dt>
+            <dd>
+               <!-- Choose Years -->
+            <select class="selectpicker" id="q8year" name="q8year" data-style="btn-primary" title='Choose Year'>
+               <option data-hidden="true"></option>
+            </select>
+          </dd>
+        </dl>
+        <dl>
+            <dt>Query 9:<br/>
+            Show programs that changed their assessors since (<i>enter date</i>) 
+            </dt>
+            <dd>
+             <input type="text" class="span2" id="dp9">
+             <button type="button" class="btn-primary" id="query9">Go</button>
+            </dd>
+        </dl>
     </div><!--close column-->
 
 
@@ -138,17 +146,22 @@ $(document).ready(function () {
         $('#q4year').append('<option value = ' + year + '>' + (year-1) + ' - ' + year + '</option>');
     }
     $('#q4year').selectpicker('refresh');
-     $('.datepicker').datepicker();
-  //  $('#q5date').datepicker({dateFormat: 'mm-dd-yyyy'});
-})
+ 
+    $('#dp5').datepicker({
+	format: 'mm-dd-yyyy',
+        date:''
+    });
+    
+    $('#q8year').append('<option  data-hidden="true"></option>');
+    for (var year = currentYear; year > 2005; year--){
+        $('#q8year').append('<option value = ' + year + '>' + (year-1) + ' - ' + year + '</option>');
+    }
+    $('#q8year').selectpicker('refresh');
 
-$(document).on('click', '#dp5', function(){
-    $('#dp5').datepicker().on('changeDate', function(ev){
-       var date = new Date(ev.date);
-       $('#q5date').val(date);
-       $('#q5date').datepicker({dateFormat: 'mm-dd-yyyy'});
-      
-    })
+     $('#dp9').datepicker({
+	format: 'mm-dd-yyyy',
+        date:''
+    });
 })
 
 
@@ -237,26 +250,18 @@ $(document).on('change', '#q4year', function () {
   
 });
 
-
 $(document).on('click', '#query5', function () {
     // clear rhs of page
     $('#resultsTable').html("");
     
-    // get user entered year
-    var year = $('#q5year').val();
-    
-    // validate year
-    if (validateYear(year)){
-        document.getElementById("q5error").style.display="none";
-    
-        // create url for redirect url(route, array(controller, action))
-        var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery5')); ?>";
-        urlform = urlform + '/' + year;
-        ajaxCall(urlform);
-    }
-    else{
-        document.getElementById("q5error").style.display="block";
-    }
+    // get date from datepicker
+    var date = $('#dp5').val();
+    // replace all dashes to send via URL
+    date = date.replace(/-/g, '');
+    // create url for redirect url(route, array(controller, action))
+    var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery5')); ?>";
+    urlform = urlform + '/' + date;
+    ajaxCall(urlform);
 });
 
 $(document).on('click', '#query6', function () {
@@ -274,6 +279,42 @@ $(document).on('click', '#query7', function () {
     
     // create url for redirect url(route, array(controller, action))
     var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery7')); ?>";
+    ajaxCall(urlform);
+});
+
+
+$(document).on('change', '#q8year', function () {
+    // clear rhs of page
+    $('#resultsTable').html("");
+    
+    // get user entered year
+    var year = $('#q8year option:selected').val();
+    
+    // reset all drop downs
+    resetDropDowns();
+    
+    // put value selected back so displays in dropdown after clearing
+    $('select[name=q8year]').val(year);
+    $('.selectpicker').selectpicker('refresh');
+    
+    // create url for redirect url(route, array(controller, action))
+    var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery8')); ?>";
+    urlform = urlform + '/' + year;
+    ajaxCall(urlform);
+  
+});
+
+$(document).on('click', '#query9', function () {
+    // clear rhs of page
+    $('#resultsTable').html("");
+    
+    // get date from datepicker
+    var date = $('#dp9').val();
+    // replace all dashes to send via URL
+    date = date.replace(/-/g, '');
+    // create url for redirect url(route, array(controller, action))
+    var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery9')); ?>";
+    urlform = urlform + '/' + date;
     ajaxCall(urlform);
 });
 
@@ -301,6 +342,7 @@ function resetDropDowns(){
     $('select[name=q2year]').val(1);
     $('select[name=q3year]').val(1);
     $('select[name=q4year]').val(1);
+    $('select[name=q8year]').val(1);
     $('.selectpicker').selectpicker('refresh');
 }
    
