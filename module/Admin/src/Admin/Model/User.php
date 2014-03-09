@@ -14,7 +14,7 @@ class User implements InputFilterAwareInterface
     public function exchangeArray($data)
     {
         foreach($data as $id => $value){
-            $this->$id = $value;
+          $this->$id = ($value)? $value: null;
         }
         $this->user_roles = (isset($data['user_roles'])) ? $data['user_roles'] : null;
     }

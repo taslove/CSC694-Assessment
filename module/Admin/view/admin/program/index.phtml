@@ -7,14 +7,13 @@ $this->headTitle($title);
     <h1><?php echo $this->escapeHtml($title); ?></h1>
 </div>
 
-<div class="col-md-2">
-    <div class="input-group" >
-        <a class="btn btn-primary btn-md" href="<?php echo $this->url('program', array('action'=>'add'));?>"><?php echo $this->translate
-            ('Add A New Program') ?> &raquo;</a>
-    </div>
+<div class="col-md-3 ">
+    <h3>Add a New Program</h3>
+    <?php echo $this->partial('admin/program/form.phtml',array('form'=>$this->form,'action' =>'add'));?>
 </div>
 
-<div class="col-md-10">
+<div class="col-md-9">
+    <h3>All Programs</h3>
     <div class="table-responsive">
             <colgroup>
                 <col class="col-xs-8">

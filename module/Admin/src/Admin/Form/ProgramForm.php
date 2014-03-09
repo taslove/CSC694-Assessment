@@ -52,12 +52,12 @@ class ProgramForm extends Form
             'options' => array(
                 'label' => 'Unit ID',
                 'value_options' => array(
-                    '0'=>'ACC',
-                    '1'=>'BIO',
-                    '2'=>'CSC',
-                    '3'=>'HST',
-                    '4'=>'MTH',
-                    '5'=>'PHL'
+                    'ACC'=>'ACC',
+                    'BIO'=>'BIO',
+                    'CSC'=>'CSC',
+                    'HST'=>'HST',
+                    'MTH'=>'MTH',
+                    'PHL'=>'PHL'
                 ),
             ),
         ));

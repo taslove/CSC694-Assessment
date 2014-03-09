@@ -3,14 +3,21 @@
 namespace Admin\Form;
 
 use Zend\Form\Form;
+use Admin\Model\UserTable;
+use Zend\Db\Adapter\Adapter;
+use Admin\Model\Admin;
 
 class UserForm extends Form
 {
+    protected $sm;
+    
     public function __construct($name = null)
     {
         // we want to ignore the name passed
-        parent::__construct('user');
+        parent::__construct('user');        
+ 
         $this->setAttribute('method', 'post');
+        
         $this->add(array(
             'name' => 'id',
             'type' => 'Zend\Form\Element\Hidden',
@@ -36,6 +43,9 @@ class UserForm extends Form
             'attributes' => array(
                 'class'=> 'form-control',
                 'id' => 'middle_init',
+                'maxlength' => 1,
+                'size' => 1,
+                'style' => 'width:60px;'
             ),
             'options' => array(
                 'label' => 'Middle Initial',
@@ -71,14 +81,8 @@ class UserForm extends Form
                 'id' => 'user_roles',
             ),
             'options' => array(
-                'label' => 'User Roles',
-                'value_options' => array(
-                    '1' => 'Admin',
-                    '2' => 'Chair',
-                    '3' => 'User',
-                    '4' => 'Assessor',
-                    '5' => 'Committee',
-                ),
+                'label' => 'Roles',
+                'value_options' => $this->getroles(),
             ),
         ));
         $this->add(array(
@@ -90,5 +94,11 @@ class UserForm extends Form
                 'class'=> 'btn btn-default',
             ),
         ));
+    }    
+    
+    public function getroles()
+   {      
+      $admin =  new Admin();    
+      return $admin->getRoleTerms();
     }
 }

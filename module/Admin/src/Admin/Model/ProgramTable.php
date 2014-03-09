@@ -10,6 +10,7 @@ use Zend\Db\Sql\Select;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
+use Zend\session\container;
 
 class ProgramTable extends AbstractTableGateway
 {
@@ -57,14 +58,35 @@ class ProgramTable extends AbstractTableGateway
         if (!$row) {
             throw new \Exception("Could not find row $id");
         }
-        return $row;
+        $program = new Program();
+        $program->exchangeArray($row);
+        return $program;
     }
 
     public function saveProgram(Program $program)
     {
-
+        $namespace = new Container('user');
+        
+        $data = array(
+            'unit_id' => $program->unit_id,
+            'name' => $program->name,
+            'active_flag' => ($program->active_flag)? $program->active_flag: 0,
+        );
+              
+        //deactivating an existing program
+        if(!$program->active_flag){
+            $data['deactivated_ts'] =  date('Y-d-m g:i:s', time());
+            $data['deactivated_user'] =  $namespace->userID;
+        }
+   
+        //get the user id
+        $id = (int)$program->id;
+        
+        
         //if program doesn't exists
         if ($id == 0) {
+            $data['created_ts'] =  date('Y-d-m g:i:s', time());
+            $data['created_user'] = $namespace->userID;            
             $this->insert($data);
 
         } else {

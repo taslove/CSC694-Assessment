@@ -6,6 +6,7 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
+use Admin\Model\Admin;
 
 class UserTable extends AbstractTableGateway
 {
@@ -62,7 +63,7 @@ class UserTable extends AbstractTableGateway
         $roles = array();
         foreach($result as $row){
             $roles[$row['role']]['id'] = $row['id'];
-            $roles[$row['role']]['term'] = $this->getRoleTerm($row['role']);
+            $roles[$row['role']]['term'] = $this->Admin()->getRoleTerm($row['role']);
         }
         return $roles;
     }
@@ -74,9 +75,8 @@ class UserTable extends AbstractTableGateway
     public function deleteRoles($id)
     {
         $sql = new Sql($this->adapter);
-        $delete = $sql->delete()
-                      ->from('user_roles')
-                      ->where('user_id = ?', $id);
+        $delete = $sql->delete('user_roles')
+                       ->where(array('user_id = ?' => $id));
         $deleteString = $sql->getSqlStringForSqlObject($delete);
         $this->adapter->query($deleteString, Adapter::QUERY_MODE_EXECUTE);
     }
@@ -113,22 +113,7 @@ class UserTable extends AbstractTableGateway
 
     }
     
-    /*
-     * Assigns a role id to a term
-     */
-    public function getRoleTerm($id){
-      if(!$id){
-          return;
-      }  
-        $roles = array(
-          '1' => 'Admin',
-          '2' => 'Chair',
-          '3' => 'User',
-          '4' => 'Assessor',
-          '5' => 'Committee',
-        );
-        return $roles[$id];
-    }
+   
 
     /*
      * Get user by id
@@ -226,6 +211,19 @@ class UserTable extends AbstractTableGateway
      */
     public function deleteUser($id)
     {
-        $this->delete(array('id' => $id));
+
+       //delete user roles first
+       $this->deleteRoles($id);
+       
+       //delete the user
+       $sql = new Sql($this->adapter);
+       $delete = $sql->delete('users')
+                       ->where(array('id = ?' => $id));
+       $deleteString = $sql->getSqlStringForSqlObject($delete);
+       $this->adapter->query($deleteString, Adapter::QUERY_MODE_EXECUTE);
+    }
+    
+    public function Admin(){
+        return new Admin();
     }
 }
