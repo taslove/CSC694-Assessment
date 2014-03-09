@@ -1,6 +1,6 @@
 <?php
     $form = $this->form;
-    $form->setAttribute('action', $this->url('user', array('action' => $action, 'id'=> $id,)));
+    $form->setAttribute('action', $this->url('user', array('action' => $action)));
     $form->prepare();
 
     echo $this->form()->openTag($form);

@@ -3,7 +3,7 @@
 $title = 'Programs';
 $this->headTitle($title);
 ?>
-<?php echo $this->partial('admin/admin/menu.phtml'); ?>
+<?php echo $this->partial('admin/admin/menu.phtml',array('active'=>'program')); ?>
 <div class="col-md-12">
     <h1><?php echo $this->escapeHtml($title); ?></h1>
 </div>
@@ -11,7 +11,7 @@ $this->headTitle($title);
 <div class="col-md-3 program-form-wrapper">
     <h3>Add a New Program</h3>
     <div class="program-form" style="overflow:hidden;">
-        <?php echo $this->partial('admin/program/form.phtml',array('form'=>$this->form,'action' =>'add','submitVal' =>'Add Program'));?>
+        <?php echo $this->partial('admin/program/form.phtml',array('form'=>$this->form,'action' =>'add','submitVal' =>'Add Program','id'=> $this->id));?>
     </div>
 </div>
 

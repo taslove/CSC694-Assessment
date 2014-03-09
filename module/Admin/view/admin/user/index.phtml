@@ -3,7 +3,7 @@
 $title = 'Users';
 $this->headTitle($title);
 ?>
-<?php echo $this->partial('admin/admin/menu.phtml'); ?>
+<?php echo $this->partial('admin/admin/menu.phtml',array('active'=>'user')); ?>
 <div class="row user-content">
     <div class="title col-md-12">
         <h1><?php echo $this->escapeHtml($title); ?></h1>
