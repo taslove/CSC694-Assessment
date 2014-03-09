@@ -1,0 +1,37 @@
+<?php
+    $form = $this->form;
+    $form->setAttribute('action', $this->url('user', array('action' => $action)));
+    $form->prepare();
+
+    echo $this->form()->openTag($form);
+  ?>
+
+    <h4>Add a new user</h4>
+    <div class="form-group col-md-2">
+        <?php echo $this->formLabel($form->get('first_name')->setLabelAttributes(array('class'=>'control-label'))); ?>
+        <?php echo $this->formInput($form->get('first_name')); ?>
+    </div>
+    <div class="form-group col-md-2">
+        <?php echo $this->formLabel($form->get('last_name')->setLabelAttributes(array('class'=>'control-label'))); ?>
+        <?php echo $this->formInput($form->get('last_name')); ?>
+    </div>
+    <div class="form-group col-md-2">
+        <?php echo $this->formLabel($form->get('middle_init')->setLabelAttributes(array('class'=>'control-label'))); ?>
+        <?php echo $this->formInput($form->get('middle_init')); ?>
+    </div>
+    <div class="form-group col-md-2">
+        <?php echo $this->formLabel($form->get('email')->setLabelAttributes(array('class'=>'control-label'))); ?>
+        <?php echo $this->formInput($form->get('email')); ?>
+    </div>
+    <div class="form-group col-md-8">
+        <?php echo $this->formLabel($form->get('user_roles')->setLabelAttributes(array('class'=>'control-label'))); ?>
+        <?php echo $this->formMultiCheckbox($form->get('user_roles')); ?>
+    </div>
+    <div class="form-group">
+        <?php echo $this->formInput($form->get('id')); ?>
+    </div>
+    <div class="form-group col-md-4">
+        <?php echo $this->formSubmit($form->get('submit')); ?>
+    </div>
+
+<?php echo $this->form()->closeTag(); ?>
