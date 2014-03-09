@@ -53,11 +53,11 @@ class UserTable extends AbstractTableGateway
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select()
-                      ->from('user_roles');
+                    ->from('user_roles')
+                    ->where(array(
+                        'user_id' => $id,
+                        'active_flag' => 1));
         
-        $where = new Where();
-        $where->equalTo('user_id',$id);
-        $select->where($where);
         
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -69,21 +69,23 @@ class UserTable extends AbstractTableGateway
         return $roles;
     }
     
-    public function getRolesById($id)
+    public function getRolesById($id, $active = true)
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select()
-                      ->from('user_roles');
-        
-        $where = new Where();
-        $where->equalTo('user_id',$id);
-        $select->where($where);
-        
+                    ->from('user_roles')
+                    ->columns(array('role' => 'role'));
+        if($active){
+            $select->where(array('user_id' => $id,'active_flag' => 1));
+        }else{
+            $select->where(array('user_id' => $id,'active_flag' => 0));
+        }
+                
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $roles = array();
-        foreach($result as $row){
-            $roles[] = $row['id'];
+        foreach($result as $key => $value){
+            $roles[] = $value['role'];
         }
         return $roles;
     }
@@ -134,33 +136,67 @@ class UserTable extends AbstractTableGateway
      */
     function updateRoles($userID,$roles)
     {
-        //get the roles the user previously had
-        $oldRoles = getRolesById($userID);
+        //get the active roles the user previously had
+        $ActiveRoles = $this->getRolesById($userID, true);
+
         
-        //gets new roles if any
-        $newRoles = array_diff($roles, $oldRoles);
+        //get all inactive roles the user previously had
+        $InActiveRoles = $this->getRolesById($userID, false);
+
         
+        //create a list of all the roles a previously had
+        $allRoles = array_merge($ActiveRoles,$InActiveRoles);
+
+        
+        //determines if user has been given a new role
+        $newRoles = array_diff($roles, $allRoles);
+
         //add any new roles
         if(!empty($newRoles)){
-            addRoles($userID,$newRoles);
+           $this->addRoles($userID,$newRoles);
         }
         
-        //check if any roles have been removed
-        $removedRoles = array_diff($oldRoles, $roles);
+        //update role(s) that were re-enabled/disabled
+        $disableRoles = array_diff($ActiveRoles, $roles);
+        $reenabledRoles = array_diff($roles, $ActiveRoles);
         
-        if(!empty($removedRoles)){
-            foreach($removedRoles as $key => $value){
-                updateRole($userID,$value);
+        print_r($reenabledRoles);
+        
+        if(!empty($disableRoles)){
+            foreach($disableRoles as $key => $value){
+                $this->updateRole($userID,$value, 'disable');
             }
         }
-        
+        if(!empty($reenabledRoles)){
+            foreach($reenabledRoles as $key => $value){
+                $this->updateRole($userID,$value, 'enable');
+            }
+        }
     }
     
-    function updateRole($userID,$role)
+    function updateRole($userID,$role, $action)
     {
+        $namespace = new Container('user');
+        switch($action){
+            case 'disable':
+                $data = array(
+                        'active_flag' => 0,
+                        'deactivated_ts' =>  date('Y-d-m g:i:s', time()),
+                        'deactivated_user' =>  $namespace->userID
+                    );
+                break;
+            
+            case 'enable':
+                $data = array(
+                        'active_flag' => 1,
+                    );
+                break;
+        }
+
         $sql = new Sql($this->adapter);
         $update = $sql->update('user_roles')
-                       ->where(array('user_id = ?' => $id, 'role = ?' =>$role));
+                      ->set($data)
+                       ->where(array('user_id = ?' => $userID, 'role = ?' => $role));
         $updateString = $sql->getSqlStringForSqlObject($update);
         $this->adapter->query($updateString, Adapter::QUERY_MODE_EXECUTE);
     }

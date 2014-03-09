@@ -10,61 +10,8 @@
     </div>
     <div class="user-form-wrapper col-md-12" style="overflow:hidden;">
         <div class="user-form" style="overflow:hidden;">
-            <?php echo $this->partial('admin/user/form.phtml', array('form' => $this->form, 'action' => 'edit','submitVal' =>'Modify User')); ?>
+            <?php echo $this->partial('admin/user/form.phtml', array('form' => $this->form, 'action' => 'edit','submitVal' =>'Modify User','id' => $this->id)); ?>
             
         </div>
     </div>
-    <div class="user-form-wrapper col-md-12" style="overflow:hidden;">
-        <div class="user-form" style="overflow:hidden;">
-            <?php
-                $form = $this->form;
-                $form->setAttribute('action', $this->url('user', array('action' => 'edit')));
-                $form->prepare();
-
-                echo $this->form()->openTag($form);
-              ?>
-            <div class="control-group col-md-12">  
-                <div class="col-md-3">  
-                    <div class="form-group col-md-12 first-name">
-                        <?php echo $this->formLabel($form->get('first_name')->setLabelAttributes(array('class'=>'control-label'))); ?>
-                        <?php echo $this->formInput($form->get('first_name')); ?>
-                    </div>
-                    <div class="form-group col-md-12 last-name">
-                        <?php echo $this->formLabel($form->get('last_name')->setLabelAttributes(array('class'=>'control-label'))); ?>
-                        <?php echo $this->formInput($form->get('last_name')); ?>
-                    </div>
-                </div>
-                <div class="col-md-3"> 
-                    <div class="form-group col-md-12 middle-init">
-                        <?php echo $this->formLabel($form->get('middle_init')->setLabelAttributes(array('class'=>'control-label'))); ?>
-                        <?php echo $this->formInput($form->get('middle_init')); ?>
-                    </div>
-                    <div class="form-group col-md-12 email">
-                        <?php echo $this->formLabel($form->get('email')->setLabelAttributes(array('class'=>'control-label'))); ?>
-                        <?php echo $this->formInput($form->get('email')); ?>
-                    </div>
-                </div>
-                <div class="col-md-3"> 
-                    <div class="form-group col-md-12 user-roles">
-                        <label class="control-label head-label" for="user_roles">Roles</label>
-                        <div class="user-role-options">
-                            <?php echo $this->formMultiCheckbox($form->get('user_roles')->setLabelAttributes(array('class'=>'control-label checkbox'))); ?>
-                        </div>
-                    </div>
-                    <div class="form-group id">
-                        <?php echo $this->formInput($form->get('id')); ?>
-                    </div>
-                </div>    
-                <div class="form-group col-md-3 submit">
-                    <?php echo $this->formSubmit($form->get('submit')->setValue('edit')); ?>
-
-                </div>
-            </div>
-            <?php echo $this->form()->closeTag(); ?>
-            
-        </div>
-    </div>
-    
-    
-    
 </div>
