@@ -46,7 +46,7 @@ class IndexController extends AbstractActionController
         
         //this sets up the adapter to talk to the LDAP server
         $auth = new AuthenticationService();
-        $adapter = new AuthAdapter($options,
+        $adapter = new AuthAdapter($settings,
                                    $username,
                                    $password);
         
@@ -59,12 +59,19 @@ class IndexController extends AbstractActionController
             echo '<br>';
         }
         
+        $options = array(
+            'host' => 'ldap.nccnet.noctrl.edu',
+            'bindRequiresDn'    => true,
+            'accountDomainName' => 'noctrl.edu',
+            'baseDn'            => 'O=NCC',
+        );
         
         $ldap = new Ldap($options);
         
         echo 'That worked';
         $ldap->bind();
-        $userData = $ldap->getEntry('cn=akalelkar, OU=Napvil, O=NCC');
+        $userData = $ldap->getEntry('cn=akalelkar');
+            var_dump($userData);
           
         
         
