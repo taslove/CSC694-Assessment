@@ -7,6 +7,7 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 use Admin\Model\Admin;
+use Zend\session\container;
 
 class UserTable extends AbstractTableGateway
 {
@@ -68,6 +69,25 @@ class UserTable extends AbstractTableGateway
         return $roles;
     }
     
+    public function getRolesById($id)
+    {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select()
+                      ->from('user_roles');
+        
+        $where = new Where();
+        $where->equalTo('user_id',$id);
+        $select->where($where);
+        
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $roles = array();
+        foreach($result as $row){
+            $roles[] = $row['id'];
+        }
+        return $roles;
+    }
+    
     /*
      * deletes all roles a user has
      * @id - the user id
@@ -88,12 +108,16 @@ class UserTable extends AbstractTableGateway
      */
     function addRoles($userID,$roles)
     {
+        $namespace = new Container('user');
+        
        //add role(s)
        foreach($roles as $row => $value){
             $role = array(
                 'user_id' => $userID,
                 'role' => $value,
-                'created_user' => 21
+                'created_user' => $namespace->userID,
+                'created_ts' => date('Y-d-m g:i:s', time()),
+                'active_flag' => 1
             );
             $sql = new Sql($this->adapter);
             $insert = $sql->insert('user_roles');
@@ -110,7 +134,35 @@ class UserTable extends AbstractTableGateway
      */
     function updateRoles($userID,$roles)
     {
-
+        //get the roles the user previously had
+        $oldRoles = getRolesById($userID);
+        
+        //gets new roles if any
+        $newRoles = array_diff($roles, $oldRoles);
+        
+        //add any new roles
+        if(!empty($newRoles)){
+            addRoles($userID,$newRoles);
+        }
+        
+        //check if any roles have been removed
+        $removedRoles = array_diff($oldRoles, $roles);
+        
+        if(!empty($removedRoles)){
+            foreach($removedRoles as $key => $value){
+                updateRole($userID,$value);
+            }
+        }
+        
+    }
+    
+    function updateRole($userID,$role)
+    {
+        $sql = new Sql($this->adapter);
+        $update = $sql->update('user_roles')
+                       ->where(array('user_id = ?' => $id, 'role = ?' =>$role));
+        $updateString = $sql->getSqlStringForSqlObject($update);
+        $this->adapter->query($updateString, Adapter::QUERY_MODE_EXECUTE);
     }
     
    
@@ -178,7 +230,12 @@ class UserTable extends AbstractTableGateway
         //if user doesn't exists
         if ($id == 0 OR empty($id)) {
             //insert user
-            $this->insert($data);
+            try {
+                $this->insert($data);
+            } catch (\Exception $e)  {
+                var_dump($e->getMessage());
+                echo 'User already exists!'; 
+            }
             
             //get the new user id
             $id = $this->adapter->getDriver()->getLastGeneratedValue();
@@ -190,12 +247,6 @@ class UserTable extends AbstractTableGateway
                 
                 //update user information
                 $this->update($data, array('id' => $id));
-                
-                /*delete old roles
-                $this->deleteRoles($user->id);
-                
-                //add role(s)
-                $this->addRoles($user->id,$roles);*/
                 
                 //update and add roles
                 $this->updateRoles($user->id,$roles);

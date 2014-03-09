@@ -29,11 +29,12 @@ class UserController extends AbstractActionController
             return parent::onDispatch( $e );
         }*/
         $namespace = new Container('user');
-        $namespace->userID = 'Test ID';
+        $namespace->userID = 21;
         $namespace->userEmail = 'testID@foo.com';
         $namespace->role = 2;
         $namespace->datatelID = 11123;
         
+       
         
         return parent::onDispatch( $e );
    }
@@ -87,7 +88,7 @@ class UserController extends AbstractActionController
    }
    public function editAction()
    {
-       $id = (int) $this->params()->fromRoute('id', 0);
+       $id = (int) $this->params()->fromRoute('id');
         if (!$id) {
             return $this->redirect()->toRoute('user', array(
                 'action' => 'add'
