@@ -3,13 +3,16 @@
 $title = 'Programs';
 $this->headTitle($title);
 ?>
+<?php echo $this->partial('admin/admin/menu.phtml'); ?>
 <div class="col-md-12">
     <h1><?php echo $this->escapeHtml($title); ?></h1>
 </div>
 
-<div class="col-md-3 ">
+<div class="col-md-3 program-form-wrapper">
     <h3>Add a New Program</h3>
-    <?php echo $this->partial('admin/program/form.phtml',array('form'=>$this->form,'action' =>'add'));?>
+    <div class="program-form" style="overflow:hidden;">
+        <?php echo $this->partial('admin/program/form.phtml',array('form'=>$this->form,'action' =>'add','submitVal' =>'Add Program'));?>
+    </div>
 </div>
 
 <div class="col-md-9">
@@ -18,16 +21,6 @@ $this->headTitle($title);
             <colgroup>
                 <col class="col-xs-8">
             </colgroup>
-            <div class="bs-example">
-            <?php // add at the end of the file after the table
-                    echo $this->paginationControl(
-                            $this->paginator,// the paginator object
-                            'sliding',// the scrolling style; 
-                            //see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
-                            array('admin/program/controls.phtml', 'Program'),// the partial to use to render the control
-                            array( 'route' => 'program')// the route to link to when a user clicks a control link
-                            );
-                    ?>
                 <table class="table table-striped table-hover table-bordered">
                     <thead>
                         <tr>
@@ -69,8 +62,6 @@ $this->headTitle($title);
                             array( 'route' => 'program')// the route to link to when a user clicks a control link
                             );
                     ?>
-
-            </div>
     </div>
 </div>
 
