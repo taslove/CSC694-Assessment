@@ -6782,7 +6782,9 @@ th.visible-print,
 td.visible-print {
   display: none !important;
 }
-
+.custom {
+    width: 70px !important;
+}
 @media print {
   .visible-print {
     display: block !important;
