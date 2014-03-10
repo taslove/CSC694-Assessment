@@ -54,7 +54,7 @@ class QueriesController extends AbstractActionController
       foreach ($results as $result){
           $resultsarray[] = $result;
       }
-      // get program names
+
       $partialView = new ViewModel(array('querytitle' => 'Programs Missing Plans For ' . $year,
                                          'programs' => $resultsarray));
       $partialView->setTerminal(true);
@@ -75,7 +75,7 @@ class QueriesController extends AbstractActionController
       foreach ($results as $result){
           $resultsarray[] = $result;
       }
-      // get program names
+
       $partialView = new ViewModel(array('querytitle' => 'Programs Missing Reports For ' . $year,
                                          'programs' => $resultsarray));
       $partialView->setTerminal(true);
@@ -96,7 +96,7 @@ class QueriesController extends AbstractActionController
       foreach ($results as $result){
           $resultsarray[] = $result;
       }
-      // get program names
+
       $partialView = new ViewModel(array('querytitle' => 'Programs Conducting Meta Assessment For ' . $year,
                                          'programs' => $resultsarray));
       $partialView->setTerminal(true);
@@ -117,7 +117,7 @@ class QueriesController extends AbstractActionController
       foreach ($results as $result){
           $resultsarray[] = $result;
       }
-      // get program names
+
       $partialView = new ViewModel(array('querytitle' => 'Programs Requesting Funding For ' . $year,
                                          'programs' => $resultsarray));
       $partialView->setTerminal(true);
@@ -131,14 +131,18 @@ class QueriesController extends AbstractActionController
       
       // get year from route
       $fromDate = $this->params()->fromRoute('id', 0);
-      
+
       $results = $this->getUserQueries()->getProgramsWithModifiedOutcomes($fromDate);
       
       // iterate over database results forming a php array
       foreach ($results as $result){
           $resultsarray[] = $result;
       }
-      // get program names
+      // format date for output
+      $fromDate = substr($fromDate, 0, 2) . '-' .
+                  substr($fromDate, 2, 2) . '-' .
+                  substr($fromDate, 4);
+
       $partialView = new ViewModel(array('querytitle' => 'Programs With Modified Outcomes Since ' . $fromDate,
                                          'programs' => $resultsarray));
       $partialView->setTerminal(true);
@@ -166,7 +170,7 @@ class QueriesController extends AbstractActionController
       foreach ($results as $result){
           $resultsarray[] = $result;
       }
-      // get program names
+
       $partialView = new ViewModel(array('querytitle' => 'Programs That Modified Last Year\'s Plans ',
                                          'programs' => $resultsarray));
       $partialView->setTerminal(true);
@@ -194,13 +198,60 @@ class QueriesController extends AbstractActionController
       foreach ($results as $result){
           $resultsarray[] = $result;
       }
-      // get program names
+
       $partialView = new ViewModel(array('querytitle' => 'Programs That Modified Last Year\'s Reports ',
                                          'programs' => $resultsarray));
       $partialView->setTerminal(true);
       return $partialView;
    }
    
+   // Show programs that have not yet been reviewed by liaisons
+   public function getQuery8Action(){
+      
+      $resultsarray = '';
+      
+      // get year from route
+      $year = $this->params()->fromRoute('id', 0);
+      
+      $results = $this->getUserQueries()->getProgramsNeedingFeedback($year);
+      
+      // iterate over database results forming a php array
+      foreach ($results as $result){
+          $resultsarray[] = $result;
+      }
+
+      $partialView = new ViewModel(array('querytitle' => 'Programs Needing Feedback For ' . $year,
+                                         'programs' => $resultsarray));
+      $partialView->setTerminal(true);
+      return $partialView;
+   }
+   
+   // Show programs that have changed their assessors
+   public function getQuery9Action(){
+      
+      $resultsarray = '';
+      
+      // get year from route
+      $fromDate = $this->params()->fromRoute('id', 0);
+      
+      $results = $this->getUserQueries()->getProgramsWhoChangedAssessors($fromDate);
+      
+      // iterate over database results forming a php array
+      foreach ($results as $result){
+          $resultsarray[] = $result;
+      }
+
+       // format date for output
+      $fromDate = substr($fromDate, 0, 2) . '-' .
+                  substr($fromDate, 2, 2) . '-' .
+                  substr($fromDate, 4);
+      
+      $partialView = new ViewModel(array('querytitle' => 'Programs That Changed Assessors For ' . $fromDate,
+                                         'programs' => $resultsarray));
+      $partialView->setTerminal(true);
+      return $partialView;
+   }
+
    // establishes the dbadapter link for all user queries
     public function getUserQueries()
     {

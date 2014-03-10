@@ -32,6 +32,7 @@ class Queries extends AbstractTableGateway
                       ->join('plan_programs', 'plan_programs.program_id = programs.id',array())
                       ->join('plans', 'plans.id = plan_programs.plan_id',array())
                       ->where(array('plans.year' => $year))
+                   
         ;
         // get programs that are not in the set above
         $select2 = $sql->select()
@@ -39,9 +40,10 @@ class Queries extends AbstractTableGateway
                        ->columns(array('id', 'unit_id', 'name'))
                        ->where(new NotIn('programs.id', $select1))
                        ->where(array('programs.active_flag' => 1))
+                       ->order(array('programs.id'))
+                   
         ;
         
-        // Find all programs that do not have plans for the year
         $statement = $sql->prepareStatementForSqlObject($select2);
         $result = $statement->execute();
         
@@ -69,12 +71,12 @@ class Queries extends AbstractTableGateway
                       ->join('plan_programs', 'plan_programs.program_id = programs.id',array())
                       ->join('plans', 'plans.id = plan_programs.plan_id',array('id'))
                       ->where(array('plans.year' => $year))
+                      ->where(array('programs.active_flag' => 1))
                       ->where(new NotIn('plans.id', $reportsselect))
+                      ->order(array('programs.id'))
                       
         ;
         
-        
-        // find all programs with missing reports
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         
@@ -93,9 +95,11 @@ class Queries extends AbstractTableGateway
                       ->join('plan_programs', 'plan_programs.program_id = programs.id', array())
                       ->join('plans', 'plans.id = plan_programs.plan_id', array())
                       ->where(array('plans.year' => $year))
+                      ->where(array('programs.active_flag' => 1))
+                      ->order(array('programs.id'))
+                   
         ;
        
-        // find all programs conducting meta assessment
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         
@@ -113,8 +117,11 @@ class Queries extends AbstractTableGateway
                       ->columns(array('unit_id', 'name'))
                       ->join('plan_programs', 'plan_programs.program_id = programs.id',array())
                       ->join('plans', 'plans.id = plan_programs.plan_id',array())
+                      ->where(array('programs.active_flag' => 1))
                       ->where(array('plans.year' => $year))
                       ->where(array('plans.funding_flag' => 1))
+                      ->order(array('programs.id'))
+                   
         ;
         
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -126,13 +133,18 @@ class Queries extends AbstractTableGateway
     // query 5
     public function getProgramsWithModifiedOutcomes($fromDate)
     {
+ 
         $sql = new Sql($this->adapter);
         $where = new Where();
-        $fromDate = '21-01-2014';  // dd-mm-yyyy
+        // date arrives in mmddyyyy format
+        // strtotime requires dd-mm-yyyy format
+        $fromDate = substr($fromDate, 2, 2) . '-' .
+                    substr($fromDate, 0, 2) . '-' .
+                    substr($fromDate, 4);
         $fromDate = date('Y-m-d H:i:s', strtotime($fromDate));
         
-        // get programs that changed outcomes
-        $select = $sql->select()
+        // get programs that deactivated outcomes since fromdate
+        $select1 = $sql->select()
                       ->from('programs')
                       ->columns(array('unit_id', 'name'))
                       ->quantifier(\Zend\Db\Sql\Select::QUANTIFIER_DISTINCT)
@@ -140,10 +152,25 @@ class Queries extends AbstractTableGateway
                       ->join('users', 'users.id = outcomes.deactivated_user', array('last_name', 'first_name'))
                       ->where($where->isNotNull('outcomes.deactivated_ts'))
                       ->where($where->greaterThan('outcomes.deactivated_ts', $fromDate))
+                      ->order(array('programs.id'))
+                   
         ;
-                
-        // find all programs requesting fundingconducting meta assessment
-        $statement = $sql->prepareStatementForSqlObject($select);
+        // get programs that added outcomes since fromdate
+        $select2 = $sql->select()
+                      ->from('programs')
+                      ->columns(array('unit_id', 'name'))
+                      ->quantifier(\Zend\Db\Sql\Select::QUANTIFIER_DISTINCT)
+                      ->join('outcomes', 'outcomes.program_id = programs.id',array())
+                      ->join('users', 'users.id = outcomes.created_user', array('last_name', 'first_name'))
+                      ->where($where->isNotNull('outcomes.created_ts'))
+                      ->where($where->greaterThan('outcomes.created_ts', $fromDate))
+                      ->order(array('programs.id'))
+                   
+        ;
+        // union results
+        $select2->combine($select1);
+        
+        $statement = $sql->prepareStatementForSqlObject($select2);
         $result = $statement->execute();
       
         return $result;
@@ -166,10 +193,10 @@ class Queries extends AbstractTableGateway
                       // instantiating new where must come first
                       ->where($where->like('plans.modified_ts', $currentYear . '%'))
                       ->where(array('plans.year' => $previousYear))
+                      ->order(array('programs.id'))
                    
         ; 
         
-        // find all programs requesting fundingconducting meta assessment
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
       
@@ -194,14 +221,98 @@ class Queries extends AbstractTableGateway
                       // instantiating new where must come first
                       ->where($where->like('reports.modified_ts', $currentYear . '%'))
                       ->where(array('plans.year' => $previousYear))
+                      ->order(array('programs.id'))
                    
         ; 
         
-        // find all programs requesting fundingconducting meta assessment
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
       
         return $result;
     }
     
+    // query 8
+    public function getProgramsNeedingFeedback($year)
+    {
+        $sql = new Sql($this->adapter);
+        $where = new Where();
+        
+         // get programs that have a plan missing feedback
+         // make sure plan is not a draft and feedback is 0
+        $select1 = $sql->select()
+                      ->from('programs')
+                      ->columns(array('unit_id', 'name'))
+                      ->quantifier(\Zend\Db\Sql\Select::QUANTIFIER_DISTINCT)
+                      ->join('plan_programs', 'plan_programs.program_id = programs.id',array())
+                      ->join('plans', 'plans.id = plan_programs.plan_id',array())
+                      ->join('liaison_privs', 'liaison_privs.unit_id = programs.unit_id', array())
+                      ->join('users', 'users.id = liaison_privs.user_id', array('first_name', 'last_name'))
+                      ->where(array('plans.year' => $year))
+                      ->where(array('plans.draft_flag' => 0))
+                      ->where(array('plans.feedback' => 0))
+                      ->order(array('programs.id'))
+                   
+        ; 
+    
+        $select2 = $sql->select()
+                      ->from('programs')
+                      ->columns(array('unit_id', 'name'))
+                      ->quantifier(\Zend\Db\Sql\Select::QUANTIFIER_DISTINCT)
+                      ->join('plan_programs', 'plan_programs.program_id = programs.id',array())
+                      ->join('plans', 'plans.id = plan_programs.plan_id',array())
+                      ->join('liaison_privs', 'liaison_privs.unit_id = programs.unit_id', array())
+                      ->join('users', 'users.id = liaison_privs.user_id', array('first_name', 'last_name'))
+                      ->join('reports', 'reports.plan_id = plans.id', array())
+                      ->where(array('plans.year' => $year))
+                      ->where(array('reports.draft_flag' => 0))
+                      ->where(array('reports.feedback' => 0))
+                      ->order(array('programs.id'))
+                   
+        ;
+        
+        $select1->combine($select2);
+        $statement = $sql->prepareStatementForSqlObject($select1);
+        $result = $statement->execute();
+      
+        return $result;
+    }
+    
+    // query 9
+    public function getProgramsWhoChangedAssessors($fromDate)
+    {
+ 
+        $sql = new Sql($this->adapter);
+        $where = new Where();
+        // date arrives in mmddyyyy format
+        // strtotime requires dd-mm-yyyy format
+        $fromDate = substr($fromDate, 2, 2) . '-' .
+                    substr($fromDate, 0, 2) . '-' .
+                    substr($fromDate, 4);
+        $fromDate = date('Y-m-d H:i:s', strtotime($fromDate));
+        
+        // get deactivated assessor roles
+        $select1 = $sql->select()
+                      ->from('programs')
+                      ->columns(array('unit_id', 'name'))
+                      ->quantifier(\Zend\Db\Sql\Select::QUANTIFIER_DISTINCT)
+                      ->join('unit_privs', 'unit_privs.unit_id = programs.unit_id',array())
+                      ->join('user_roles', 'user_roles.user_id = unit_privs.user_id',array())
+                      ->join('users', 'users.id = user_roles.deactivated_user', array('last_name', 'first_name'))
+                      ->where($where->isNotNull('user_roles.deactivated_ts'))
+                      ->where($where->greaterThan('user_roles.deactivated_ts', $fromDate))
+                      // liaison role = 4
+                      ->where(array('user_roles.role' => 4))
+                      ->order(array('programs.id'))
+                   
+        ;
+       // echo var_dump($select1->getSqlString());
+       // exit();
+        // union results
+    //    $select1->combine($select2);
+        
+        $statement = $sql->prepareStatementForSqlObject($select1);
+        $result = $statement->execute();
+      
+        return $result;
+    }   
 }
