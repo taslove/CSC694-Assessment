@@ -3,7 +3,9 @@
 namespace Admin\Controller;
 
 use Admin\Model\User;
+use Admin\Entity\UserObj;
 use Admin\Form\UserForm;
+use Admin\Form\NewUserForm;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Db\Sql\Select;
@@ -62,6 +64,25 @@ class UserController extends AbstractActionController
                     'form' => $form
                 ));
     }
+    
+   public function newuserAction()
+   {
+     $form = new NewUserForm();
+     $user = new UserObj();
+     $form->bind($user);
+
+     if ($this->request->isPost()) {
+         $form->setData($this->request->getPost());
+
+         if ($form->isValid()) {
+             var_dump($form);
+         }
+     }
+
+     return array(
+           'form' => $form
+     );
+   }
     
    public function addAction()
    {

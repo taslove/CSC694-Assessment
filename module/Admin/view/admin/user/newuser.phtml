@@ -1,0 +1,32 @@
+<?php
+$form->setAttribute('action', $this->url('user',array('action' => 'newuser')))
+     ->prepare();
+
+echo $this->form()->openTag($form);
+
+$user = $form->get('userobj');
+
+
+echo $this->formRow($user->get('firstname'));
+echo $this->formRow($user->get('lastname'));
+echo $this->formRow($user->get('middleinit'));
+
+echo $this->formCollection($user->get('roles'));
+echo $this->formCollection($user->get('unitprivs'));
+?>
+<button onclick="return add_unit_priv()">Add a new unit priv</button>
+<script>
+    function add_unit_priv() {
+        var currentCount = $('form > fieldset > fieldset #unit_id').length;
+        var template = $('form > fieldset > span').data('template');
+
+        template = template.replace(/__index__/g, currentCount);
+        $('form > fieldset').append(template);
+        return false;
+    }
+</script>
+<?php
+echo $this->formHidden($form->get('csrf'));
+echo $this->formElement($form->get('submit'));
+
+echo $this->form()->closeTag();
