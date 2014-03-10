@@ -4,20 +4,9 @@ namespace Reports\forms;
 use Zend\Form\Form;
 class ReportForm extends Form
 {
-    
     // Report form used for capturing report data from view
     public function init()
     {
-        // Submit button
-        $this->add(array(
-            'name' => 'submit',
-            'attributes' => array(
-                'type'  => 'submit',
-                'value' => 'Submit Changes',
-                'id' => 'submit',
-                'class' => 'btn btn-primary',
-            ),
-        ));
         
         // Action data
         $this->add(array(
@@ -67,6 +56,16 @@ class ReportForm extends Form
             ),
         ));
         
+        // Status data
+        $this->add(array(
+            'name' => 'status',
+            'attributes' => array(
+                'type'  => 'text',
+                'id' => 'status',
+                'name' => 'status',
+            ),
+        ));
+        
         // Method data
         $this->add(array(
             'name' => 'method',
@@ -76,6 +75,80 @@ class ReportForm extends Form
                 'class' => 'textbox',
                 'rows' => '10',
                 'cols' => '60',
+            ),
+        ));
+        
+        // Feedback data
+        $this->add(array(
+            'name' => 'feedbackText',
+            'attributes' => array(
+                'type'  => 'textarea',
+                'id' => 'feedbackText',
+                'class' => 'textbox',
+                'rows' => '10',
+                'cols' => '60',
+            ),
+        ));
+        
+        // Feedback flag
+        $this->add(array(
+            'type' => 'Radio',
+            'name' => 'feedbackFlag',
+            'id' => 'feedbackFlag',
+            'options' => array(               
+                'value_options' => array(
+                    '1' => 'In Need of Revision',
+                    '2' => 'Ready to be Carried Out',
+                ),
+            )
+        ));
+        
+        // File input for attachments
+        $this->add(array(
+            'name' => 'fileUpload',
+            'attributes' => array(
+                'type'  => 'file',
+                'accept' => '.pdf',
+                'id' => 'fileUpload',
+                'name' => 'fileUpload',
+
+            ),
+            'options' => array(
+                'label' => 'Upload File',
+            ),
+        ));
+        
+        $this->add(array(
+            'name' => 'fileDescription0',
+            'attributes' => array(
+                'type'  => 'input',
+                'id' => 'fileDescription0',
+                'name' => 'fileDescription0',
+
+            ),
+        ));
+        
+        // File input for attachments
+        $this->add(array(
+            'name' => 'fileUpload1',
+            'attributes' => array(
+                'type'  => 'file',
+                'accept' => '.pdf',
+                'id' => 'fileUpload1',
+                'name' => 'fileUpload1',
+
+            ),
+            'options' => array(
+                'label' => 'Upload File',
+            ),
+        ));
+        
+        $this->add(array(
+            'name' => 'fileDescription1',
+            'attributes' => array(
+                'type'  => 'input',
+                'id' => 'fileDescription1',
+                'name' => 'fileDescription1',
             ),
         ));
         
@@ -91,6 +164,5 @@ class ReportForm extends Form
             ),
         ));
     }
-
 }
 ?>

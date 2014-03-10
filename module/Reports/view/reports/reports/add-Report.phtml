@@ -16,9 +16,15 @@ if($results){
   <div class="bs-example">
     <?php
     $form->setAttribute('action', $this->url('reports', array('action' => 'addNewReport')));
+    $form->setAttribute('name', 'data');
+    $form->setAttribute('id', 'data');
+    $form->setAttribute('enctype', 'multipart/form-data');
+
     $form->prepare();
     echo $this->form()->openTag($form);
     echo $this->formHidden($form->get('id')->setAttribute('value', $planData[0]['id']));
+    echo $this->formHidden($form->get('status')->setAttribute('value', '0'));
+
     ?>
     <table class="table">
       
@@ -113,10 +119,42 @@ if($results){
   </div>
   
 </div>
-<a href="#">AttachedFile.pdf</a><P></P>
+<table>
+    <th>Add Files</th>
+
+    <tr><td>File Description</td></tr>
+    
+    <tr>
+	<td>
+	    <?php echo $this->formInput($form->get('fileDescription0')); ?>
+	</td>
+	<td>
+	    <?php echo $this->formFile($form->get('fileUpload')); ?>
+	</td>
+
+	<td>
+	    <input type="button" value="Clear" onclick="$('#fileUpload').replaceWith($('#fileUpload').clone());document.getElementById('fileDescription0').value = '';"></input>
+	</td>
+    </tr>
+    <tr>
+	<td>
+	    <?php echo $this->formInput($form->get('fileDescription1')); ?>
+	</td>
+	<td>
+	    <?php echo $this->formFile($form->get('fileUpload1')); ?>
+	</td>
+
+	<td>
+	    <input type="button" value="Clear" onclick="$('#fileUpload1').replaceWith($('#fileUpload1').clone());document.getElementById('fileDescription1').value = '';"></input>
+	</td>
+    </tr>
+</table>
+</br>
 	
         </div> <!-- controls -->
-	<?php echo $this->formRow($form->get('submit'))?>
+	<input class="btn btn-primary btn-md" onclick="" id="submitButton" value="Submit Report"></input>
+	<input class="btn btn-primary btn-md" onclick="" id="draftButton" value="Save Draft"></input>
+
 
 
       <tbody>

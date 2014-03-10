@@ -539,7 +539,7 @@ if (!jQuery) { throw new Error("Bootstrap requires jQuery") }
     this.$element.trigger(startEvent)
     if (startEvent.isDefaultPrevented()) return
 
-    var actives = this.$parent && this.$parent.find('> .panel > .in')
+   var actives = this.$parent && this.$parent.find('> .panel > .in')
 
     if (actives && actives.length) {
       var hasData = actives.data('bs.collapse')
@@ -553,6 +553,7 @@ if (!jQuery) { throw new Error("Bootstrap requires jQuery") }
     this.$element
       .removeClass('collapse')
       .addClass('collapsing')
+      
       [dimension](0)
 
     this.transitioning = 1
@@ -561,6 +562,7 @@ if (!jQuery) { throw new Error("Bootstrap requires jQuery") }
       this.$element
         .removeClass('collapsing')
         .addClass('in')
+        
         [dimension]('auto')
       this.transitioning = 0
       this.$element.trigger('shown.bs.collapse')

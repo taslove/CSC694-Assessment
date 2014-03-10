@@ -16,9 +16,15 @@ if(!$results){
   <div class="bs-example">
     <?php
     $form->setAttribute('action', $this->url('reports', array('action' => 'updateReport')));
+    $form->setAttribute('name', 'data');
+    $form->setAttribute('id', 'data');
+    $form->setAttribute('enctype', 'multipart/form-data');
+
     $form->prepare();
     echo $this->form()->openTag($form);
     echo $this->formHidden($form->get('id')->setAttribute('value', $report[0]['id']));
+    echo $this->formHidden($form->get('status')->setAttribute('value', '0'));
+
     ?>
     <table class="table">
       
@@ -112,13 +118,124 @@ if(!$results){
     </div>
   </div>
   
-</div>
-<a href="#">AttachedFile.pdf</a><P></P>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseSeven">
+	    <?php
+		if($report[0]['feedback'] == 2){
+		    $flag = 2;
+		}else{
+		    $flag = 1;
+		}
+	    ?>
+           Feedback - 
+        </a>
+      </h4>
+      <?php
+	if($role < 4){
+	    $read = '';
+	    echo $this->formRow($form->get('feedbackFlag')->setAttribute('value', $flag));
+
+	}else{
+	    $read = 'readonly';
+	    if($report[0]['feedback'] == 2){
+		$feedback = 'Final Version';
+	    }else{
+		$feedback = 'In need of revision';
+	    }
+	    echo $feedback; 
+	}
 	
-        </div> <!-- controls -->
-	<?php echo $this->formRow($form->get('submit'))?>
+	?>
+    </div>
+    <div id="collapseSeven" class="panel-collapse collapse">
+      <div class="panel-body">
+    <?php
+	
+	$row = $form->get('actions');
+	$row->setAttribute('value', $report[0]['feedback_text']);
+	$row->setAttribute('readonly', $read);
+	echo $this->formRow($row);
+			 
+	
+	?>    </div>
+    </div>
+  </div>
+  
+</div>
+
+<table>
+				<?php
+				    if(count($documents) > 0){ ?>
+				    				<th>File</th><th>&nbsp&nbspDescription</th><td>&nbsp&nbsp</td>
+<?php
+					foreach($documents as $doc){
+				?>
+					    <tr><td><a href="<?php echo $this->url('id',
+						    array('action'=>'download',
+						   'id' => $doc['id'],
+						   ));
+			     ?>"><?php echo $doc['file_name']; ?></a></td><td>
+		    <?php echo '&nbsp&nbsp' . $doc['file_description']; ?>
+		    </br></td><td><input type="checkbox" name="delete[]" value="<?php echo $doc['id'];?>">&nbsp&nbspDelete<br>
+</td></tr>
+		    <?php
+		}
+				    }
+				
+	?>
+	    </table>
+
+<table>
+    <th>Add Files</th>
+
+    <tr><td>File Description</td></tr>
+    
+    <tr>
+	<td>
+	    <?php echo $this->formInput($form->get('fileDescription0')); ?>
+	</td>
+	<td>
+	    <?php echo $this->formFile($form->get('fileUpload')); ?>
+	</td>
+
+	<td>
+	    <input type="button" value="Clear" onclick="$('#fileUpload').replaceWith($('#fileUpload').clone());document.getElementById('fileDescription0').value = '';"></input>
+	</td>
+    </tr>
+    <tr>
+	<td>
+	    <?php echo $this->formInput($form->get('fileDescription1')); ?>
+	</td>
+	<td>
+	    <?php echo $this->formFile($form->get('fileUpload1')); ?>
+	</td>
+
+	<td>
+	    <input type="button" value="Clear" onclick="$('#fileUpload1').replaceWith($('#fileUpload1').clone());document.getElementById('fileDescription1').value = '';"></input>
+	</td>
+    </tr>
+</table>
+</br>
 
 
+</div> <!-- controls -->
+	<input class="btn btn-primary btn-md" onclick="" id="submitButton" value="Submit Changes"></input>
+
+	<?php
+	    if($report[0]['draft_flag'] == 1){
+	 ?>
+	    <input class="btn btn-primary btn-md" onclick="" id="draftButton" value="Save Draft"></input>
+
+	 <?php
+	}
+	if($role < 3){
+	?>
+	<input class="btn btn-primary btn-md" onclick="" id="deleteButton" value="Delete Report"></input>
+	<?php
+	}
+?>
       <tbody>
        
       </tbody>
