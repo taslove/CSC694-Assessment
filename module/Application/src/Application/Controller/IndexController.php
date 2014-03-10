@@ -18,6 +18,8 @@ use Zend\Config\Reader\Ini as ConfigReader;
 use Zend\Config\Config;
 use Zend\Ldap\Ldap;
 use Zend\Session\Container;
+use Application\Model\AllTables;
+
 
 class IndexController extends AbstractActionController
 {
@@ -41,12 +43,12 @@ class IndexController extends AbstractActionController
         $configReader = new ConfigReader();
         $configData = $configReader->fromFile('ldap-config.ini');
         $config = new Config($configData, true);        
-        $options = $config->production->ldap->toArray();
-        unset($options['log_path']);
+        $settings = $config->production->ldap->toArray();
+        unset($settings['log_path']);
         
         //this sets up the adapter to talk to the LDAP server
         $auth = new AuthenticationService();
-        $adapter = new AuthAdapter($options,
+        $adapter = new AuthAdapter($settings,
                                    $username,
                                    $password);
         
@@ -59,33 +61,43 @@ class IndexController extends AbstractActionController
             echo '<br>';
         }
         
-        $ldap = new Zend\Ldap\Ldap($options);
-        //var_dump($ldap);
+        $options = array(
+            'host' => 'ldap.nccnet.noctrl.edu',
+            'bindRequiresDn'    => true,
+            'accountDomainName' => 'noctrl.edu',
+            'baseDn'            => 'O=NCC',
+        );
         
-        //$schema = $auth->getSchema();
+        $ldap = new Ldap($options);
+        
+        echo 'That worked';
+        $ldap->bind();
+        $userData = $ldap->getEntry('cn=akalelkar');
+            var_dump($userData);
+          
         
         
+        $namespace = new Container('user');
+        $namespace->usedID = 'Test ID';
+        $namespace->role = 2;
+        $namespace->userEmail = 'testID@foo.com';   
+        $namespace->datatelID = 'NCC ID';
         
-        
-        
-        $container = new Container('namespace');
-        $container->usedID = 'Test ID';
-        $container->role = 2;
-        $container->userEmail = 'testID@foo.com';   
-        $container->logged_in = 'Y';
+        $result = $this->getServiceConfig()->getUserInformation($username);
 
-        //foreach ($container as $content)
-        //    var_dump($content);
 
-
-        $this->ShowContainer();
+       // $this->ShowContainer();
         exit();        
     }
     
     public function ShowContainer()
     {
         
-        $container = new Container('namespace');
+        $namespace = new Container('user');
+        foreach ($namespace as $content)
+            var_dump($content);
         
     }
+    
+    
 }
