@@ -18,6 +18,8 @@ use Zend\Config\Reader\Ini as ConfigReader;
 use Zend\Config\Config;
 use Zend\Ldap\Ldap;
 use Zend\Session\Container;
+use Application\Model\AllTables;
+
 
 class IndexController extends AbstractActionController
 {
@@ -80,8 +82,8 @@ class IndexController extends AbstractActionController
         $namespace->role = 2;
         $namespace->userEmail = 'testID@foo.com';   
         $namespace->datatelID = 'NCC ID';
-
-   
+        
+        $result = $this->getServiceConfig()->getUserInformation($username);
 
 
        // $this->ShowContainer();

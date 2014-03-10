@@ -90,5 +90,24 @@ class AllTables extends AbstractTableGateway
         // you must iterate over $result to retrieve query results
         
         return $result;
-    } 
+    }
+    
+    public function getUserInformation($userID)
+    {
+        $sql = new Sql($this->adapter);
+        
+        $select = $sql->select()
+                      ->from('users')
+                      ->columns(array('users.id',
+                                      'users.datatel_id',
+                                      'users.email',
+                                      'user_roles.role',))
+                      ->join('user_roles','users.id = user_roles.user_id', array('role'))
+                      ->where(array('datatel_id' => $userid));
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        
+        return $result;
+    }
 }
