@@ -7,6 +7,7 @@ use Admin\Model\AdminTable;
 use Admin\Model\User;
 use Admin\Model\Queries;
 use Admin\Model\UserTable;
+use Admin\Model\Generic;
 use Admin\Model\Program;
 use Admin\Model\ProgramTable;
 use Zend\Db\ResultSet\ResultSet;
@@ -42,6 +43,11 @@ class Module
                     $table = new UserTable($dbAdapter);
                     return $table;
                 },
+                'Admin\Model\Generic' => function($sm) {
+                    $dbAdapter = $sm->get('dbAdapter');
+                    $table = new Generic($dbAdapter);
+                    return $table;
+                },        
                 'Admin\Model\ProgramTable' => function($sm) {
                     $dbAdapter = $sm->get('dbAdapter');
                     $table = new ProgramTable($dbAdapter);

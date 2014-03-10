@@ -18,6 +18,7 @@ use Zend\session\container;
 class UserController extends AbstractActionController
 {
    protected $tableResults;
+   protected $generictableResults;
 
    public function onDispatch(\Zend\Mvc\MvcEvent $e) 
    {
@@ -51,7 +52,8 @@ class UserController extends AbstractActionController
                 ->setItemCountPerPage($itemsPerPage)
                 ->setPageRange(7);
 
-        $form = new UserForm();
+        $args['roles'] = $this->getGenericQueries()->getRoleTerms();
+        $form = new UserForm(null,$args);
         $form->get('submit')->setValue('Add');
 
         return new ViewModel(array(
@@ -63,7 +65,8 @@ class UserController extends AbstractActionController
     
    public function addAction()
    {
-        $form = new UserForm();
+        $args['roles'] = $this->getGenericQueries()->getRoleTerms();
+        $form = new UserForm(null,$args);
         $form->get('submit')->setValue('Add');
 
         $request = $this->getRequest();
@@ -97,14 +100,19 @@ class UserController extends AbstractActionController
         $user = $this->getUserQueries()->getUser($id);
 
 
+
         $user->dbroles = $user->user_roles;
 
         foreach($user->user_roles as $role => $value){
             $user->user_roles[] = $role;
         }
- 
+        $user->units =  'MTH';
         
-        $form = new UserForm();
+        $args['roles'] = $this->getGenericQueries()->getRoleTerms();
+        $args['units'] = $this->getGenericQueries()->getUnits();
+        $args['action'] = 'edit';
+        $args['user_id'] = $id;
+        $form = new UserForm(null,$args);
         $form->bind($user);
         $form->get('submit')->setAttribute('value', 'Save');
 
@@ -150,6 +158,14 @@ class UserController extends AbstractActionController
         }
 
    }
+    public function getGenericQueries()
+    {
+        if (!$this->generictableResults) {
+            $this->generictableResults = $this->getServiceLocator()
+                                       ->get('Admin\Model\Generic');             
+        }
+        return $this->generictableResults;
+    }
    public function getUserQueries()
     {
         if (!$this->tableResults) {

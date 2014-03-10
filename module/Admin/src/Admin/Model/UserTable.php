@@ -6,7 +6,6 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
-use Admin\Model\Admin;
 use Zend\session\container;
 
 class UserTable extends AbstractTableGateway
@@ -15,6 +14,7 @@ class UserTable extends AbstractTableGateway
 
     public function __construct(Adapter $adapter)
     {
+        $namespace = new Container('user');
         $this->adapter = $adapter;
         $this->table = 'users';
         $this->initialize();
@@ -64,7 +64,7 @@ class UserTable extends AbstractTableGateway
         $roles = array();
         foreach($result as $row){
             $roles[$row['role']]['id'] = $row['id'];
-            $roles[$row['role']]['term'] = $this->Admin()->getRoleTerm($row['role']);
+            $roles[$row['role']]['term'] = $this->Generic()->getRoleTerm($row['role']);
         }
         return $roles;
     }
@@ -310,7 +310,8 @@ class UserTable extends AbstractTableGateway
        $this->adapter->query($deleteString, Adapter::QUERY_MODE_EXECUTE);
     }
     
-    public function Admin(){
-        return new Admin();
+    public function Generic()
+    {
+        return new Generic($this->adapter);
     }
 }
