@@ -68,18 +68,13 @@ class UserObjFieldset extends Fieldset implements InputFilterProviderInterface
         ));
         
         $this->add(array(
-            'type' => 'Zend\Form\Element\Collection',
+            'type' => 'Admin\Form\RoleFieldset',
             'name' => 'roles',
             'options' => array(
-                'count' => 1,
-                'should_create_template' => false,
-                'allow_add' => false,
-                'target_element' => array(
-                    'type' => 'Admin\Form\RoleFieldset'
-                )
+                'label' => 'Roles'
             )
         ));
-        
+
         $this->add(array(
             'type' => 'Zend\Form\Element\Collection',
             'name' => 'unitprivs',
@@ -87,16 +82,17 @@ class UserObjFieldset extends Fieldset implements InputFilterProviderInterface
                 'label' => 'Assign user to Unit',
                 'count' => 1,
                 'should_create_template' => true,
-                'allow_add' => true,
+                'allow_add' =>true,
                 'template_placeholder' => '__placeholder__',
-                'target_element' => array(
+                'target_element' =>array(
                     'type' => 'Admin\Form\UnitPrivFieldset'
                 )
             ),
-            'attributes' => array(
-                'class' => 'unit-privs',
-            ),
+            'attributes' =>array(
+                'class' => 'unit-privs'
+            )
         ));
+
     }
 
     /**

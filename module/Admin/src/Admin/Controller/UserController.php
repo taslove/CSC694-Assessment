@@ -4,6 +4,8 @@ namespace Admin\Controller;
 
 use Admin\Model\User;
 use Admin\Entity\UserObj;
+use Admin\Entity\Role;
+use Admin\Entity\UnitPriv;
 use Admin\Form\UserForm;
 use Admin\Form\CreateUserObj;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -83,12 +85,28 @@ class UserController extends AbstractActionController
        
      $form = new CreateUserObj();
      $user = new UserObj();
-     $user->setFirstName('Jack');
-     $user->setLastName('gregory');
-     $user->setMiddleInit('w');
-     $user->setRoles($user_roles);
-     $user->setEmail('jgregory700@gmail.com');     
-     $user->setUnitPrivs(array('HST'=>'HST'));
+     $user->setFirstname('Jack');
+     $user->setLastname('gregory');
+     $user->setMiddleinit('w');
+     $user->setEmail('jgregory700@gmail.com');  
+     
+     $role1 = new Role();
+     $role1->setName('Admin');
+     
+     
+     
+     $role2 = new Role();
+     $role2->setName(3);
+     
+     $roles = array($role1,$role2);
+     
+     $priv = new UnitPriv();
+     $priv->setName('HST');
+     
+     
+     $user->setRoles($roles);
+     $user->setUnitPrivs(array($priv));
+
 
      $form->bind($user);
      Debug::dump($user);
