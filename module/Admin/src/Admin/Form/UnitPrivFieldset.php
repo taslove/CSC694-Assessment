@@ -14,17 +14,16 @@ class UnitPrivFieldset extends Fieldset implements InputFilterProviderInterface
         $this->setHydrator(new ClassMethodsHydrator(false))
              ->setObject(new UnitPriv());
 
-        $this->setLabel('Unit Priv');
+        #$this->setLabel('Unit Priv');
 
          $this->add(array(
-            'name' => 'unit_id',
+            'name' => 'unit_id ',
             'type' => 'Zend\Form\Element\Select',
             'attributes' => array(
-                'class'=> 'form-control',
+                'class'=> 'form-control unit-privs',
                 'id' => 'unit_id',
             ),
             'options' => array(
-                'label' => 'Unit ID',
                 'value_options' => array(
                     'ACC'=>'ACC',
                     'BIO'=>'BIO',
