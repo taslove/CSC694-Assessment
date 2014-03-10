@@ -5,7 +5,7 @@ namespace Admin\Controller;
 use Admin\Model\User;
 use Admin\Entity\UserObj;
 use Admin\Form\UserForm;
-use Admin\Form\NewUserForm;
+use Admin\Form\CreateUserObj;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Db\Sql\Select;
@@ -15,6 +15,7 @@ use Zend\Paginator\Adapter\ArrayAdapter;
 use Zend\Paginator\Paginator;
 use Application\Authentication\AuthUser;
 use Zend\session\container;
+use Zend\Debug\Debug;
 
 
 class UserController extends AbstractActionController
@@ -67,10 +68,30 @@ class UserController extends AbstractActionController
     
    public function newuserAction()
    {
-     $form = new NewUserForm();
+    /* $id = (int) $this->params()->fromRoute('id');
+        if (!$id) {
+            return $this->redirect()->toRoute('user', array(
+                'action' => 'add'
+            ));
+      }  */    
+     $ouser = $this->getUserQueries()->getUser('137');
+      foreach($ouser->user_roles as $role => $value){
+            $user_roles[] = $role;
+        }  
+       
+       
+       
+     $form = new CreateUserObj();
      $user = new UserObj();
-     $form->bind($user);
+     $user->setFirstName('Jack');
+     $user->setLastName('gregory');
+     $user->setMiddleInit('w');
+     $user->setRoles($user_roles);
+     $user->setEmail('jgregory700@gmail.com');     
+     $user->setUnitPrivs(array('HST'=>'HST'));
 
+     $form->bind($user);
+     Debug::dump($user);
      if ($this->request->isPost()) {
          $form->setData($this->request->getPost());
 

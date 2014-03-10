@@ -10,7 +10,9 @@ $this->headTitle($title);
     </div>
 
     <div class="user-form-wrapper col-md-12">
+        <div class="user-form" style="overflow:hidden;">
             <?php echo $this->partial('admin/user/form.phtml', array('form' => $this->form, 'action' => 'add','submitVal' =>'Add User', 'id' => $this->id)); ?>
+        </div>    
     </div>
 
     <div class="user-table-wrapper col-md-12">

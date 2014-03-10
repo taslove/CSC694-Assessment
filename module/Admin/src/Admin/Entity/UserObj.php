@@ -10,94 +10,91 @@ class UserObj
     protected $lastname;
     protected $middleinit;
     protected $email;
-    protected $datatelid;
+   # protected $datatelid;
     protected $roles;
     protected $unitprivs;
 
-    /**
-     * @param string $name
+
+    /* @param string $name
      * @return Product
-     \*/
-    public function setFirstName($name)
+     */
+    public function setEmail($name)
+    {
+        $this->email = $name;
+        return $this;
+    }
+    //@return string
+    public function getEmail()
+    {
+        return $this->email;
+    }
+    
+     /* @param string $name
+     * @return Product
+     */
+    public function setFirstname($name)
     {
         $this->firstname = $name;
         return $this;
     }
-
-    /**
-     * @return string
-     \*/
-    public function getFirstName()
+    //@return string
+    public function getFirstname()
     {
         return $this->firstname;
     }
-
-        /**
-     * @param string $name
+    
+     /* @param string $name
      * @return Product
-     \*/
-    public function setLastName($name)
+     */
+    public function setLastname($name)
     {
         $this->lastname = $name;
         return $this;
     }
-
-    /**
-     * @return string
-     \*/
-    public function getLastName()
+    //@return string
+    public function getLastname()
     {
         return $this->lastname;
     }
     
-    /**
-     * @param string $name
+     /* @param string $name
      * @return Product
-     \*/
-    public function setMiddleInit($name)
+     */
+    public function setMiddleinit($name)
     {
         $this->middleinit = $name;
         return $this;
     }
-
-    /**
-     * @return string
-     \*/
-    public function getMiddleInit()
+    //@return string
+    public function getMiddleinit()
     {
         return $this->middleinit;
     }
-    /**
-     * @param array $roles
+    
+    
+    /* @param string $name
      * @return Product
-     \*/
+     */
     public function setRoles(array $roles)
     {
         $this->roles = $roles;
         return $this;
     }
-
-    /**
-     * @return Roles
-     \*/
+    //@return string
     public function getRoles()
     {
         return $this->roles;
     }
-
-    /**
-     * @param array $unitprivs
+    
+    /* @param string $name
      * @return Product
-     \*/
+     */
     public function setUnitPrivs(array $unitprivs)
     {
         $this->unitprivs = $unitprivs;
         return $this;
     }
-
-    /**
-     * @return array
-     \*/
+    //@return string
     public function getUnitPrivs()
     {
         return $this->unitprivs;

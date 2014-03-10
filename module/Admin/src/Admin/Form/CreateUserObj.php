@@ -5,18 +5,18 @@ use Zend\Form\Form;
 use Zend\InputFilter\InputFilter;
 use Zend\Stdlib\Hydrator\ClassMethods as ClassMethodsHydrator;
 
-class NewUserForm extends Form
+class CreateUserObj extends Form
 {
     public function __construct()
     {
-        parent::__construct('new_user_form');
+        parent::__construct('create_userobj');
 
         $this->setAttribute('method', 'post')
              ->setHydrator(new ClassMethodsHydrator(false))
              ->setInputFilter(new InputFilter());
 
         $this->add(array(
-            'type' => 'Admin\Form\UserFieldset',
+            'type' => 'Admin\Form\UserObjFieldset',
             'options' => array(
                 'use_as_base_fieldset' => true
             )

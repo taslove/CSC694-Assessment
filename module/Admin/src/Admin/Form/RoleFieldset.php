@@ -14,13 +14,13 @@ class RoleFieldset extends Fieldset implements InputFilterProviderInterface
         $this->setHydrator(new ClassMethodsHydrator(false))
              ->setObject(new Role());
 
-        $this->setLabel('Role');
+        #$this->setLabel('Role');
 
         $this->add(array(
-            'name' => 'user_roles',
+            'name' => 'name',
             'type' => 'Zend\Form\Element\MultiCheckbox',
             'attributes' => array(
-                'id' => 'user_roles',
+                'id' => 'name',
             ),
             'options' => array(
                 'value_options' => array(          
@@ -31,6 +31,7 @@ class RoleFieldset extends Fieldset implements InputFilterProviderInterface
                     '5' => 'User',),
             ),
         ));
+
     }
 
     /**
@@ -39,7 +40,7 @@ class RoleFieldset extends Fieldset implements InputFilterProviderInterface
     public function getInputFilterSpecification()
     {
         return array(
-            'user_roles' => array(
+            'name' => array(
                 'required' => true,
             )
         );

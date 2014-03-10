@@ -5,24 +5,24 @@ class UnitPriv
 {
     /**
      * @var string
-     \*/
-    protected $unit_id;
+     */
+    protected $name;
 
     /**
      * @param string $name
      * @return Category
-     \*/
-    public function setPriv($id)
+     */
+    public function setName($name)
     {
-        $this->unit_id = $id;
+        $this->name = $name;
         return $this;
     }
 
     /**
      * @return string
-     \*/
-    public function getPriv()
+     */
+    public function getName()
     {
-        return $this->unit_id;
+        return $this->name;
     }
 }

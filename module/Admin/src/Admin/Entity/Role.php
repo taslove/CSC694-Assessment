@@ -5,24 +5,24 @@ class Role
 {
     /**
      * @var string
-     \*/
-    protected $role;
+     */
+    protected $name;
 
     /**
      * @param string $name
      * @return Category
-     \*/
-    public function setRole($id)
+     */
+    public function setName($name)
     {
-        $this->role = $id;
+        $this->name = $name;
         return $this;
     }
 
     /**
      * @return string
-     \*/
-    public function getRole()
+     */
+    public function getName()
     {
-        return $this->role;
+        return $this->name;
     }
 }

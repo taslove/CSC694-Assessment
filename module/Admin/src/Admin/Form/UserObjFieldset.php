@@ -2,12 +2,13 @@
 namespace Admin\Form;
 
 use Admin\Entity\UserObj;
-#use Admin\Model\User;
 use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;
 use Zend\Stdlib\Hydrator\ClassMethods as ClassMethodsHydrator;
+use Zend\Stdlib\Hydrator\ClassMethods;
 
-class UserFieldset extends Fieldset implements InputFilterProviderInterface
+
+class UserObjFieldset extends Fieldset implements InputFilterProviderInterface
 {
     public function __construct()
     {
@@ -15,24 +16,54 @@ class UserFieldset extends Fieldset implements InputFilterProviderInterface
         $this->setHydrator(new ClassMethodsHydrator(false))
              ->setObject(new UserObj());
 
-        $this->setLabel('User');
-
+        
+        
+        #$this->setLabel('User');
         $this->add(array(
             'name' => 'firstname',
+            'type' => 'Zend\Form\Element\Text',
+            'attributes' => array(
+                'class'=> 'form-control',
+                'id' => 'firstname',
+            ),
             'options' => array(
-                'label' => 'First Name'
+                'label' => 'First Name',
+            ),
+        ));
+         $this->add(array(
+            'name' => 'middleinit',          
+            'type' => 'Zend\Form\Element\Text',
+            'attributes' => array(
+                'class'=> 'form-control',
+                'id' => 'middleinit',
+                'maxlength' => 1,
+                'size' => 1,
+                'style' => 'width:60px;'
+            ),
+            'options' => array(
+                'label' => 'Middle Initial',
+            ),
+        ));
+        $this->add(array(
+            'name' => 'email',          
+            'type' => 'Zend\Form\Element\Text',
+            'attributes' => array(
+                'class'=> 'form-control',
+                'id' => 'email',
+            ),
+            'options' => array(
+                'label' => 'Email',
             ),
         ));
         $this->add(array(
             'name' => 'lastname',
-            'options' => array(
-                'label' => 'Last Name'
+            'type' => 'Zend\Form\Element\Text',
+            'attributes' => array(
+                'class'=> 'form-control',
+                'id' => 'lastname',
             ),
-        ));
-        $this->add(array(
-            'name' => 'middleinit',
             'options' => array(
-                'label' => 'Middle Init'
+                'label' => 'Last Name',
             ),
         ));
         
@@ -82,6 +113,9 @@ class UserFieldset extends Fieldset implements InputFilterProviderInterface
             ),
             'middleinit' => array(
                 'required' => false,
+            ),
+             'email' => array(
+                'required' => true,
             )
         );
     }

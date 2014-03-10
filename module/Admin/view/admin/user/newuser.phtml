@@ -10,6 +10,7 @@ $user = $form->get('userobj');
 echo $this->formRow($user->get('firstname'));
 echo $this->formRow($user->get('lastname'));
 echo $this->formRow($user->get('middleinit'));
+echo $this->formRow($user->get('email'));
 
 echo $this->formCollection($user->get('roles'));?>
 <div class="unit-priv-fieldset">
