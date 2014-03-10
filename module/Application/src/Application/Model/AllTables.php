@@ -90,6 +90,5 @@ class AllTables extends AbstractTableGateway
         // you must iterate over $result to retrieve query results
         
         return $result;
-    }
-  
+    } 
 }
