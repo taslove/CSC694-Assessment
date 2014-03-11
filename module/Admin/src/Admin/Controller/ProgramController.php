@@ -1,4 +1,5 @@
 <?php
+
 namespace Admin\Controller;
 
 use Admin\Model\Program;
@@ -13,84 +14,98 @@ use Zend\Paginator\Adapter\DbSelect;
 use Application\Authentication\AuthUser;
 use Zend\session\container;
 
-class ProgramController extends AbstractActionController
-{
-   protected $tableResults;
+class ProgramController extends AbstractActionController {
 
-   public function onDispatch(\Zend\Mvc\MvcEvent $e) 
-   {
-         /* $validUser = new AuthUser();
-        if (!$validUser->Validate()){
+    protected $tableResults;
+
+    public function onDispatch(\Zend\Mvc\MvcEvent $e) {
+        $validUser = new AuthUser();
+        if (!$validUser->Validate()) {
             return $this->redirect()->toRoute('application');
+        } else {
+            return parent::onDispatch($e);
         }
-        else{
-            return parent::onDispatch( $e );
-        }*/
         $namespace = new Container('user');
-        $namespace->userID = 21;
-        $namespace->userEmail = 'testID@foo.com';
-        $namespace->role = 2;
-        $namespace->datatelID = 11123;
-        
-        
-        return parent::onDispatch( $e );
-   }
-   
-   public function indexAction()
-   {       
+
+        return parent::onDispatch($e);
+    }
+
+    /*
+     * Program Index Action
+     */
+
+    public function indexAction() {
+        //Get all programs
         $paginator = $this->getProgramQueries()->fetchAll(true);
         // set the current page to what has been passed in query string, or to 1 if none set
-        $paginator->setCurrentPageNumber((int)$this->params()->fromQuery('page', 1));
+        $paginator->setCurrentPageNumber((int) $this->params()->fromQuery('page', 1));
         // set the number of items per page to 10
         $paginator->setItemCountPerPage(10);
-        
+
+        //add program form
         $form = new ProgramForm();
         $form->get('submit')->setValue('Add');
 
+        //send paginator and form to index view
         return new ViewModel(array(
             'paginator' => $paginator,
             'form' => $form
         ));
     }
-    
-   public function addAction()
-   {
+
+    /*
+     *  Program Add Action
+     */
+
+    public function addAction() {
+        //the add program form
         $form = new ProgramForm();
         $form->get('submit')->setValue('Add');
 
+        //if form is returned with post
         $request = $this->getRequest();
         if ($request->isPost()) {
+
+            //get the form data
             $program = new Program();
             $form->setInputFilter($program->getInputFilter());
             $form->setData($request->getPost());
 
+            //check if form is valid
             if (!$form->isValid()) {
                 print_r($form->getMessages());
             }
             if ($form->isValid()) {
                 $program->exchangeArray($form->getData());
-                
-                //TODO: something to check it email exists
-                
+
+
                 //save the program
                 $this->getProgramQueries()->saveProgram($program);
 
-                // Redirect to list of users
+                // Redirect to list of programs
                 return $this->redirect()->toRoute('program');
             }
         }
-        return array('form' => $form);  
-   }
-   public function editAction()
-   {
+        return array('form' => $form);
+    }
+
+    /*
+     *  Program Edit Action
+     */
+
+    public function editAction() {
+        //get id from route or redirect user to programs page if unavailable
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('program', array(
-                'action' => 'add'
+                        'action' => 'add'
             ));
         }
+
+        //get the program values via program id
         $program = $this->getProgramQueries()->getProgram($id);
 
+        //the program edit form, bind with values from database
         $form = new ProgramForm();
         $form->bind($program);
         $form->get('submit')->setAttribute('value', 'Save');
@@ -103,22 +118,26 @@ class ProgramController extends AbstractActionController
             if ($form->isValid()) {
                 $this->getProgramQueries()->saveProgram($form->getData());
 
-                // Redirect to list of users
+                // Redirect to list of programs
                 return $this->redirect()->toRoute('program');
             }
         }
-
         return array(
             'id' => $id,
             'form' => $form,
         );
-   }
-   public function deleteAction()
-   {
+    }
+
+    /*
+     * Delete Program action
+     */
+
+    public function deleteAction() {
+        //get id from route or redirect user to programs page if unavailable
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('program');
-        }       
+        }
         $request = $this->getRequest();
         if ($request->isPost()) {
             $del = $request->getPost('del', 'No');
@@ -130,20 +149,35 @@ class ProgramController extends AbstractActionController
 
             // Redirect to list of users
             return $this->redirect()->toRoute('user');
-            
-        }else{
+        } else {
+            //delete the program and redirect user
             $this->getProgramQueries()->deleteProgram($id);
             return $this->redirect()->toRoute('program');
         }
-   }
-    
+    }
 
-   public function getProgramQueries()
-    {
+    /*
+     * Method to get the ProgramTable
+     */
+
+    public function getProgramQueries() {
         if (!$this->tableResults) {
             $this->tableResults = $this->getServiceLocator()
-                                       ->get('Admin\Model\ProgramTable');             
+                    ->get('Admin\Model\ProgramTable');
         }
         return $this->tableResults;
-    }    
+    }
+
+    /*
+     * Method to get the UserTable
+     */
+
+    public function getUserQueries() {
+        if (!$this->tableResults) {
+            $this->tableResults = $this->getServiceLocator()
+                    ->get('Admin\Model\UserTable');
+        }
+        return $this->tableResults;
+    }
+
 }

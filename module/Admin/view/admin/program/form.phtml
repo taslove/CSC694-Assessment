@@ -1,11 +1,11 @@
 <?php
 $form = $this->form;
-$form->setAttribute('action', $this->url('program', array('action' => $action)));
+$form->setAttribute('action', $this->url('program', array('action' => $action,'id'=>$this->id)));
 $form->prepare();
 
 echo $this->form()->openTag($form);
 ?>
-<div class="control-group col-md-12 program-form">  
+<div class="control-group col-md-12">  
     <div class="control-group">  
     <div class="form-group">
         <?php echo $this->formLabel($form->get('unit_id')->setLabelAttributes(array('class'=>'control-label'))); ?>

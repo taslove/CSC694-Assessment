@@ -1,18 +1,23 @@
 <?php
+/*
+ *  User Form
+ */
 
 namespace Admin\Form;
 
 use Zend\Form\Form;
 use Admin\Model\UserTable;
 use Zend\Db\Adapter\Adapter;
-use Admin\Model\Admin;
+use Zend\session\container;
 
 class UserForm extends Form
 {
     protected $sm;
     
-    public function __construct($name = null)
+    public function __construct($name = null,$args)
     {
+        $namespace = new Container('user');
+        
         // we want to ignore the name passed
         parent::__construct('user');        
  
@@ -80,9 +85,10 @@ class UserForm extends Form
                 'id' => 'user_roles',
             ),
             'options' => array(
-                'value_options' => $this->getroles(),
+                'value_options' => $args['roles'],
             ),
-        ));
+        ));      
+                 
         $this->add(array(
             'name' => 'submit',
             'attributes' => array(
@@ -93,10 +99,4 @@ class UserForm extends Form
             ),
         ));
     }    
-    
-    public function getroles()
-   {      
-      $admin =  new Admin();    
-      return $admin->getRoleTerms();
-    }
 }

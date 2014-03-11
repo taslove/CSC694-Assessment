@@ -13,6 +13,7 @@
              'Admin\Controller\Admin' => 'Admin\Controller\AdminController',
              'Admin\Controller\User' => 'Admin\Controller\UserController',
              'Admin\Controller\Program' => 'Admin\Controller\ProgramController',
+             'Admin\Controller\Unit' => 'Admin\Controller\UnitController',
              'Admin\Controller\Queries' => 'Admin\Controller\QueriesController',
          ),
      ),
@@ -61,6 +62,21 @@
                      'defaults' => array(
                          '__NAMESPACE__' => 'Admin\Controller',
                          'controller' => 'Program',
+                         'action'     => 'index',
+                     ),
+                 ),
+             ),
+             'unit' => array(
+                 'type'    => 'segment',
+                 'options' => array(
+                     'route'    => '/admin/units[/][page/:page][:action][/:id]',
+                     'constraints' => array(
+                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                         'id'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                     ),
+                     'defaults' => array(
+                         '__NAMESPACE__' => 'Admin\Controller',
+                         'controller' => 'Unit',
                          'action'     => 'index',
                      ),
                  ),

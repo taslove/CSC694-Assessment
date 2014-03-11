@@ -40,12 +40,15 @@ div.container a.brand {
  * Admin Section
  */
 
-.user-form-wrapper{
 
+/* 
+ * USER FORM
+ */
+.user-form-wrapper{
+    overflow:hidden;
 }
 .user-form{
-    border: 1px solid #ddd;;
-    border-radius: 5px;
+    border: 1px solid #ddd;
     margin-bottom: 2%;
 }
 .user-form .user-roles .head-label{
@@ -73,5 +76,19 @@ div.container a.brand {
     float:right;
 }
 .user-content .pagination-controls-wrapper{
+    overflow:hidden;
+}
+
+/* Program FORM
+ */
+.program-form{
+    border: 1px solid #ddd;
+    margin-bottom: 2%;
+}
+.program-form .control-group{
+    overflow:hidden;
+    padding-top:5px;
+}
+.program-form-wrapper{
     overflow:hidden;
 }
