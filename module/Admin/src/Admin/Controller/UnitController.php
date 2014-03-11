@@ -46,13 +46,9 @@ class UnitController extends AbstractActionController
         $paginator->setCurrentPageNumber((int)$this->params()->fromQuery('page', 1));
         // set the number of items per page to 10
         $paginator->setItemCountPerPage(10);
-        
-        #$form = new UnitForm();
-        #$form->get('submit')->setValue('Add');
 
         return new ViewModel(array(
-            'paginator' => $paginator,
-            #'form' => $form
+            'paginator' => $paginator
         ));
     }
     
@@ -110,14 +106,9 @@ class UnitController extends AbstractActionController
         $assessorPrivs =$this->getUnitQueries()->getUnitPrivs($id,'unit_privs',1);
         $liaisonPrivs = $this->getUnitQueries()->getUnitPrivs($id,'liaison_privs',1);
         
-
-        Debug::dump($assessorPrivs);
-        Debug::dump($liaisonPrivs);
         
         $unit->assessor_1 = (isset($assessorPrivs[0]))? $assessorPrivs[0]:'';
-        $unit->assessor_2 = (isset($assessorPrivs[1]))? $assessorPrivs[1]:'';
         $unit->liaison_1 = (isset($liaisonPrivs[0]))? $liaisonPrivs[0]:'';
-        $unit->liaison_2 = (isset($liaisonPrivs[1]))? $liaisonPrivs[1]:'';
         
 
         $assessors = array(3,4);

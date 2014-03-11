@@ -48,7 +48,7 @@ class Unit implements InputFilterAwareInterface
                 'required' => false,
             )));
               $inputFilter->add($factory->createInput(array(
-                'name' => 'assessor_1',
+                'name' => 'assessor_2',
                 'required' => false,
             )));
                $inputFilter->add($factory->createInput(array(

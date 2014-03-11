@@ -113,7 +113,7 @@ class UnitTable extends AbstractTableGateway
 
         foreach($users as $key => $value)
         {     
-   
+
             //get existing active liason ids
             $previousActivePrivs = $this->getUnitPrivs($id,$table,1);
             
@@ -125,6 +125,7 @@ class UnitTable extends AbstractTableGateway
             
             $newPrivs = array_diff(array($value),$previousPrivs);
             
+            
             if(!empty($newPrivs)){
                 foreach($newPrivs as $key => $value)
                 {
@@ -135,8 +136,7 @@ class UnitTable extends AbstractTableGateway
             //update role(s) that were re-enabled/disabled
             $disablePrivs = array_diff($previousActivePrivs, array($value));
             $reenabledPrivs = array_diff(array($value), $previousActivePrivs);
-
-
+            
             if(!empty($disablePrivs)){
                 foreach($disablePrivs as $key => $value){
                     $this->updatePriv($id,$value, 'disable',$table);
@@ -168,6 +168,7 @@ class UnitTable extends AbstractTableGateway
     
     public function saveUnit(Unit $unit)
     {
+        
         $namespace = new Container('user');
         
         $data = array(
@@ -196,25 +197,18 @@ class UnitTable extends AbstractTableGateway
             $this->insert($data);
             
             
-            $assessors[] = ($unit->assessor_1)? $unit->assessor_1:'';
-            $assessors[] = ($unit->assessor_2)? $unit->assessor_2:'';
-            $liaisons[] = ($unit->liaison_1)? $unit->liaison_1:'';
-            $liaisons[] = ($unit->liaison_2)? $unit->liaison_2:'';
+            $assessor = (isset($unit->assessor_1))? $unit->assessor_1:'';
+            $liaison = (isset($unit->liaison_1))? $unit->liaison_1:'';
             
-            if(!empty($assessors))
+
+            if(!empty($assessor))
             {
-                foreach($assessors as $key => $value)
-                {
-                    $this->addPriv($id,$value,'unit_privs');
-                }
+                $this->addPriv($id,$assessor,'unit_privs');
             }
             
-            if(!empty($liaisons))
+            if(!empty($liaison))
             {
-                foreach($liaisons as $key => $value)
-                {
-                    $this->addPriv($id,$value,'liaison_privs');
-                }
+                $this->addPriv($id,$liaison,'liaison_privs');
             }
 
         } else {
@@ -222,11 +216,9 @@ class UnitTable extends AbstractTableGateway
                 
                 $this->update($data, array('id' => $id));
                 
-                $assessors[] = ($unit->assessor_1)?$unit->assessor_1:'';
-                $assessors[] = ($unit->assessor_2)?$unit->assessor_2:'';
-                $liaisons[] = ($unit->liaison_1)?$unit->liaison_1:'';
-                $liaisons[] = ($unit->liaison_2)?$unit->liaison_2:'';               
-                
+                $assessors[] = (isset($unit->assessor_1))? $unit->assessor_1:'';
+                $liaisons[] = (isset($unit->liaison_1))? $unit->liaison_1:'';            
+
                 $this->updatePrivs($id,$liaisons,'liaison_privs');
                 $this->updatePrivs($id,$assessors,'unit_privs');
                

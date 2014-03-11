@@ -28,11 +28,7 @@ echo $this->form()->openTag($form);
       <div class="form-group">
         <?php echo $this->formLabel($form->get('assessor_1')->setLabelAttributes(array('class'=>'control-label'))); ?>
         <?php echo $this->formSelect($form->get('assessor_1')); ?>
-    </div>
-    <div class="form-group">
-        <?php echo $this->formLabel($form->get('assessor_2')->setLabelAttributes(array('class'=>'control-label'))); ?>
-        <?php echo $this->formSelect($form->get('assessor_2')); ?>
-    </div>     
+    </div>  
 </div>
 <div class="control-group col-md-12">  
     <h2>Liason(s)</h2> 
@@ -40,10 +36,6 @@ echo $this->form()->openTag($form);
         <?php echo $this->formLabel($form->get('liaison_1')->setLabelAttributes(array('class'=>'control-label'))); ?>
         <?php echo $this->formSelect($form->get('liaison_1')); ?>
     </div>
-    <div class="form-group">
-        <?php echo $this->formLabel($form->get('liaison_2')->setLabelAttributes(array('class'=>'control-label'))); ?>
-        <?php echo $this->formSelect($form->get('liaison_2')); ?>
-    </div>     
 </div>
 <div class="control-group col-md-12">     
     <div class="form-group">
