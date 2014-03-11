@@ -145,5 +145,13 @@ class ProgramController extends AbstractActionController
                                        ->get('Admin\Model\ProgramTable');             
         }
         return $this->tableResults;
-    }    
+    } 
+    public function getUserQueries()
+    {
+        if (!$this->tableResults) {
+            $this->tableResults = $this->getServiceLocator()
+                                       ->get('Admin\Model\UserTable');             
+        }
+        return $this->tableResults;
+    }
 }

@@ -6,7 +6,9 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
+use Zend\Db\Sql\Select;
 use Zend\session\container;
+use Zend\Debug\Debug;
 
 class UserTable extends AbstractTableGateway
 {
@@ -43,6 +45,27 @@ class UserTable extends AbstractTableGateway
             
         }
         return $users;
+    }
+    
+    public function fetchUsersByRole($roles)
+    {
+
+        $sql = new Sql($this->adapter);
+        $select = $sql->select()
+                      ->columns(array('id','first_name','last_name'))
+                      ->from(array('u' =>$this->table))
+                      ->join(array('ur' =>'user_roles'), 'u.id = ur.user_id')
+                      ->where(array('role'=>$roles));
+                      
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $results = array();
+        foreach($result as $key => $value){
+
+        $results[$value['user_id']] = $value['first_name'] .' '.$value['last_name'];
+        }
+
+        return $results;
     }
     
     /*
@@ -181,7 +204,7 @@ class UserTable extends AbstractTableGateway
             case 'disable':
                 $data = array(
                         'active_flag' => 0,
-                        'deactivated_ts' =>  date('Y-d-m g:i:s', time()),
+                        'deactivated_ts' =>  date('Y-m-d g:i:s', time()),
                         'deactivated_user' =>  $namespace->userID
                     );
                 break;

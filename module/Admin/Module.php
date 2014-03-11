@@ -7,6 +7,7 @@ use Admin\Model\AdminTable;
 use Admin\Model\User;
 use Admin\Model\Queries;
 use Admin\Model\UserTable;
+use Admin\Model\UnitTable;
 use Admin\Model\Generic;
 use Admin\Model\Program;
 use Admin\Model\ProgramTable;
@@ -52,7 +53,12 @@ class Module
                     $dbAdapter = $sm->get('dbAdapter');
                     $table = new ProgramTable($dbAdapter);
                     return $table;
-                },        
+                },       
+                'Admin\Model\UnitTable' => function($sm) {
+                    $dbAdapter = $sm->get('dbAdapter');
+                    $table = new UnitTable($dbAdapter);
+                    return $table;
+                },         
             ),
         ); 
     }

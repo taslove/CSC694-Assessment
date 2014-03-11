@@ -68,20 +68,20 @@ class UserController extends AbstractActionController
                 ));
     }
     
+    
+   /*not working but would have been awesome
    public function newuserAction()
    {
-    /* $id = (int) $this->params()->fromRoute('id');
+     $id = (int) $this->params()->fromRoute('id');
         if (!$id) {
             return $this->redirect()->toRoute('user', array(
                 'action' => 'add'
             ));
-      }  */    
+      }     
      $ouser = $this->getUserQueries()->getUser('137');
       foreach($ouser->user_roles as $role => $value){
             $user_roles[] = $role;
         }  
-       
-       
        
      $form = new CreateUserObj();
      $user = new UserObj();
@@ -121,7 +121,7 @@ class UserController extends AbstractActionController
      return array(
            'form' => $form
      );
-   }
+   }*/
     
    public function addAction()
    {

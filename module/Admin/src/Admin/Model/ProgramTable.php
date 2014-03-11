@@ -62,7 +62,7 @@ class ProgramTable extends AbstractTableGateway
         $program->exchangeArray($row);
         return $program;
     }
-
+    
     public function saveProgram(Program $program)
     {
         $namespace = new Container('user');
@@ -75,7 +75,7 @@ class ProgramTable extends AbstractTableGateway
               
         //deactivating an existing program
         if(!$program->active_flag){
-            $data['deactivated_ts'] =  date('Y-d-m g:i:s', time());
+            $data['deactivated_ts'] =  date('Y-m-d g:i:s', time());
             $data['deactivated_user'] =  $namespace->userID;
         }
    
@@ -85,7 +85,7 @@ class ProgramTable extends AbstractTableGateway
         
         //if program doesn't exists
         if ($id == 0) {
-            $data['created_ts'] =  date('Y-d-m g:i:s', time());
+            $data['created_ts'] =  date('Y-m-d g:i:s', time());
             $data['created_user'] = $namespace->userID;            
             $this->insert($data);
 
