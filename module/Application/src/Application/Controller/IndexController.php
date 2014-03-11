@@ -25,13 +25,14 @@ class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
-    
+        //Render LoginForm
         $form = new LoginForm();
         return array('form' => $form);
     }
     
     public function authenticateAction()
     {
+        //Get POST data
         $request = $this->getRequest();
         
         if ($request->isPost()) {
@@ -54,12 +55,21 @@ class IndexController extends AbstractActionController
         
         $result = $auth->authenticate($adapter);
         
+        //This is the result of the query to the authentication service
         $messages = $result->getMessages();
         
-        foreach ($messages as $message) {
-            var_dump($message);
-            echo '<br>';
+        //This checks the result of the authentication contained in $messages and
+        //if sucessful, it stores the necessary data in the session container and moves on to the main page
+        //otherwise it goes back to the login screen
+        if (strpos($messages[3], 'successful') == TRUE) {
+            echo 'Authentication successful';
+            
+            
         }
+        else {
+            echo 'Authentication failed';
+        }
+
         
         $options = array(
             'host' => 'ldap.nccnet.noctrl.edu',
@@ -72,9 +82,8 @@ class IndexController extends AbstractActionController
         
         $ldap->bind();
         //$userData = $ldap->getEntry('ou=Napvil,o=NCC');
-            var_dump($userData);
+        //    var_dump($userData);
           
-        
         
         $namespace = new Container('user');
         $namespace->usedID = 'Test ID';
