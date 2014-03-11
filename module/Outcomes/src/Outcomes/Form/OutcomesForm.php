@@ -32,13 +32,9 @@ class OutcomesForm extends Form
             'name' => 'outcome_text',
             'attributes' => array(
                 'type' => 'textarea',
-                'class' => 'rta',
                 'rows' => '6',
                 'cols' => '90',
                 'placeholder' => "",
-            ),
-            'options' => array(
-                'label' => 'Outcome text',
             ),
         ));
         $this->add(array(

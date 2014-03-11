@@ -30,94 +30,60 @@ class OutcomesTable extends AbstractTableGateway
         $this->initialize();
     }
 
-        public function getAllActiveOutcomesForProgram($programId){
+    public function getAllActiveOutcomesForProgram($programId)
+    {
         $sql = new Sql($this->adapter);
         $select = $sql->select()
                       ->from('outcomes')
-                      ->where('program_id ="' . $programId . '"')
-                      ->where('active_flag = 1');
-                     
-                     
+                      ->where('program_id =' . $programId)
+                      ->where('active_flag = 1');                
          
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         
         return $result;   
-        }
+    }
      
-    // used to retrieve an outcome by its ID (if it exists)
-        public function getOutcome($id)
-    {
-        $id  = (int) $id;
-        $rowset = $this->select(array(
-            'id' => $id,
-        ));
-        $row = $rowset->current();
-
-        if (!$row) {
-            throw new \Exception("Could not find row $id");
-        }
-
-        return $row;
-    }
-    
-    
-    // called when done adding or editing an outcome
-        public function saveOutcome(Outcomes $outcome)
-    {
-        $data = array(
-            'id' => $outcome->oid,
-            'program_id' => $outcome->programId,
-            'outcome_text' => $outcome->outcomeText,
-            'active_flag' => $outcome->activeFlag,
-        );
-        $id = (int)$outcome->oid;
-        
-        // if it doesn't have an id yet (meaning it's new)
-        if ($id == false) {
-            $this->insert($data);
-        } else {
-            if ($this->getOutcome($id)) {
-                $this->tableGateway->update($data, array('id' => $id));
-            } else {
-                throw new \Exception('Form id does not exist');
-            }
-        }
-    }
-    
-    // called when done adding or editing an outcome
-        public function addOutcome(Outcomes $outcome)
+    // inserts a new outcome in the database
+    public function addOutcome($programId, $outcomeText, $userId)
     {
         $sql = new Sql($this->adapter);
         
         // store data from the outcome object that was passed in    
-        $data = array('id' => $outcome->oid,
-		      'program_id' => $outcome->programId,
-		      'outcome_text' => $outcome->outcomeText,
-                      'active_flag' => $outcome->activeFlag,
-            );
+        $data = array('program_id' => $programId,
+		      'outcome_text' => $outcomeText,
+                      'active_flag' => 1,
+                      'created_user' => $userId,
+        );
             
-            $insert = $sql->insert('outcomes');
-            $insert->values($data);
-            $statement = $sql->prepareStatementForSqlObject($insert);
-            $statement->execute();
-    }
+        // excecute the SQL
+        $insert = $sql->insert('outcomes');
+        $insert->values($data);
+        $statement = $sql->prepareStatementForSqlObject($insert);
+        $statement->execute();
+    } 
     
-    
-    
-        public function deactivateOutcome($outcomeId)
+    // swaps an existing outcome's active flag from 1 to 0
+    public function deactivateOutcome($outcomeId, $userId)
     {
         $sql = new Sql($this->adapter);
+        // switch the active flag from 0 to 1 then update only for the id passed in
 	$update = $sql->update()
 			->table('outcomes')
 			->set(array('active_flag' => 0,
+                                    'deactivated_user' => $userId,
 			))
 			->where(array('id' => $outcomeId
-        ));
-                        
+        ));                    
         $statement = $sql->prepareStatementForSqlObject($update);
         $statement->execute();
     }
     
-    
+    // creates a new outcome and deactivates an old one
+    public function editOutcome($programId, $newOutcomeText, $deactivatedOutcomeId, $userId)
+    {
+        $sql = new Sql($this->adapter);       
+        $this->addOutcome($programId, $newOutcomeText, $userId);
+        $this->deactivateOutcome($deactivatedOutcomeId, $userId);       
+    }
 }

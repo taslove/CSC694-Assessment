@@ -28,7 +28,7 @@
    
      
       <p></p>
-      <!-- the 'Find Outcome' button -->
+      <!-- the 'Submit' button -->
       <a class="btn btn-primary btn-lg" id="submit-button" disabled><?php echo $this->translate
       ('Submit') ?> &raquo;</a>
       <br />
@@ -55,7 +55,7 @@
 
 <script>
 
-
+// wait until the html document is totally loaded to begin executing JavaScript
 $(document).ready(function() {  
     // load all the units
    var units = <?php print json_encode($units); ?>;
@@ -142,6 +142,10 @@ $(document).on('click', '#submit-button', function () {
       success: function(partialHtml){
         // clear any existing html in the partial div
         $('#partialHolder').html(partialHtml);
+        
+        // set the title to reflect the selected program
+        var programTitle = $('#prog-menu option:selected').text();
+        $("#outcomesTitle").html("Assessment Outcomes - " + programTitle);
       },
    });
 });
