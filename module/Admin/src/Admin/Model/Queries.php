@@ -7,7 +7,7 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 use Zend\Db\Sql\Predicate\NotIn;
 use Zend\Db\Sql\Expression;
-
+use Zend\Db\Sql\Predicate;
 
 // This class must appear in the Module.php file in this module.
 
@@ -136,6 +136,12 @@ class Queries extends AbstractTableGateway
  
         $sql = new Sql($this->adapter);
         $where = new Where();
+        
+        // creates constants to display in queries - note use of quotes
+        // this forces this to appear as string constant in select clause
+        $deactivated = new \Zend\Db\Sql\Predicate\Expression("'Deactivated'");
+        $created = new \Zend\Db\Sql\Predicate\Expression("'Created'");
+    
         // date arrives in mmddyyyy format
         // strtotime requires dd-mm-yyyy format
         $fromDate = substr($fromDate, 2, 2) . '-' .
@@ -146,7 +152,7 @@ class Queries extends AbstractTableGateway
         // get programs that deactivated outcomes since fromdate
         $select1 = $sql->select()
                       ->from('programs')
-                      ->columns(array('unit_id', 'name'))
+                      ->columns(array('unit_id', 'name', 'type' => $deactivated))
                       ->quantifier(\Zend\Db\Sql\Select::QUANTIFIER_DISTINCT)
                       ->join('outcomes', 'outcomes.program_id = programs.id',array())
                       ->join('users', 'users.id = outcomes.deactivated_user', array('last_name', 'first_name'))
@@ -155,10 +161,11 @@ class Queries extends AbstractTableGateway
                       ->order(array('programs.id'))
                    
         ;
+        
         // get programs that added outcomes since fromdate
         $select2 = $sql->select()
                       ->from('programs')
-                      ->columns(array('unit_id', 'name'))
+                      ->columns(array('unit_id', 'name', 'type' => $created))
                       ->quantifier(\Zend\Db\Sql\Select::QUANTIFIER_DISTINCT)
                       ->join('outcomes', 'outcomes.program_id = programs.id',array())
                       ->join('users', 'users.id = outcomes.created_user', array('last_name', 'first_name'))
@@ -237,11 +244,16 @@ class Queries extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         $where = new Where();
         
+        // creates constants to display in queries - note use of quotes
+        // this forces this to appear as string constant in select clause
+        $plan = new \Zend\Db\Sql\Predicate\Expression("'Plan'");
+        $report = new \Zend\Db\Sql\Predicate\Expression("'Report'");
+    
          // get programs that have a plan missing feedback
          // make sure plan is not a draft and feedback is 0
         $select1 = $sql->select()
                       ->from('programs')
-                      ->columns(array('unit_id', 'name'))
+                      ->columns(array('unit_id', 'name', 'type' => $plan))
                       ->quantifier(\Zend\Db\Sql\Select::QUANTIFIER_DISTINCT)
                       ->join('plan_programs', 'plan_programs.program_id = programs.id',array())
                       ->join('plans', 'plans.id = plan_programs.plan_id',array())
@@ -253,10 +265,11 @@ class Queries extends AbstractTableGateway
                       ->order(array('programs.id'))
                    
         ; 
-    
+        // get programs with a report needing feedback
+        // make sure report is not a draft and feedback is 0
         $select2 = $sql->select()
                       ->from('programs')
-                      ->columns(array('unit_id', 'name'))
+                      ->columns(array('unit_id', 'name', 'type' => $report))
                       ->quantifier(\Zend\Db\Sql\Select::QUANTIFIER_DISTINCT)
                       ->join('plan_programs', 'plan_programs.program_id = programs.id',array())
                       ->join('plans', 'plans.id = plan_programs.plan_id',array())
@@ -290,13 +303,19 @@ class Queries extends AbstractTableGateway
                     substr($fromDate, 4);
         $fromDate = date('Y-m-d H:i:s', strtotime($fromDate));
         
+        // creates constants to display in queries - note use of quotes
+        // this forces this to appear as string constant in select clause
+        $deactivated = new \Zend\Db\Sql\Predicate\Expression("'Deactivated'");
+        $created = new \Zend\Db\Sql\Predicate\Expression("'Created'");
+        
         // get deactivated assessor roles
         $select1 = $sql->select()
                       ->from('programs')
-                      ->columns(array('unit_id', 'name'))
+                      ->columns(array('unit_id', 'name', 'type' => $deactivated))
                       ->quantifier(\Zend\Db\Sql\Select::QUANTIFIER_DISTINCT)
                       ->join('unit_privs', 'unit_privs.unit_id = programs.unit_id',array())
                       ->join('user_roles', 'user_roles.user_id = unit_privs.user_id',array())
+                      // grab user responsible for deactivating assessor
                       ->join('users', 'users.id = user_roles.deactivated_user', array('last_name', 'first_name'))
                       ->where($where->isNotNull('user_roles.deactivated_ts'))
                       ->where($where->greaterThan('user_roles.deactivated_ts', $fromDate))
@@ -305,10 +324,25 @@ class Queries extends AbstractTableGateway
                       ->order(array('programs.id'))
                    
         ;
-       // echo var_dump($select1->getSqlString());
-       // exit();
+        
+        // get newly created assessor roles
+        $select2 = $sql->select()
+                      ->from('programs')
+                      ->columns(array('unit_id', 'name', 'type' => $created))
+                      ->quantifier(\Zend\Db\Sql\Select::QUANTIFIER_DISTINCT)
+                      ->join('unit_privs', 'unit_privs.unit_id = programs.unit_id',array())
+                      ->join('user_roles', 'user_roles.user_id = unit_privs.user_id',array())
+                      // grab user responsible for creating assessor
+                      ->join('users', 'users.id = user_roles.created_user', array('last_name', 'first_name'))
+                      ->where($where->isNotNull('user_roles.created_ts'))
+                      ->where($where->greaterThan('user_roles.created_ts', $fromDate))
+                      // liaison role = 4
+                      ->where(array('user_roles.role' => 4))
+                      ->order(array('programs.id'))
+                   
+        ;
         // union results
-    //    $select1->combine($select2);
+        $select1->combine($select2);
         
         $statement = $sql->prepareStatementForSqlObject($select1);
         $result = $statement->execute();

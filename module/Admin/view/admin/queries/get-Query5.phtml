@@ -4,12 +4,14 @@
     <tr>
          <th>Department</th>
          <th>Program</th>
-         <th>Last User</th>
+         <th>Type of Change</th>
+         <th>Changed By</th>
     </tr>
     <?php
         if ($programs==''){ ?>
             <tr>
             <td><?php echo "No records found."; ?></td>
+            <td></td>
             <td></td>
             </tr>
         <?php
@@ -19,6 +21,7 @@
             <tr>
                 <td><?php echo $this->escapeHtml($program['unit_id']);?></td>
                 <td><?php echo $this->escapeHtml($program['name']);?></td>
+                <td><?php echo $this->escapeHtml($program['type']);?></td>
                 <td><?php echo $this->escapeHtml($program['first_name']) . " " . $this->escapeHtml($program['last_name']);?></td>
             </tr>
             <?php endforeach; }?>
