@@ -7,7 +7,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 
-class Program implements InputFilterAwareInterface
+class Unit implements InputFilterAwareInterface
 {
     protected $inputFilter;
 
@@ -24,16 +24,13 @@ class Program implements InputFilterAwareInterface
         return get_object_vars($this);
     }
 
-    /*
-     * set form input filter
-     */
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
         throw new \Exception("Not used");
     }
 
     /*
-     * Returns the form input filter
+     * create form input filter
      */
     public function getInputFilter()
     {
@@ -44,40 +41,37 @@ class Program implements InputFilterAwareInterface
             $inputFilter->add($factory->createInput(array(
                 'name' => 'id',
                 'required' => true,
-                'filters' => array(
-                    array('name' => 'Int'),
-                ),
             )));
             $inputFilter->add($factory->createInput(array(
                 'name' => 'active_flag',
                 'required' => false,
             )));
+               $inputFilter->add($factory->createInput(array(
+                'name' => 'assessor_1',
+                'required' => false,
+            )));
+              $inputFilter->add($factory->createInput(array(
+                'name' => 'assessor_2',
+                'required' => false,
+            )));
+               $inputFilter->add($factory->createInput(array(
+                'name' => 'liaison_1',
+                'required' => false,
+            )));
+                $inputFilter->add($factory->createInput(array(
+                'name' => 'liaison_2',
+                'required' => false,
+            )));
 
             $inputFilter->add($factory->createInput(array(
-                'name' => 'name',
+                'name' => 'type',
                 'required' => true,
                 'filters' => array(
-                    array('name' => 'StripTags'),
-                    array('name' => 'StringTrim'),
+                    array('name' => 'Int'),
                 ),
-                'validators' => array(
-                    array(
-                        'name' => 'StringLength',
-                        'options' => array(
-                            'encoding' => 'UTF-8',
-                            'min' => 1,
-                            'max' => 50,
-                        ),
-                    ),
-                ),
-            )));
-            $inputFilter->add($factory->createInput(array(
-                'name' => 'unit_id',
-                'required' => true,
             )));
             $this->inputFilter = $inputFilter;
         }
-
         return $this->inputFilter;
     }
 }

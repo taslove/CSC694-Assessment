@@ -3,69 +3,73 @@
 $title = 'Users';
 $this->headTitle($title);
 ?>
-<div class="col-md-12">
-    <h1><?php echo $this->escapeHtml($title); ?></h1>
-</div>
-
-<div class="col-md-2">
-    <div class="input-group" >
-        <a class="btn btn-primary btn-md" href="<?php echo $this->url('user', array('action'=>'add'));?>"><?php echo $this->translate
-            ('Add A New User') ?> &raquo;</a>
+<?php echo $this->partial('admin/admin/menu.phtml',array('active'=>'user')); ?>
+<div class="row user-content">
+    <div class="title col-md-12">
+        <h1><?php echo $this->escapeHtml($title); ?></h1>
     </div>
-</div>
 
-<div class="col-md-10">
-    <div class="table-responsive">
+    <div class="user-form-wrapper col-md-12">
+        <div class="user-form" style="overflow:hidden;">
+            <?php echo $this->partial('admin/user/form.phtml', array('form' => $this->form, 'action' => 'add','submitVal' =>'Add User', 'id' => $this->id)); ?>
+        </div>    
+    </div>
+
+    <div class="user-table-wrapper col-md-12">
+        <div class="table-responsive">
             <colgroup>
                 <col class="col-xs-8">
             </colgroup>
-            <div class="bs-example">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Middle Int.</th>
-                            <th>Role</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($users as $user) : ?>
+            <table class="table table-striped table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Middle Int.</th>
+                        <th>Email</th>
+                        <th>Role(s)</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+<?php foreach ($this->paginator as $user) : ?>
                         <tr class="active">
-                                    <td><?php echo $this->escapeHtml($user->id);?></td>
-                                   <td><?php echo $this->escapeHtml($user->first_name);?></td>
-                                    <td><?php echo $this->escapeHtml($user->last_name);?></td>
-                                    <td><?php echo $this->escapeHtml($user->middle_init);?></td>
-                                    <td><?php echo $this->escapeHtml($user->middle_init);?></td>
-                                    <td>
-                                        <a class="btn btn-primary btn-xs" href="<?php echo $this->url('user',
-                                            array('action'=>'edit', 'id' => $user->id));?>"><?php echo $this->translate ('Edit') ?> &raquo;</a>
-                                        <a class="btn btn-warning btn-xs" href="<?php echo $this->url('user',
-                                            array('action'=>'delete', 'id' => $user->id));?>"><?php echo $this->translate ('Delete') ?> &raquo;</a>
-                                    </td>
+                            <td><?php echo $this->escapeHtml($user->id); ?></td>
+                            <td><?php echo $this->escapeHtml($user->first_name); ?></td>
+                            <td><?php echo $this->escapeHtml($user->last_name); ?></td>
+                            <td><?php echo $this->escapeHtml($user->middle_init); ?></td>
+                            <td><?php echo $this->escapeHtml($user->email); ?></td>
+                            <td>
+                                <?php foreach ($user->user_roles as $row => $role) : ?>
+                                    <?php echo $this->escapeHtml($role['term']); ?>
+    <?php endforeach; ?>
+
+                            </td>    
+                            <td>
+                                <a class="btn btn-primary btn-xs" href="<?php echo $this->url('user', array('action' => 'edit', 'id' => $user->id));
+    ?>"><?php echo $this->translate('Modify') ?> &raquo;</a>
+                                <a class="btn btn-warning btn-xs" href="<?php echo $this->url('user', array('action' => 'delete', 'id' => $user->id));
+    ?>"><?php echo $this->translate('Delete') ?> &raquo;</a>
+                            </td>
                         </tr>
-                        <?php endforeach; ?>
-                    </tbody>
+<?php endforeach; ?>
+                </tbody>
 
-                </table>
-                <?php // add at the end of the file after the table
-                    echo $this->paginationControl(
-                        // the paginator object
-                        $this->paginator,
-                        // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
-                        'sliding',
-                        // the partial to use to render the control
-                        array('admin/user/controls.phtml', 'User'),
-                        // the route to link to when a user clicks a control link
-                        array(
-                            'route' => 'user'
-                        )
-                    );
-                    ?>
-
+            </table>
+            <div class="pagination-controls-wrapper">
+                <?php
+                // add at the end of the file after the table
+                echo $this->paginationControl(
+                        $this->paginator, // the paginator object
+                        'sliding', // the scrolling style; 
+                        // see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
+                        array('admin/user/controls.phtml', 'User'), // the partial to use to render the control
+                        array('route' => 'user')// the route to link to when a user clicks a control link
+                );
+                ?>
             </div>
+        </div>
     </div>
 </div>
 

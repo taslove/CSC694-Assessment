@@ -6,6 +6,9 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
+use Zend\Db\Sql\Select;
+use Zend\session\container;
+use Zend\Debug\Debug;
 
 class UserTable extends AbstractTableGateway
 {
@@ -13,6 +16,7 @@ class UserTable extends AbstractTableGateway
 
     public function __construct(Adapter $adapter)
     {
+        $namespace = new Container('user');
         $this->adapter = $adapter;
         $this->table = 'users';
         $this->initialize();
@@ -23,24 +27,50 @@ class UserTable extends AbstractTableGateway
      */
     public function fetchAll()
     {
-        #$resultSet = $this->select();
         $sql = new Sql($this->adapter);
         $select = $sql->select()
                       ->from($this->table);
-                      #->join(array('ur'=>'user_roles'), 'ur.owner_id = users.id');
                       
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         
         $users = array();
         foreach($result as $row){
+            //add roles to user
             $roles = $this->getRoles($row['id']);
-            $row['role'] = $roles;
+            $row['user_roles'] = $roles;
+            //create user object to return
             $user = new User();
             $user->exchangeArray($row);
             $users[] = $user;
+            
         }
         return $users;
+    }
+    
+    /*
+     *  Get users by roles 
+     *  return array user_id=> first_name . last_name
+     */
+    public function fetchUsersByRole($roles)
+    {
+
+        $sql = new Sql($this->adapter);
+        $select = $sql->select()
+                      ->columns(array('id','first_name','last_name'))
+                      ->from(array('u' =>$this->table))
+                      ->join(array('ur' =>'user_roles'), 'u.id = ur.user_id')
+                      ->where(array('role'=>$roles));
+                      
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $results = array();
+        foreach($result as $key => $value){
+
+        $results[$value['user_id']] = $value['first_name'] .' '.$value['last_name'];
+        }
+
+        return $results;
     }
     
     /*
@@ -51,23 +81,45 @@ class UserTable extends AbstractTableGateway
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select()
-                      ->from('user_roles');
+                    ->from('user_roles')
+                    ->where(array(
+                        'user_id' => $id,
+                        'active_flag' => 1));
         
-        $where = new Where();
-        $where->equalTo('owner_id',$id);
-        $select->where($where);
         
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $roles = array();
         foreach($result as $row){
-            $roles[$row['owner_id']]['role'] = $row['role'];
-            $roles[$row['owner_id']]['id'] = $row['id'];
+            $roles[$row['role']]['id'] = $row['id'];
+            $roles[$row['role']]['term'] = $this->Generic()->getRoleTerm($row['role']);
         }
         return $roles;
     }
-<<<<<<< HEAD
-=======
+    
+    /*
+     * gets roles by user id
+     */
+    public function getRolesById($id, $active = true)
+    {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select()
+                    ->from('user_roles')
+                    ->columns(array('role' => 'role'));
+        if($active){
+            $select->where(array('user_id' => $id,'active_flag' => 1));
+        }else{
+            $select->where(array('user_id' => $id,'active_flag' => 0));
+        }
+                
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $roles = array();
+        foreach($result as $key => $value){
+            $roles[] = $value['role'];
+        }
+        return $roles;
+    }
     
     /*
      * deletes all roles a user has
@@ -76,9 +128,8 @@ class UserTable extends AbstractTableGateway
     public function deleteRoles($id)
     {
         $sql = new Sql($this->adapter);
-        $delete = $sql->delete()
-                      ->from('user_roles')
-                      ->where('user_id = ?', $id);
+        $delete = $sql->delete('user_roles')
+                       ->where(array('user_id = ?' => $id));
         $deleteString = $sql->getSqlStringForSqlObject($delete);
         $this->adapter->query($deleteString, Adapter::QUERY_MODE_EXECUTE);
     }
@@ -90,11 +141,16 @@ class UserTable extends AbstractTableGateway
      */
     function addRoles($userID,$roles)
     {
+        $namespace = new Container('user');
+        
        //add role(s)
        foreach($roles as $row => $value){
             $role = array(
                 'user_id' => $userID,
-                'role' => $value
+                'role' => $value,
+                'created_user' => $namespace->userID,
+                'created_ts' => date('Y-d-m g:i:s', time()),
+                'active_flag' => 1
             );
             $sql = new Sql($this->adapter);
             $insert = $sql->insert('user_roles');
@@ -105,22 +161,81 @@ class UserTable extends AbstractTableGateway
     }
     
     /*
-     * Assigns a role id to a term
+     *  Updates Users Roles
+     * @userID - id to the user object
+     * @roles - array of role ids
      */
-    public function getRoleTerm($id){
-      if(!$id){
-          return;
-      }  
-        $roles = array(
-          '1' => 'Admin',
-          '2' => 'Chair',
-          '3' => 'User',
-          '4' => 'Assessor',
-          '5' => 'Committee',
-        );
-        return $roles[$id];
+    function updateRoles($userID,$roles)
+    {
+        //get the active roles the user previously had
+        $ActiveRoles = $this->getRolesById($userID, true);
+
+        
+        //get all inactive roles the user previously had
+        $InActiveRoles = $this->getRolesById($userID, false);
+
+        
+        //create a list of all the roles a previously had
+        $allRoles = array_merge($ActiveRoles,$InActiveRoles);
+
+        
+        //determines if user has been given a new role
+        $newRoles = array_diff($roles, $allRoles);
+
+        //add any new roles
+        if(!empty($newRoles)){
+           $this->addRoles($userID,$newRoles);
+        }
+        
+        //update role(s) that were re-enabled/disabled
+        $disableRoles = array_diff($ActiveRoles, $roles);
+        $reenabledRoles = array_diff($roles, $ActiveRoles);
+        
+        print_r($reenabledRoles);
+        
+        if(!empty($disableRoles)){
+            foreach($disableRoles as $key => $value){
+                $this->updateRole($userID,$value, 'disable');
+            }
+        }
+        if(!empty($reenabledRoles)){
+            foreach($reenabledRoles as $key => $value){
+                $this->updateRole($userID,$value, 'enable');
+            }
+        }
     }
->>>>>>> fb5ae052afdd1f904a9ad82c07c9a280fc9b6ba4
+    
+    /*
+     * enable or disable a role
+     */
+    function updateRole($userID,$role, $action)
+    {
+        $namespace = new Container('user');
+        switch($action){
+            case 'disable':
+                $data = array(
+                        'active_flag' => 0,
+                        'deactivated_ts' =>  date('Y-m-d g:i:s', time()),
+                        'deactivated_user' =>  $namespace->userID
+                    );
+                break;
+            
+            case 'enable':
+                $data = array(
+                        'active_flag' => 1,
+                    );
+                break;
+        }
+
+        $sql = new Sql($this->adapter);
+        $update = $sql->update('user_roles')
+                      ->set($data)
+                       ->where(array('user_id = ?' => $userID, 'role = ?' => $role));
+        $updateString = $sql->getSqlStringForSqlObject($update);
+        $this->adapter->query($updateString, Adapter::QUERY_MODE_EXECUTE);
+    }
+    
+   
 
     /*
      * Get user by id
@@ -131,22 +246,12 @@ class UserTable extends AbstractTableGateway
         $id = (int) $id;
         $rowset = $this->select(array('id' => $id));
         
-       /* $sql = new Sql($this->adapter);
-        $select = $sql->select()
-                      ->from($this->table)
-                      ->join('user_roles', 'owner_id = users.id');
-        $where = new Where();
-        $where->equalTo('id',$id);
-        $select->where($where);
-                      
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();*/
-        
-        
         $row = $rowset->current();
         if (!$row) {
             throw new \Exception("Could not find row $id");
         }
+        $roles = $this->getRoles($row['id']);
+        $row['user_roles'] = $roles;
         $user = new User();
         $user->exchangeArray($row);
         return $user;
@@ -176,34 +281,45 @@ class UserTable extends AbstractTableGateway
      */
     public function saveUser(User $user)
     {
+        //build the data array to add to users table
         $data = array(
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
             'middle_init' => $user->middle_init,
+            'email' => $user->email,
+            'datatel_id' => 0
         );
         
-        $role = $user->role;
-
+        //just put users roles into a new array
+        $roles = $user->user_roles;
+        
+        //get the user id
         $id = (int)$user->id;
-<<<<<<< HEAD
-        if ($id == 0) {
-=======
         
         
         //if user doesn't exists
         if ($id == 0 OR empty($id)) {
             //insert user
->>>>>>> fb5ae052afdd1f904a9ad82c07c9a280fc9b6ba4
-            $this->insert($data);
+            try {
+                $this->insert($data);
+            } catch (\Exception $e)  {
+                var_dump($e->getMessage());
+                echo 'User already exists!'; 
+            }
+            
+            //get the new user id
+            $id = $this->adapter->getDriver()->getLastGeneratedValue();
+
+            //add role(s)
+            $this->addRoles($id,$roles);
         } else {
             if ($this->getUser($id)) {
+                
+                //update user information
                 $this->update($data, array('id' => $id));
                 
-                //update role
-                $sql = new Sql($this->adapter);
-                $update = $sql->update('user_roles')
-                              ->set(array('role' => $role))
-                              ->where('owner_id', $id);
+                //update and add roles
+                $this->updateRoles($user->id,$roles);
   
             } else {
                 throw new \Exception('Form id does not exist');
@@ -216,6 +332,23 @@ class UserTable extends AbstractTableGateway
      */
     public function deleteUser($id)
     {
-        $this->delete(array('id' => $id));
+
+       //delete user roles first
+       $this->deleteRoles($id);
+       
+       //delete the user
+       $sql = new Sql($this->adapter);
+       $delete = $sql->delete('users')
+                       ->where(array('id = ?' => $id));
+       $deleteString = $sql->getSqlStringForSqlObject($delete);
+       $this->adapter->query($deleteString, Adapter::QUERY_MODE_EXECUTE);
+    }
+    
+    /*
+     * Instantiate Generic Class
+     */
+    public function Generic()
+    {
+        return new Generic($this->adapter);
     }
 }
