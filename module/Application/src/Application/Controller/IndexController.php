@@ -70,9 +70,8 @@ class IndexController extends AbstractActionController
         
         $ldap = new Ldap($options);
         
-        echo 'That worked';
         $ldap->bind();
-        $userData = $ldap->getEntry('cn=akalelkar');
+        //$userData = $ldap->getEntry('ou=Napvil,o=NCC');
             var_dump($userData);
           
         
@@ -83,8 +82,8 @@ class IndexController extends AbstractActionController
         $namespace->userEmail = 'testID@foo.com';   
         $namespace->datatelID = 'NCC ID';
         
-        $result = $this->getServiceConfig()->getUserInformation($username);
 
+        //$result = $this->getServiceConfig()->getUserInformation($username);
 
        // $this->ShowContainer();
         exit();        

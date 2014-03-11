@@ -1,7 +1,6 @@
 <?php
-// module/Student/view/mock/mock/index.phtml:
 
-$title = 'Mock-up Login';
+$title = 'Academic Assesment Login';
 $this->headTitle($title);
 
 
@@ -9,6 +8,7 @@ $form = $this->form;
 $form->setAttribute('action', $this->url('authenticate'));
 $form->prepare();
 
+echo '<br><br><br>';
 echo $this->form()->openTag($form);
 echo $this->formCollection($form);
 echo $this->form()->closeTag($form);
