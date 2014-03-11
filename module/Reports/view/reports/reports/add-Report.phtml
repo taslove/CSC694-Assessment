@@ -1,132 +1,161 @@
 <?php
-
-if($results){
-    echo '</br></br></br></br>There is already a report for this plan';
-}else{
-
+    // If there are results, tell user
+    if($results){
+	echo '</br></br></br></br>There is already a report for this plan';
+    }else{
 ?>
-		<div class="col-md-8">
-		   <div class="table-responsive">
-    <table class="table table-bordered table-striped">
-      <colgroup>
-        <col class="col-xs-8">
-
-      </colgroup>
-     
-  <div class="bs-example">
-    <?php
-    $form->setAttribute('action', $this->url('reports', array('action' => 'addNewReport')));
-    $form->prepare();
-    echo $this->form()->openTag($form);
-    echo $this->formHidden($form->get('id')->setAttribute('value', $planData[0]['id']));
-    ?>
-    <table class="table">
-      
-          <h6>Add New Report</h6>
-       		    <h4><?php echo $planData[0]['unit_id'] . ' - ' . $planData[0]['name'] . ' - ' . $planData[0]['year'];?></h4>
-
-      
-    
-    <div class="controls">
-	<div class="panel-group" id="accordion">
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-           1. Outcomes
-        </a>
-      </h4>
-    </div>
-    <div id="collapseOne" class="panel-collapse collapse">
-      <div class="panel-body">
-	<div>
-	<?php $ctr = 0;?>
-
-	<?php foreach($descriptions as $description) : ?>
-	    <?php $ctr++;?>
-	     <?php echo($ctr); ?>.<?php echo $description;?>
-	    </br>
-	    
-	    <?php endforeach; ?>
-	</div>
-      </div>
-    </div>
-  </div>
-  </br>
-  </div><!-- /.col-lg-6 -->      </div>
-    </div>
-  </div>
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-           2. Describe population assessed.
-        </a>
-      </h4>
-    </div>
-    <div id="collapseThree" class="panel-collapse collapse">
-      <div class="panel-body">
-		  <?php echo $this->formRow($form->get('population'))?>      </div>
-    </div>
-  </div>
-  
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
-           3. Describe results.
-        </a>
-      </h4>
-    </div>
-    <div id="collapseFour" class="panel-collapse collapse">
-      <div class="panel-body">
-		  <?php echo $this->formRow($form->get('results'))?>      </div>
-    </div>
-  </div>
-  
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
-           3. Describe conclusion.
-        </a>
-      </h4>
-    </div>
-    <div id="collapseFive" class="panel-collapse collapse">
-      <div class="panel-body">
-<?php echo $this->formRow($form->get('conclusions'))?>     </div>
-    </div>
-  </div>
-  
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapseSix">
-           5. Describe actions.
-        </a>
-      </h4>
-    </div>
-    <div id="collapseSix" class="panel-collapse collapse">
-      <div class="panel-body">
-<?php echo $this->formRow($form->get('actions'))?>    </div>
-    </div>
-  </div>
-  
-</div>
-<a href="#">AttachedFile.pdf</a><P></P>
+    <div class="col-md-8">
+       <div class="table-responsive">
+	    <table class="table table-bordered table-striped">
+	      <colgroup>
+		<col class="col-xs-8">
 	
-        </div> <!-- controls -->
-	<?php echo $this->formRow($form->get('submit'))?>
-
-
-      <tbody>
-       
-      </tbody>
-    </table></table>
+	      </colgroup>
+     
+		<div class="bs-example">
+		  <?php
+		  $form->setAttribute('action', $this->url('reports', array('action' => 'addNewReport')));
+		  $form->setAttribute('name', 'data');
+		  $form->setAttribute('id', 'data');
+		  $form->setAttribute('enctype', 'multipart/form-data');
+	      
+		  $form->prepare();
+		  echo $this->form()->openTag($form);
+		  echo $this->formHidden($form->get('id')->setAttribute('value', $planData[0]['id']));
+		  echo $this->formHidden($form->get('status')->setAttribute('value', '0'));
+	      
+		  ?>
+		  <table class="table">
+		    
+		    <h6>Add New Report</h6>
+		    <h4><?php echo $planData[0]['unit_id'] . ' - ' . $planData[0]['name'] . ' - ' . $planData[0]['year'];?></h4>
+	    
+		  <div class="controls">
+		      <div class="panel-group" id="accordion">
+		<div class="panel panel-default">
+		  <div class="panel-heading">
+		    <h4 class="panel-title">
+		      <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+			 Outcomes
+		      </a>
+		    </h4>
+		  </div>
+		  <div id="collapseOne" class="panel-collapse collapse">
+		    <div class="panel-body">
+		      <div>
+		      <?php $ctr = 0;?>
+	      
+		      <?php foreach($descriptions as $description) : ?>
+			  <?php $ctr++;?>
+			   <?php echo($ctr); ?>.<?php echo $description;?>
+			  </br>
+			  
+			  <?php endforeach; ?>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		</br>
+		</div><!-- /.col-lg-6 -->      </div>
+		  </div>
+		</div>
+		<div class="panel panel-default">
+		  <div class="panel-heading">
+		    <h4 class="panel-title">
+		      <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+			 Population assessed
+		      </a>
+		    </h4>
+		  </div>
+		  <div id="collapseThree" class="panel-collapse collapse">
+		    <div class="panel-body">
+				<?php echo $this->formRow($form->get('population'))?>      </div>
+		  </div>
+		</div>
+		
+		<div class="panel panel-default">
+		  <div class="panel-heading">
+		    <h4 class="panel-title">
+		      <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+			 Results
+		      </a>
+		    </h4>
+		  </div>
+		  <div id="collapseFour" class="panel-collapse collapse">
+		    <div class="panel-body">
+				<?php echo $this->formRow($form->get('results'))?>      </div>
+		  </div>
+		</div>
+		
+		<div class="panel panel-default">
+		  <div class="panel-heading">
+		    <h4 class="panel-title">
+		      <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
+			 Conclusion
+		      </a>
+		    </h4>
+		  </div>
+		  <div id="collapseFive" class="panel-collapse collapse">
+		    <div class="panel-body">
+	      <?php echo $this->formRow($form->get('conclusions'))?>     </div>
+		  </div>
+		</div>
+		
+		<div class="panel panel-default">
+		  <div class="panel-heading">
+		    <h4 class="panel-title">
+		      <a data-toggle="collapse" data-parent="#accordion" href="#collapseSix">
+			 Actions
+		      </a>
+		    </h4>
+		  </div>
+		  <div id="collapseSix" class="panel-collapse collapse">
+		    <div class="panel-body">
+	      <?php echo $this->formRow($form->get('actions'))?>    </div>
+		  </div>
+		</div>
+		
+	      </div>
+	      <table>
+		  <th>Add Files</th>
+	      
+		  <tr><td>File Description</td></tr>
+		  
+		  <tr>
+		      <td>
+			  <?php echo $this->formInput($form->get('fileDescription0')); ?>
+		      </td>
+		      <td>
+			  <?php echo $this->formFile($form->get('fileUpload')); ?>
+		      </td>
+	      
+		      <td>
+			  <input type="button" value="Clear" onclick="$('#fileUpload').replaceWith($('#fileUpload').clone());document.getElementById('fileDescription0').value = '';"></input>
+		      </td>
+		  </tr>
+		  <tr>
+		      <td>
+			  <?php echo $this->formInput($form->get('fileDescription1')); ?>
+		      </td>
+		      <td>
+			  <?php echo $this->formFile($form->get('fileUpload1')); ?>
+		      </td>
+	      
+		      <td>
+			  <input type="button" value="Clear" onclick="$('#fileUpload1').replaceWith($('#fileUpload1').clone());document.getElementById('fileDescription1').value = '';"></input>
+		      </td>
+		  </tr>
+	      </table>
+	      </br>
+		      
+		      </div> <!-- controls -->
+		      <input class="btn btn-primary btn-md" onclick="" id="submitButton" value="Submit Report"></input>
+		      <input class="btn btn-primary btn-md" onclick="" id="draftButton" value="Save Draft"></input>
+	    </table>
+	</table>
     <?php echo $this->form()->closeTag();?>
 
   </div><!-- /example -->
- <?php
- 
-}
+<?php
+    }
 ?>
