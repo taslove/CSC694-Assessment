@@ -24,11 +24,17 @@ class Program implements InputFilterAwareInterface
         return get_object_vars($this);
     }
 
+    /*
+     * set form input filter
+     */
     public function setInputFilter(InputFilterInterface $inputFilter)
     {
         throw new \Exception("Not used");
     }
 
+    /*
+     * Returns the form input filter
+     */
     public function getInputFilter()
     {
       if (!$this->inputFilter) {

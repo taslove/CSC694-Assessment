@@ -30,6 +30,9 @@ class User implements InputFilterAwareInterface
         throw new \Exception("Not used");
     }
 
+    /*
+     * Builds and returns input filter
+     */
     public function getInputFilter()
     {
         if (!$this->inputFilter) {

@@ -29,6 +29,9 @@ class Unit implements InputFilterAwareInterface
         throw new \Exception("Not used");
     }
 
+    /*
+     * create form input filter
+     */
     public function getInputFilter()
     {
       if (!$this->inputFilter) {

@@ -24,6 +24,9 @@ class UnitTable extends AbstractTableGateway
         $this->initialize();
     }
 
+    /*
+     * get all Units and either paginate or return result set
+     */
     public function fetchAll($paginated=false)
     {
          if($paginated) {
@@ -49,6 +52,9 @@ class UnitTable extends AbstractTableGateway
         return $resultSet;   
     }
 
+    /*
+     * get unit by id
+     */
     public function getUnit($id)
     {
         $rowset = $this->select(array('id' => $id));
@@ -62,6 +68,9 @@ class UnitTable extends AbstractTableGateway
         return $unit;
     }
     
+    /*
+     * Add a record to one of the two priv tables, liaison_priv or unit_priv
+     */
     function addPriv($id,$user,$table)
     {
         $namespace = new Container('user');
@@ -78,9 +87,11 @@ class UnitTable extends AbstractTableGateway
             $insert->values($data);
             $insertString = $sql->getSqlStringForSqlObject($insert);
             $this->adapter->query($insertString, Adapter::QUERY_MODE_EXECUTE);
-
     }
     
+    /*
+     *  Update an existsing priv record, disable or enable
+     */
     public function updatePriv($id,$user,$action,$table)
     {
         $namespace = new Container('user');
@@ -108,12 +119,13 @@ class UnitTable extends AbstractTableGateway
         $this->adapter->query($updateString, Adapter::QUERY_MODE_EXECUTE);
     }
     
+    /*
+     * Update privs when Unit is updated
+     */
     public function updatePrivs($id,$users,$table)
     {
-
         foreach($users as $key => $value)
         {     
-
             //get existing active liason ids
             $previousActivePrivs = $this->getUnitPrivs($id,$table,1);
             
@@ -138,10 +150,12 @@ class UnitTable extends AbstractTableGateway
             $reenabledPrivs = array_diff(array($value), $previousActivePrivs);
             
             if(!empty($disablePrivs)){
+                //disable priv
                 foreach($disablePrivs as $key => $value){
                     $this->updatePriv($id,$value, 'disable',$table);
                 }
             }
+            //reenable priv
             if(!empty($reenabledPrivs)){
                 foreach($reenabledPrivs as $key => $value){
                     $this->updatePriv($id,$value, 'enable',$table);
@@ -150,6 +164,9 @@ class UnitTable extends AbstractTableGateway
         } 
     }
     
+    /*
+     * Returns Units Priv records
+     */
     public function getUnitPrivs($id,$table,$active_flag)
     {
         $sql = new Sql($this->adapter);
@@ -165,12 +182,14 @@ class UnitTable extends AbstractTableGateway
         return $results;
     }
     
-    
+    /*
+     * Saves a unit
+     */
     public function saveUnit(Unit $unit)
     {
-        
         $namespace = new Container('user');
         
+        //build save data array
         $data = array(
             'id' => $unit->id,
             'type' => $unit->type,
@@ -193,14 +212,14 @@ class UnitTable extends AbstractTableGateway
             $data['created_ts'] =  date('Y-m-d g:i:s', time());
             $data['created_user'] = $namespace->userID;     
             
-            
+            //insert unit
             $this->insert($data);
             
-            
+            //get assessor/liaison
             $assessor = (isset($unit->assessor_1))? $unit->assessor_1:'';
             $liaison = (isset($unit->liaison_1))? $unit->liaison_1:'';
             
-
+            //add priv records
             if(!empty($assessor))
             {
                 $this->addPriv($id,$assessor,'unit_privs');
@@ -214,14 +233,16 @@ class UnitTable extends AbstractTableGateway
         } else {
             if ($this->getUnit($id)) {
                 
+                //update unit
                 $this->update($data, array('id' => $id));
                 
+                //get assessor/liaison
                 $assessors[] = (isset($unit->assessor_1))? $unit->assessor_1:'';
                 $liaisons[] = (isset($unit->liaison_1))? $unit->liaison_1:'';            
 
+                //update privs
                 $this->updatePrivs($id,$liaisons,'liaison_privs');
                 $this->updatePrivs($id,$assessors,'unit_privs');
-               
   
             } else {
                 throw new \Exception('Form id does not exist');
@@ -229,6 +250,9 @@ class UnitTable extends AbstractTableGateway
         }
     }
 
+    /*
+     * Delete a unit
+     */
     public function deleteUnit($id)
     {
         $this->delete(array('id' => $id));

@@ -27,7 +27,6 @@ class UserTable extends AbstractTableGateway
      */
     public function fetchAll()
     {
-        #$resultSet = $this->select();
         $sql = new Sql($this->adapter);
         $select = $sql->select()
                       ->from($this->table);
@@ -37,8 +36,10 @@ class UserTable extends AbstractTableGateway
         
         $users = array();
         foreach($result as $row){
+            //add roles to user
             $roles = $this->getRoles($row['id']);
             $row['user_roles'] = $roles;
+            //create user object to return
             $user = new User();
             $user->exchangeArray($row);
             $users[] = $user;
@@ -47,6 +48,10 @@ class UserTable extends AbstractTableGateway
         return $users;
     }
     
+    /*
+     *  Get users by roles 
+     *  return array user_id=> first_name . last_name
+     */
     public function fetchUsersByRole($roles)
     {
 
@@ -92,6 +97,9 @@ class UserTable extends AbstractTableGateway
         return $roles;
     }
     
+    /*
+     * gets roles by user id
+     */
     public function getRolesById($id, $active = true)
     {
         $sql = new Sql($this->adapter);
@@ -197,6 +205,9 @@ class UserTable extends AbstractTableGateway
         }
     }
     
+    /*
+     * enable or disable a role
+     */
     function updateRole($userID,$role, $action)
     {
         $namespace = new Container('user');
@@ -333,6 +344,9 @@ class UserTable extends AbstractTableGateway
        $this->adapter->query($deleteString, Adapter::QUERY_MODE_EXECUTE);
     }
     
+    /*
+     * Instantiate Generic Class
+     */
     public function Generic()
     {
         return new Generic($this->adapter);
