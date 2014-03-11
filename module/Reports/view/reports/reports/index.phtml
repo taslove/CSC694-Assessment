@@ -8,8 +8,6 @@ $this->headTitle($title);
 <html lang="en">
 
 <head>
-    
-    
 </head>
     <body>  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -105,26 +103,48 @@ function getReports(action, id) {
    
 }
 
+// This is only available when saving draft is available
+// Draft defaults to 0 above, if saving draft change to 1 and submit
+// the normal way
+$(document).on('click', '#draftButton', function () {
+    document.getElementById('status').value = 1;
+    document.getElementById('data').submit();
+});
+
+$(document).on('click', '#submitButton', function () {
+    document.getElementById('data').submit();
+});
+
+$(document).on('click', '#deleteButton', function () {
+    document.getElementById('status').value = 2;
+    document.getElementById('data').submit();
+});
+
 // Submit data to get plans
 $(document).on('click', '#submit', function () {
     var action = document.getElementById('action-menu').value;
     var unit = document.getElementById('unit-menu').value;
     var programs = $('[name=prog-menu]').val();
     var year = document.getElementById('year-menu').value;
+    
     if (!action || !unit || !programs || !year) {
 	alert('Please fill out all criteria')
     }else{
 	var json = '{"action" : "' + action + '", "unit" : "' + unit + '", "year" : "' + year + '", "programs" : ' + JSON.stringify(programs) + ' }';
-
 	// asynchronous ajax code to get plans
+	var urlform = "<?php echo $this->url('default', array(
+                                    'controller'=>'reports',
+                                    'action'=>'viewPlans')); ?>";
 	$.ajax({
-	   url: 'http://localhost/zendframework/reports/viewPlans',
+	   url: urlform,
      
 	   type: "POST",
 	   data: json,
 	   dataType: "text",
 	   error : function(xhr, status, error) {
-	     alert(error);
+	    alert(error);
+	    console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+
 	   },
 	   success: function(html){
 	     document.getElementById('content').innerHTML = html;
@@ -142,6 +162,16 @@ $(document).ready(function() {
    // call code to initialize the selectpicker
    // this must come after the options are initialized
    $('.selectpicker').selectpicker();
+   
+   // set all years for dropdowns
+    var currentYear = new Date().getFullYear();
+    
+    $('#year-menu').append('<option  data-hidden="true"></option>');
+    for (var year = currentYear; year > 2005; year--){
+	var yearText = (year - 1) + ' - ' + year;
+        $('#year-menu').append('<option value="' + year + '">' + yearText + '</option>');
+    }
+    $('#year-menu').selectpicker('refresh');
 });
 
 // update unit/department options based on actions
@@ -208,6 +238,7 @@ $(document).on('change', '#unit-menu', function () {
       // content type
       
       error : function(xhr, status, error) {
+	alert(error);
          console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
       },
       success: function(programsJson){
@@ -220,49 +251,6 @@ $(document).on('change', '#unit-menu', function () {
    });
 });
 
-// update years based on programs
-$(document).on('change', '#prog-menu', function () {
-    var programs = $('[name=prog-menu]').val();
-      
-      // clear selectorlist before adding program/degree options
-   var oldSelections = $('#year-menu option');
-   for (var i = 0; i < oldSelections.length; i++){
-      oldSelections.remove();
-   }
-   $('#year-menu').selectpicker('refresh');
-   
-   // create url for redirect
-   var urlform = "<?php echo $this->url('default', array(
-                                    'controller'=>'reports',
-                                    'action'=>'getYears')); ?>";
-	var json = '{"programs" : ' + JSON.stringify(programs) + ' }';
-
-	
-    //key programs, value = array of programs
-   $.ajax({
-      url: urlform,
-      type: "POST", //post
-      dataType: "json",//data 
-      data:json,
-      
-      error : function(xhr, status, error) {
-         alert(error);
-      },
-      success: function(yearsJson){	
-	 var years = new Array();
-         for (var i = 0; i < yearsJson.length; i++){
-	    years.push(yearsJson[i].year);
-	 }
-	 
-	 years.sort();
-	 
-         for (var i = 0; i < years.length; i++){
-            $('#year-menu').append('<option value="' + years[i] + '">' + years[i] + '</option>');
-         }
-         $('#year-menu').selectpicker('refresh');
-      },
-   });
-});
 </script>
                      
                             
