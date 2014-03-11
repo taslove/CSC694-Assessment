@@ -36,7 +36,7 @@ class AllTables extends AbstractTableGateway
         $select = $sql->select()
                       ->from('units')
                       ->where(array('active_flag' => 1));
- 
+
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         
@@ -64,6 +64,7 @@ class AllTables extends AbstractTableGateway
         // union results from both selects
         $select1->combine($select2);
 
+
         $statement = $sql->prepareStatementForSqlObject($select1);
         $result = $statement->execute();
         
@@ -90,5 +91,23 @@ class AllTables extends AbstractTableGateway
         
         return $result;
     }
-  
+    
+    public function getUserInformation($userID)
+    {
+        $sql = new Sql($this->adapter);
+        
+        $select = $sql->select()
+                      ->from('users')
+                      ->columns(array('users.id',
+                                      'users.datatel_id',
+                                      'users.email',
+                                      'user_roles.role',))
+                      ->join('user_roles','users.id = user_roles.user_id', array('role'))
+                      ->where(array('datatel_id' => $userid));
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        
+        return $result;
+    }
 }

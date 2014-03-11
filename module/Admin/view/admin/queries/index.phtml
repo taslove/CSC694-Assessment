@@ -5,77 +5,94 @@
     <div class="col-md-4">
         <!-- Choose Query -->
         <dl>
-            <dt>Query 1:<br/>
-            Show programs that have not added a plan for a specific year.
+            <dt>Query 1:<br />
+            Show programs missing plans.
             </dt>
-            <dd> Enter Year: <input type='text' id="q1year"/>
-            <button type="button" class="btn-primary" id="query1">Run</button>
-            <strong><i><font color="#A00" class="alert alert-error" id="q1error">Please enter a valid year YYYY</font></i></strong>   
+            <dd>
+             <!-- Choose Years -->
+            <select class="selectpicker" id="q1year" name="q1year" data-style="btn-primary" title='Choose Year'>
+               <option data-hidden="true"></option>
+            </select>
             </dd>
         </dl>
-        <br />
         <dl>
-            <dt>Query 2:<br/>
-            Show programs that have not added a report for a specific year.
+            <dt>Query 2:<br />
+            Show programs missing reports.
             </dt>
-            <dd> Enter Year: <input type='text' id="q2year"/>
-            <button type="button" class="btn-primary" id="query2">Run</button>
-            <strong><i><font color="#A00" class="alert alert-error" id="q2error">Please enter a valid year YYYY</font></i></strong>   
+            <dd>
+             <!-- Choose Years -->
+            <select class="selectpicker" id="q2year" name="q2year" data-style="btn-primary" title='Choose Year'>
+               <option data-hidden="true"></option>
+            </select>
             </dd>
         </dl>
-        <br />
         <dl>
-            <dt>Query 3:<br/>
+            <dt>Query 3:<br />
             Show programs conducting meta assessment.
             </dt>
-            <dd> Enter Year: <input type='text' id="q3year"/>
-            <button type="button" class="btn-primary" id="query3">Run</button>
-            <strong><i><font color="#A00" class="alert alert-error" id="q3error">Please enter a valid year YYYY</font></i></strong>   
-            </dd>
+            <dd>
+            <!-- Choose Years -->
+            <select class="selectpicker" id="q3year" name="q3year" data-style="btn-primary" title='Choose Year'>
+               <option data-hidden="true"></option>
+            </select>
+             </dd>
         </dl>
-               <br />
         <dl>
-            <dt>Query 4:<br/>
+            <dt>Query 4:<br />
             Show programs requesting funding.
             </dt>
-            <dd> Enter Year: <input type='text' id="q4year"/>
-            <button type="button" class="btn-primary" id="query4">Run</button>
-            <strong><i><font color="#A00" class="alert alert-error" id="q4error">Please enter a valid year YYYY</font></i></strong>   
-            </dd>
+            <dd>
+               <!-- Choose Years -->
+            <select class="selectpicker" id="q4year" name="q4year" data-style="btn-primary" title='Choose Year'>
+               <option data-hidden="true"></option>
+            </select>
+          </dd>
         </dl>
-         <br />
-         <dl>
+        <dl>
             <dt>Query 5:<br/>
-            Show programs that have modified their outcomes.
+            Show programs that have modified their outcomes since (<i>enter date</i>) 
             </dt>
-            <dd> Enter Year: <input type='text' id="q5year"/>
-            <button type="button" class="btn-primary" id="query5">Run</button>
-            <strong><i><font color="#A00" class="alert alert-error" id="q5error">Please enter a valid year YYYY</font></i></strong>   
+            <dd>
+             <input type="text" class="span2" id="dp5">
+             <button type="button" class="btn-primary" id="query5">Go</button>
             </dd>
         </dl>
-        <br />
         <dl>
             <dt>Query 6:<br/>
-            Show programs that have added or modified their plan for the previous year.
+            Show programs that have added or modified last year's plan.
+            
+            <button type="button" class="btn-primary" id="query6">Go</button>
             </dt>
-            <button type="button" class="btn-primary" id="query6">Run</button>
+            <dd></dd>
+        </dl>
+        <dl>
+            <dt>Query 7:<br/>
+            Show programs that have added or modified last year's report.
+            
+            <button type="button" class="btn-primary" id="query7">Go</button>
+            </dt>
+            <dd></dd>
+        </dl>
+        <dl>
+            <dt>Query 8:<br />
+            Show plans/reports needing feedback.
+            </dt>
+            <dd>
+               <!-- Choose Years -->
+            <select class="selectpicker" id="q8year" name="q8year" data-style="btn-primary" title='Choose Year'>
+               <option data-hidden="true"></option>
+            </select>
+          </dd>
+        </dl>
+        <dl>
+            <dt>Query 9:<br/>
+            Show programs that changed their assessors since (<i>enter date</i>) 
+            </dt>
+            <dd>
+             <input type="text" class="span2" id="dp9">
+             <button type="button" class="btn-primary" id="query9">Go</button>
             </dd>
         </dl>
-     
-        <br />
-        <!-- Choose Query -->
-        <dl>
-            <dt>Show all programs that have not added a plan for a specific year.
-             
-            <div class="form-group">
-                <div class='input-group date' id='dp2'>
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-                        </span>
-                    <input type='text' class="form-control" id='q5date'/>
-                        
-                </div>
-            </div>
-     
     </div><!--close column-->
 
 
@@ -90,123 +107,161 @@
   </div>
 </div>
 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script> 
+<script src="../js/bootstrap-rta.min.js"></script>
+<script src="../js/bootstrap-select.js"></script>
+<script src="../js/bootstrap-datepicker.js"></script>
 <script>
 
-$(function () {
-    document.getElementById("q1error").style.display="none";
-    document.getElementById("q2error").style.display="none";
-    document.getElementById("q3error").style.display="none";
-    document.getElementById("q4error").style.display="none";
-    document.getElementById("q5error").style.display="none";
-    $('#q5date').datepicker({dateFormat: 'mm-dd-yyyy'});
-});
+$(document).ready(function () {
+    
+    // set years for year dropdowns
+    var currentYear = new Date().getFullYear();
+    
+    $('#q1year').append('<option  data-hidden="true"></option>');
+    for (var year = currentYear; year > 2005; year--){
+        $('#q1year').append('<option value = ' + year + '>' + (year-1) + ' - ' + year + '</option>');
+    }
+    $('#q1year').selectpicker('refresh');
+   
+   
+    $('#q2year').append('<option  data-hidden="true"></option>');
+    for (var year = currentYear; year > 2005; year--){
+        $('#q2year').append('<option value = ' + year + '>' + (year-1) + ' - ' + year + '</option>');
+    }
+    $('#q2year').selectpicker('refresh');
+    
+    
+    $('#q3year').append('<option  data-hidden="true"></option>');
+    for (var year = currentYear; year > 2005; year--){
+        $('#q3year').append('<option value = ' + year + '>' + (year-1) + ' - ' + year + '</option>');
+    }
+    $('#q3year').selectpicker('refresh');
+    
+    
+    $('#q4year').append('<option  data-hidden="true"></option>');
+    for (var year = currentYear; year > 2005; year--){
+        $('#q4year').append('<option value = ' + year + '>' + (year-1) + ' - ' + year + '</option>');
+    }
+    $('#q4year').selectpicker('refresh');
+ 
+    $('#dp5').datepicker({
+	format: 'mm-dd-yyyy',
+        date:''
+    });
+    
+    $('#q8year').append('<option  data-hidden="true"></option>');
+    for (var year = currentYear; year > 2005; year--){
+        $('#q8year').append('<option value = ' + year + '>' + (year-1) + ' - ' + year + '</option>');
+    }
+    $('#q8year').selectpicker('refresh');
 
-$(document).on('click', '#dp2', function(){
-    $('#dp2').datepicker().on('changeDate', function(ev){
-       //$('#q5date').val(ev.date.valueOf());
-       $('#q5date').val(ev.date.valueOf());
-    })
+     $('#dp9').datepicker({
+	format: 'mm-dd-yyyy',
+        date:''
+    });
 })
 
-$(document).on('click', '#query1', function () {
+
+$(document).on('change', '#q1year', function () {
+    // clear rhs of page
+    $('#resultsTable').html("");
+
+    // get dropdown value
+    var year = $('#q1year option:selected').val();
+    
+    // reset all drop downs
+    resetDropDowns();
+    
+    // put value selected back so displays in dropdown after clearing
+    $('select[name=q1year]').val(year);
+    $('.selectpicker').selectpicker('refresh');
+    
+    // create url for redirect url(route, array(controller, action))
+    var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery1')); ?>";
+    urlform = urlform + '/' + year;
+    ajaxCall(urlform);
+  
+});
+
+
+$(document).on('change', '#q2year', function () {
     // clear rhs of page
     $('#resultsTable').html("");
     
     // get user entered year
-    var year = $('#q1year').val();
+    var year = $('#q2year option:selected').val();
     
-    if (year){
-        document.getElementById("q1error").style.display="none";
+    // reset all drop downs
+    resetDropDowns();
     
-        // create url for redirect url(route, array(controller, action))
-        var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery1')); ?>";
-        urlform = urlform + '/' + year;
-        ajaxCall(urlform);
-    }
-    else{
-        document.getElementById("q1error").style.display="block";
-    }
+    // put value selected back so displays in dropdown after clearing
+    $('select[name=q2year]').val(year);
+    $('.selectpicker').selectpicker('refresh');
+    
+    // create url for redirect url(route, array(controller, action))
+    var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery2')); ?>";
+    urlform = urlform + '/' + year;
+    ajaxCall(urlform);
+  
 });
 
-$(document).on('click', '#query2', function () {
+$(document).on('change', '#q3year', function () {
     // clear rhs of page
     $('#resultsTable').html("");
     
     // get user entered year
-    var year = $('#q2year').val();
+    var year = $('#q3year option:selected').val();
     
-    if (year){
-        document.getElementById("q2error").style.display="none";
+    // reset all drop downs
+    resetDropDowns();
     
-        // create url for redirect url(route, array(controller, action))
-        var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery2')); ?>";
-        urlform = urlform + '/' + year;
-        ajaxCall(urlform);
-    }
-    else{
-        document.getElementById("q2error").style.display="block";
-    }
+    // put value selected back so displays in dropdown after clearing
+    $('select[name=q3year]').val(year);
+    $('.selectpicker').selectpicker('refresh');
+    
+    // create url for redirect url(route, array(controller, action))
+    var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery3')); ?>";
+    urlform = urlform + '/' + year;
+    ajaxCall(urlform);
+  
 });
 
-$(document).on('click', '#query3', function () {
+$(document).on('change', '#q4year', function () {
     // clear rhs of page
     $('#resultsTable').html("");
     
     // get user entered year
-    var year = $('#q3year').val();
+    var year = $('#q4year option:selected').val();
     
-    if (year){
-        document.getElementById("q3error").style.display="none";
+    // reset all drop downs
+    resetDropDowns();
     
-        // create url for redirect url(route, array(controller, action))
-        var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery3')); ?>";
-        urlform = urlform + '/' + year;
-        ajaxCall(urlform);
-    }
-    else{
-        document.getElementById("q3error").style.display="block";
-    }
+    // put value selected back so displays in dropdown after clearing
+    $('select[name=q4year]').val(year);
+    $('.selectpicker').selectpicker('refresh');
+    
+    // create url for redirect url(route, array(controller, action))
+    var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery4')); ?>";
+    urlform = urlform + '/' + year;
+    ajaxCall(urlform);
+  
 });
-
-$(document).on('click', '#query4', function () {
-    // clear rhs of page
-    $('#resultsTable').html("");
-    
-    // get user entered year
-    var year = $('#q4year').val();
-    
-    if (year){
-        document.getElementById("q4error").style.display="none";
-    
-        // create url for redirect url(route, array(controller, action))
-        var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery4')); ?>";
-        urlform = urlform + '/' + year;
-        ajaxCall(urlform);
-    }
-    else{
-        document.getElementById("q4error").style.display="block";
-    }
-});
-
 
 $(document).on('click', '#query5', function () {
     // clear rhs of page
     $('#resultsTable').html("");
     
-    // get user entered year
-    var year = $('#q5year').val();
-    
-    if (year){
-        document.getElementById("q5error").style.display="none";
-    
-        // create url for redirect url(route, array(controller, action))
-        var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery5')); ?>";
-        urlform = urlform + '/' + year;
-        ajaxCall(urlform);
-    }
-    else{
-        document.getElementById("q5error").style.display="block";
-    }
+    // get date from datepicker
+    var date = $('#dp5').val();
+    // replace all dashes to send via URL
+    date = date.replace(/-/g, '');
+    // create url for redirect url(route, array(controller, action))
+    var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery5')); ?>";
+    urlform = urlform + '/' + date;
+    ajaxCall(urlform);
 });
 
 $(document).on('click', '#query6', function () {
@@ -215,6 +270,51 @@ $(document).on('click', '#query6', function () {
     
     // create url for redirect url(route, array(controller, action))
     var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery6')); ?>";
+    ajaxCall(urlform);
+});
+
+$(document).on('click', '#query7', function () {
+    // clear rhs of page
+    $('#resultsTable').html("");
+    
+    // create url for redirect url(route, array(controller, action))
+    var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery7')); ?>";
+    ajaxCall(urlform);
+});
+
+
+$(document).on('change', '#q8year', function () {
+    // clear rhs of page
+    $('#resultsTable').html("");
+    
+    // get user entered year
+    var year = $('#q8year option:selected').val();
+    
+    // reset all drop downs
+    resetDropDowns();
+    
+    // put value selected back so displays in dropdown after clearing
+    $('select[name=q8year]').val(year);
+    $('.selectpicker').selectpicker('refresh');
+    
+    // create url for redirect url(route, array(controller, action))
+    var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery8')); ?>";
+    urlform = urlform + '/' + year;
+    ajaxCall(urlform);
+  
+});
+
+$(document).on('click', '#query9', function () {
+    // clear rhs of page
+    $('#resultsTable').html("");
+    
+    // get date from datepicker
+    var date = $('#dp9').val();
+    // replace all dashes to send via URL
+    date = date.replace(/-/g, '');
+    // create url for redirect url(route, array(controller, action))
+    var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery9')); ?>";
+    urlform = urlform + '/' + date;
     ajaxCall(urlform);
 });
 
@@ -235,5 +335,16 @@ function ajaxCall(urlform){
           },
        });
 }
+
+function resetDropDowns(){
+    // reset dropdowns except dropdown matching parameter
+    $('select[name=q1year]').val(1);
+    $('select[name=q2year]').val(1);
+    $('select[name=q3year]').val(1);
+    $('select[name=q4year]').val(1);
+    $('select[name=q8year]').val(1);
+    $('.selectpicker').selectpicker('refresh');
+}
+   
 </script>
 
