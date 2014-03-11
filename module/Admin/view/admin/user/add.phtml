@@ -6,36 +6,9 @@ $title = 'Add new User';
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
-<?php
-$form = $this->form;
-$form->setAttribute('action', $this->url('user', array('action' => 'add')));
-$form->prepare();
-
-echo $this->form()->openTag($form);
-?>
-<div class="control-group">  
-    <div class="form-group">
-        <?php echo $this->formLabel($form->get('first_name')->setLabelAttributes(array('class'=>'control-label'))); ?>
-        <?php echo $this->formInput($form->get('first_name')); ?>
-    </div>
-    <div class="form-group">
-        <?php echo $this->formLabel($form->get('last_name')->setLabelAttributes(array('class'=>'control-label'))); ?>
-        <?php echo $this->formInput($form->get('last_name')); ?>
-    </div>
-    <div class="form-group">
-        <?php echo $this->formLabel($form->get('middle_init')->setLabelAttributes(array('class'=>'control-label'))); ?>
-        <?php echo $this->formInput($form->get('middle_init')); ?>
-    </div>
-    <div class="form-group">
-        <?php echo $this->formLabel($form->get('user_role')->setLabelAttributes(array('class'=>'control-label'))); ?>
-        <?php echo $this->formMultiCheckbox($form->get('user_role')); ?>
-    </div>
-    <div class="form-group">
-        <?php echo $this->formInput($form->get('id')); ?>
+<div class="col-md-12" style="overflow:hidden;">
+    <div class="col-md-8">
+    <?php echo $this->partial('admin/user/form.phtml',array('form'=>$this->form,'action' =>'add','submitVal' =>'Add User', 'id' => $this->id));?>
     </div>
 </div>
-<div class="control-group">
-    <div class="form-group"><?php echo $this->formSubmit($form->get('submit')); ?></div>
-</div>
-<?php echo $this->form()->closeTag(); ?>
 </div>

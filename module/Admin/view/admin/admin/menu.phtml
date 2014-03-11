@@ -1,0 +1,6 @@
+<ul class="nav nav-pills">
+  <li <?php echo ($active=='admin')?'class="active"':''; ?>><a href="<?php echo $this->url('admin');?>">Admin</a></li>
+  <li <?php echo ($active=='user') ?'class="active"':''; ?>><a href="<?php echo $this->url('user');?>">Users</a></li>
+  <li <?php echo ($active=='program') ?'class="active"':''; ?>><a href="<?php echo $this->url('program');?>">Programs</a></li>
+  <li <?php echo ($active=='query') ?'class="active"':''; ?>><a href="<?php echo $this->url('query');?>">Queries</a></li>
+</ul>

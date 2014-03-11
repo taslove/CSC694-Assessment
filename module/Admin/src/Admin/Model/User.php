@@ -9,19 +9,14 @@ use Zend\InputFilter\InputFilterInterface;
 
 class User implements InputFilterAwareInterface
 {
-    public $id;
-    public $last_name;
-    public $first_name;
-    public $middle_init;
     protected $inputFilter;
 
     public function exchangeArray($data)
     {
-        $this->id = (isset($data['id'])) ? $data['id'] : null;
-        $this->first_name = (isset($data['first_name'])) ? $data['first_name'] : null;
-        $this->last_name = (isset($data['last_name'])) ? $data['last_name'] : null;
-        $this->middle_init = (isset($data['middle_init'])) ? $data['middle_init'] : null;
-        $this->role = (isset($data['user_role'])) ? $data['user_role'] : null;
+        foreach($data as $id => $value){
+          $this->$id = ($value)? $value: null;
+        }
+        $this->user_roles = (isset($data['user_roles'])) ? $data['user_roles'] : null;
     }
 
      // Add the following method:
@@ -35,6 +30,9 @@ class User implements InputFilterAwareInterface
         throw new \Exception("Not used");
     }
 
+    /*
+     * Builds and returns input filter
+     */
     public function getInputFilter()
     {
         if (!$this->inputFilter) {
@@ -101,6 +99,19 @@ class User implements InputFilterAwareInterface
                             'min' => 1,
                             'max' => 1,
                         ),
+                    ),
+                ),
+            )));
+            $inputFilter->add($factory->createInput(array(
+                'name' => 'email',
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'EmailAddress',
                     ),
                 ),
             )));

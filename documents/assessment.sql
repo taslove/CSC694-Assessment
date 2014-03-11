@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Mar 09, 2014 at 07:31 PM
+-- Generation Time: Mar 10, 2014 at 09:40 AM
 -- Server version: 5.5.34
 -- PHP Version: 5.4.24
 
@@ -1580,7 +1580,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `first_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `middle_init` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `email` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `datatel_id` varchar(7) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `datatel_id` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=136 ;

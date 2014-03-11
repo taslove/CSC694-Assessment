@@ -1,5 +1,7 @@
 <?php
-
+/*
+ *  Program Form
+ */
 namespace Admin\Form;
 
 use Zend\Form\Form;
@@ -20,53 +22,44 @@ class ProgramForm extends Form
             ),
         ));
         $this->add(array(
-            'name' => 'first_name',
+            'name' => 'name',
             'type' => 'Zend\Form\Element\Text',
             'attributes' => array(
                 'class'=> 'form-control',
-                'id' => 'first_name',
+                'id' => 'name',
             ),
             'options' => array(
-                'label' => 'First Name',
+                'label' => 'Name',
             ),
         ));
+
         $this->add(array(
-            'name' => 'middle_init',          
-            'type' => 'Zend\Form\Element\Text',
+            'name' => 'active_flag',
+            'type' => 'Zend\Form\Element\Checkbox',
             'attributes' => array(
                 'class'=> 'form-control',
-                'id' => 'middle_init',
+                'id' => 'active_flag',
             ),
             'options' => array(
-                'label' => 'Middle Initial',
-            ),
-        ));
-        $this->add(array(
-            'name' => 'last_name',
-            'type' => 'Zend\Form\Element\Text',
-            'attributes' => array(
-                'class'=> 'form-control',
-                'id' => 'last_name',
-            ),
-            'options' => array(
-                'label' => 'Last Name',
+                'label' => 'Active',
             ),
         ));
          $this->add(array(
-            'name' => 'user_roles',
-            'type' => 'Zend\Form\Element\MultiCheckbox',
+            'name' => 'unit_id',
+            'type' => 'Zend\Form\Element\Select',
             'attributes' => array(
-                'class'=> 'checkbox-inline',
-                'id' => 'user_roles',
+                'class'=> 'form-control',
+                'id' => 'unit_id',
             ),
             'options' => array(
-                'label' => 'User Roles',
+                'label' => 'Unit ID',
                 'value_options' => array(
-                    '1' => 'Admin',
-                    '2' => 'Chair',
-                    '3' => 'User',
-                    '4' => 'Assessor',
-                    '5' => 'Committee',
+                    'ACC'=>'ACC',
+                    'BIO'=>'BIO',
+                    'CSC'=>'CSC',
+                    'HST'=>'HST',
+                    'MTH'=>'MTH',
+                    'PHL'=>'PHL'
                 ),
             ),
         ));
