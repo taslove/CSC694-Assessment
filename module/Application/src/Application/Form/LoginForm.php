@@ -17,7 +17,6 @@ class LoginForm extends Form
             'name' => 'userName',
             'attributes' => array(
                 'type' => 'text',
-                'class' => 'jumbotron',
             ),
             'options' => array(
                 'label' => 'User Name',                
@@ -27,7 +26,6 @@ class LoginForm extends Form
             'name' => 'password',
             'attributes' => array(
                 'type' => 'password',
-                'class' => 'jumbotron',               
             ),
             'options' => array(
                 'label' => 'Password',                

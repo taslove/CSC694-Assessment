@@ -23,15 +23,18 @@ use Application\Model\AllTables;
 
 class IndexController extends AbstractActionController
 {
+    protected $tableResults;
+    
     public function indexAction()
     {
-    
+        //Render LoginForm
         $form = new LoginForm();
         return array('form' => $form);
     }
     
     public function authenticateAction()
     {
+        //Get POST data
         $request = $this->getRequest();
         
         if ($request->isPost()) {
@@ -54,50 +57,46 @@ class IndexController extends AbstractActionController
         
         $result = $auth->authenticate($adapter);
         
+        //This is the result of the query to the authentication service
         $messages = $result->getMessages();
         
-        foreach ($messages as $message) {
-            var_dump($message);
-            echo '<br>';
+        //This checks the result of the authentication contained in $messages and
+        //if successful, it stores the necessary data in the session container and moves on to the main page
+        //otherwise it goes back to the login screen
+        if (strpos($messages[3], 'successful') == TRUE) {
+            echo 'Authentication successful';
+            
+            //If login was successful, get more user info from LDAP server
+            //Currently not working
+            //$options = array(
+            //    'host' => 'ldap.nccnet.noctrl.edu',
+            //    'bindRequiresDn'    => true,
+            //    'accountDomainName' => 'noctrl.edu',
+            //    'baseDn'            => 'O=NCC',
+            //);
+        
+            //$ldap = new Ldap($options);
+            
+            //$ldap->bind();
+            //$userData = $ldap->getEntry('cn=' . $username . ',ou=Napvil,o=NCC');
+            
+            $namespace = new Container('user');
+            $namespace->usedID = '135';
+            $namespace->role = 1;
+            $namespace->userEmail = 'silahi@noctrl.edu';   
+            $namespace->datatelID = 'silahi';
+            
         }
-        
-        $options = array(
-            'host' => 'ldap.nccnet.noctrl.edu',
-            'bindRequiresDn'    => true,
-            'accountDomainName' => 'noctrl.edu',
-            'baseDn'            => 'O=NCC',
-        );
-        
-        $ldap = new Ldap($options);
-        
-        echo 'That worked';
-        $ldap->bind();
-        $userData = $ldap->getEntry('cn=akalelkar');
-            var_dump($userData);
-          
-        
-        
-        $namespace = new Container('user');
-        $namespace->usedID = 'Test ID';
-        $namespace->role = 2;
-        $namespace->userEmail = 'testID@foo.com';   
-        $namespace->datatelID = 'NCC ID';
-        
-        $result = $this->getServiceConfig()->getUserInformation($username);
+        else {
+            echo 'Authentication failed';
+            //return $this->redirect()->toRoute('application');
+        }
 
-
-       // $this->ShowContainer();
         exit();        
     }
     
-    public function ShowContainer()
+    public function applicationAction()
     {
         
-        $namespace = new Container('user');
-        foreach ($namespace as $content)
-            var_dump($content);
-        
     }
-    
-    
 }
