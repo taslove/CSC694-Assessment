@@ -15,6 +15,7 @@ use Zend\Db\Sql\Select;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Adapter;
 use Zend\View\Model\JsonModel;
+use Zend\Session\Container;
 
 use Outcomes\Form\OutcomesForm;
 use Outcomes\Model\Outcomes;
@@ -26,195 +27,162 @@ class OutcomesController extends AbstractActionController
     protected $userRole = 3;
     protected $userID = 9;
     
+   /*
+   $namespace = new Container('user');  
+   $namespace->userID;   
+             ->userEmail;
+             ->role;            if 0, no admin abilities
+             ->datatelID;     if null, redirect to login screen
+    
+    do this check on every page
+    if (datatelID == null) redirect to Application
+    
+   */
         
-    public function indexAction()
-    {      
-            $results = $this->getGenericQueries()->getUnits();
-            // iterate over database results forming a php array
-            foreach ($results as $result){
-                $unitarray[] = $result;
-            }
-            return new ViewModel(array(
+   public function indexAction(){
+      $results = $this->getGenericQueries()->getUnits();
+      // iterate over database results forming a php array
+      foreach ($results as $result){
+         $unitarray[] = $result;
+      }
+      return new ViewModel(array(
                 'units' => $unitarray,
                 'userRole' => $this->userRole,
                 'userID' => $this->userID,
-            ));    
-            
-            
-       
-    }
+      ));      
+   }
     
-    // Creates list of available units (departments/programs)
-    // based on user role and privileges.
-    public function getUnitsAction()
-    {
-        // get action from id in url
-        $actionChosen = $this->params()->fromRoute('id', 0);
+   // Creates list of available units (departments/programs)
+   // based on user role and privileges.
+   public function getUnitsAction(){      
+      // get action from id in url
+      $actionChosen = $this->params()->fromRoute('id', 0);
      
-        // get units for that action
-        if ($actionChosen == 'View'){
-            $results = $this->getGenericQueries()->getUnits();
-        }
-        else{
-            $results = $this->getGenericQueries()->getUnitsByPrivId($this->userID);
-        }
+      // get units for that action
+      if ($actionChosen == 'View'){
+         $results = $this->getGenericQueries()->getUnits();
+      }
+      else{
+         $results = $this->getGenericQueries()->getUnitsByPrivId($this->userID);
+      }  
+      // iterate through results forming a php array
+      foreach ($results as $result){
+         $unitData[] = $result;
+      }
       
-        // iterate through results forming a php array
-        foreach ($results as $result){
-            $unitData[] = $result;
-        }
-      
-        // encode results as json object
-        $jsonData = new JsonModel($unitData);
-        return $jsonData;
-    }
+      // encode results as json object
+      $jsonData = new JsonModel($unitData);
+      return $jsonData;
+   }
     
-    public function getProgramsAction()
-    {
-        // get unit from id in url
-        $unitChosen = $this->params()->fromRoute('id', 0);
-        // get programs for that unit
-        $results = $this->getGenericQueries()->getProgramsByUnitId($unitChosen);
+   public function getProgramsAction(){
+      // get unit from id in url
+      $unitChosen = $this->params()->fromRoute('id', 0);
+      // get programs for that unit
+      $results = $this->getGenericQueries()->getProgramsByUnitId($unitChosen);
       
-        // iterate through results forming a php array
-        foreach ($results as $result){
-            $programData[] = $result;
-        }
-      
-        // encode results as json object
-        $jsonData = new JsonModel($programData);
-        return $jsonData;
-    }
+      // iterate through results forming a php array
+      foreach ($results as $result){
+         $programData[] = $result;
+      }  
+      // encode results as json object
+      $jsonData = new JsonModel($programData);
+      return $jsonData;
+   }
     
-   public function getOutcomesAction()
-   {
-         $request = $this->getRequest();
+   public function getOutcomesAction(){
+      // get program that's selected from id in url
+      $programSelected = $this->params()->fromRoute('id', 0);
+      $request = $this->getRequest();
          
-         // this would be the case if an outcome was just deleted
-         if ($request->isPost()) {
-      
-            $this->getOutcomesQueries()->deactivateOutcome(5014);
-
+      // this code will execute if an outcome was just added, edited or deactivated
+      if ($request->isPost()) {
+            
+         // handle an add
+         if ($request->getPost('action') == "add"){
+            // get outcome text from post data and use it to create outcome
+            $outcomeText = $request->getPost('outcomeText');
+            $this->getOutcomesQueries()->addOutcome($programSelected, $outcomeText, $this->userID);
          }
+            
+         // handle an edit
+         else if ($request->getPost('action') == "edit"){
+            $oidToDeactivate = $request->getPost('oidToDeactivate');
+            $outcomeText = $request->getPost('outcomeText');
+            $this->getOutcomesQueries()->editOutcome($programSelected, $outcomeText, $oidToDeactivate, $this->userID); 
+         }
+            
+         // handle a delete / deactivate
+         else {
+            $outcomeId = $request->getPost('oid');
+            $this->getOutcomesQueries()->deactivateOutcome($outcomeId, $this->userID);
+         }
+      }
+      // get outcomes for the selected program
+      $results = $this->getOutcomesQueries()->getAllActiveOutcomesForProgram($programSelected);
       
-      
-        // get programs from id in url
-        $programChosen = $this->params()->fromRoute('id', 0);
-        // get outcomes for that program
-        $results = $this->getOutcomesQueries()->getAllActiveOutcomesForProgram($programChosen);
-      
-         $partialView = new ViewModel(array(
+      $partialView = new ViewModel(array(
          'outcomes' => $results,
-         'programId' => $programChosen,
+         'programId' => $programSelected,
       ));
       // ignore the layout template
       $partialView->setTerminal(true);
       return $partialView;
-    }
+   }
    
    
    public function addOutcomeAction()
    {
       // get programs from id in url
       $programChosen = $this->params()->fromRoute('id', 0);
-      $request = $this->getRequest();
-      
-      $addForm = new OutcomesForm();
-      $addForm->get('submit')->setValue('Add');
-      
-      // set values that we already know
-      $addForm->get('program_id')->setValue($programChosen);
-      $addForm->get('active_flag')->setValue(1);
-      
-      // handle actually adding an outcome
-        if ($request->isPost()) {
-            $outcome = new Outcomes();
-            $addForm->setInputFilter($outcome->getInputFilter());
-            $addForm->setData($request->getPost());
-
-            if ($addForm->isValid()) {
-                $outcome->exchangeArray($addForm->getData());
-                $this->getOutcomesQueries()->addOutcome($outcome);
-
-                // Redirect to list of students
-                return $this->redirect()->toRoute('outcomes');
-            }
-            else {
-               $fail = "Validation fail";
-               var_dump($addForm->getData());
-               exit;
-            }
-        }  
-      // if it's a get, we render the addOutcome screen
+         
+      // render the addOutcome screen
       $partialView = new ViewModel(array(
-         'addForm' => $addForm,
+         'programChosen' => $programChosen,
       ));
       // ignore the layout template
       $partialView->setTerminal(true);
       return $partialView;
-    }
-   
-   public function deactivateOutcome()
-   {
-      // get programs from id in url
-      $outcomeId = $this->params()->fromRoute('id', 0);
-    //  $this->getOutcomesQueries()->deactivateOutcome($outcomeId);
-      
-         // if it's a get, we render the addOutcome screen
-      $partialView = new ViewModel(array(
-      //   'addForm' => $addForm,
-      ));
-      // ignore the layout template
-      $partialView->setTerminal(true);
-      return $partialView;
-
-      
    }
    
-   // for testing purposes
-      public function addAction()
-    {
-        $form = new OutcomesForm();
-        $form->get('submit')->setValue('Add');
+   public function editOutcomeAction(){
+      // get programs from id in url
+      $programChosen = $this->params()->fromRoute('id', 0);
+      
+      // need this to pull out POST data
+      $request = $this->getRequest();
+      
+      // get the outcome id from post data then get the outcome from the id
+      $outcomeId = $request->getPost('oid');
+      $outcomeText = $request->getPost('text');
 
-        $request = $this->getRequest();
-        
-        
-        // this is called from outcomes/add
-        if ($request->isPost()) {
-            $outcome = new Outcomes();
-            $form->setInputFilter($outcome->getInputFilter());
-            $form->setData($request->getPost());
-
-            if ($form->isValid()) {
-                $outcome->exchangeArray($form->getData());
-                $this->getModelOutcomesTable()->saveOutcome($outcome);
-
-                // Redirect to list of students
-                return $this->redirect()->toRoute('outcomes');
-            }
-        }
-        return array('form' => $form);
-    }
+      $partialView = new ViewModel(array(
+         'outcomeId' => $outcomeId,
+         'outcomeText' => $outcomeText,
+         'programChosen' => $programChosen,
+      ));
+      
+      // ignore the layout template
+      $partialView->setTerminal(true);
+      return $partialView;
+   }
    
-   
-    public function getGenericQueries()
-    {
-        if (!$this->tableResults) {
-            $this->tableResults = $this->getServiceLocator()
-                                       ->get('Application\Model\AllTables');
-                    
-        }
-        return $this->tableResults;
-    }
+
+   public function getGenericQueries()
+   {
+      if (!$this->tableResults){
+         $this->tableResults = $this->getServiceLocator()
+                                       ->get('Application\Model\AllTables');                   
+      }
+      return $this->tableResults;
+   }
     
-        public function getOutcomesQueries()
-    {
-        if (!$this->tableResults) {
-            $this->tableResults = $this->getServiceLocator()
-                       ->get('Outcomes\Model\OutcomesTable');
-                    
-        }
-        return $this->tableResults;
-    }
+   public function getOutcomesQueries()
+   {
+      if (!$this->tableResults) {
+         $this->tableResults = $this->getServiceLocator()
+                       ->get('Outcomes\Model\OutcomesTable');                
+      }
+      return $this->tableResults;
+   }
 }
