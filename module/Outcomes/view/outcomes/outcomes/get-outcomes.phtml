@@ -1,112 +1,163 @@
-    <button class="btn btn-primary pull-right" id="addButton" type="button">Add outcome</button>
-    <br />
-    <br />
+<?php
+    // this functionality still needs to be added
+    $admin = true;
+    // check to make sure there is at least one outcome
+    if (sizeof($outcomes) > 0){
+        $noOutcomes = false;
+    } else {
+        $noOutcomes = true;
+    }
+    
+    if ($admin == true){
+        echo("<button class='btn btn-primary pull-right' id='addButton' type='button'>Add outcome</button><br /><br />");
+    }
+?>
+
+     
+<?php
+    // check to make sure there is at least one outcome
+    if (sizeof($outcomes) > 0){
+        $noOutcomes = false;
+    } else {
+        $noOutcomes = true;
+    }  
+?>
+
 <div class="table-responsive">
-    <table class="table table-bordered table-striped">
-      
-    <tr>
-    <th>Outcome ID</th>
-    <th>Program ID</th>
-    <th>Description</th>
-    <th>Active</th>
-    <th>Action</th>
-</tr>
-<?php foreach ($outcomes as $outcome) : ?>
-<tr>
-    <td><?php echo $this->escapeHtml($outcome['id']);?></td>
-    <td><?php echo $this->escapeHtml($outcome['program_id']);?></td>
-    <td><?php echo $this->escapeHtml($outcome['outcome_text']);?></td>
-    <td><?php echo $this->escapeHtml($outcome['active_flag']);?></td>
-    <td>
-  <div class="btn-group-vertical">
-        <!-- include an onClick listener on each button that passes the outcome ID as a parameter -->
-        <button class="btn btn-primary" type="button">Edit</button>
-        <button class="btn btn-primary" type="button" onclick="deleteHandler(<?php echo $this->escapeHtml($outcome['id']);?>);">Delete</button>
-  </div>
-    </td>
-</tr>
-<?php endforeach; ?>
-</table>                 
-</div> <!-- Table reponsive div close-->
-  
-  
+    <div class="panel panel-default">
+        <table class="table table-striped table-hover">     
+            <tr>
+                <th>#</th>
+                <th>Description</th>
+                <?php
+                // only add the actions column if it's an admin
+                if ($admin == true){
+                echo("<th ></th>");
+                } ?>
+            </tr>
+        
+        <?php $counter = 1;
+        
+            foreach ($outcomes as $outcome) :
+        
+            // output the first two columns for everybody
+            echo("<tr>");
+            echo("<td>" . $this->escapeHtml($counter++ . '. ') . "</td>");
+            echo("<td>" . $this->escapeHtml($outcome['outcome_text']) . "</td>");
+        
+            if ($admin == true){
+            // outcome the button column if it's someone with permission
+                echo("<td class='col-md-2'><div class='pull-right'>");
+        
+                // first button
+                echo("<button type='button' class='btn btn-primary btn-xs' value='" . htmlspecialchars(trim($this->escapeHtml($outcome['outcome_text']))));
+                echo("' onclick='editHandler(" . $this->escapeHtml($outcome['id']) . ", " . "$(this).val());'>Edit &raquo;</button> ");
+        
+                // second button
+                echo("<button type='button' class='btn btn-warning btn-xs' onclick='deleteHandler(");
+                echo($this->escapeHtml($outcome['id']) . ");'>Delete &raquo;</button>");
+                echo("</div></td>");
+            }
+            // close out the row for everybody
+            echo("</tr>");
+            endforeach; 
+
+            // add a message if there aren't any outcomes for the selected program
+            if ($noOutcomes == true){
+               echo("<tr><td>There are no outcomes for this program.</td></tr>");
+            }
+        ?>
+    
+        </table>                 
+    </div> 
+</div>   <!-- Table reponsive div close-->
 <script>
 $(document).ready(function() {
 
-// set the title to reflect the selected program
-var programTitle = $('#prog-menu option:selected').text();
-$("#outcomesTitle").html("Assessment Outcomes - " + programTitle);
+    // store the id of the selected program
+    var selectedProgram = <?php echo $this->escapeHtml($programId);?>;
 
-// store the id of the selected program
-var selectedProgram = <?php echo $this->escapeHtml($programId);?>;
-
-// handle the add button
-$("#addButton").on('click', function () {
-//alert("You're going to add an outcome to " + selectedProgram);
-
-   // create url for redirect
-   var urlform = "<?php echo $this->url('outcomes', array(
+    // handle the add button
+    $("#addButton").on('click', function () {
+        // create url for redirect
+        var urlform = "<?php echo $this->url('outcomes', array(
                                     'controller'=>'outcomes',
                                     'action'=>'addOutcome')); ?>";
-   urlform = urlform + '/' + selectedProgram;
+        urlform = urlform + '/' + selectedProgram;
       
-   // asynchronous ajax code to populate program/degree selector
-   $.ajax({
-      url: urlform,
-      type: "GET",
-      dataType: "text",
-      error : function(xhr, status, error) {
-         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
-      },
-      success: function(partialHtml){
-        // clear any existing html in the partial div
-        $('#partialHolder').html(partialHtml);
-      },
-   });
-
+        // asynchronous ajax code to populate program/degree selector
+        $.ajax({
+            url: urlform,
+            type: "GET",
+            dataType: "text",
+            error : function(xhr, status, error) {
+                console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+            },
+            success: function(partialHtml){
+                // clear any existing html in the partial div
+                $('#partialHolder').html(partialHtml);
+            },
+        });
+    });
 });
 
+// handle the edit button
+function editHandler(outcomeId, outcomeText){
+    var selectedProgram = <?php echo $this->escapeHtml($programId);?>;    
+    var urlform = "<?php echo $this->url('outcomes', array(
+                                    'controller'=>'outcomes',
+                                    'action'=>'editOutcome')); ?>";
+    urlform = urlform + '/' + selectedProgram;
+        
+    // asynchronous ajax code to populate program/degree selector
+    $.ajax({
+        url: urlform,
+        type: "POST",
+        data: { oid: outcomeId, text: outcomeText }, 
+        dataType: "text",
+        error : function(xhr, status, error) {
+            console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+        },
+        success: function(partialHtml){
+            // clear any existing html in the partial div
+            $('#partialHolder').html(partialHtml);
+        },
+    });
+}
 
-});
 
-
-
+// handle clicks on the delete button
 function deleteHandler(outcomeId){
     var selectedProgram = <?php echo $this->escapeHtml($programId);?>;
     
     // if the user wants to go through with it
     if (confirm("Are you sure you want to delete outcome " + outcomeId + " from program " + selectedProgram)) {
    
-   var urlform = "<?php echo $this->url('outcomes', array(
+        var urlform = "<?php echo $this->url('outcomes', array(
                                     'controller'=>'outcomes',
                                     'action'=>'getOutcomes')); ?>";
-   urlform = urlform + '/' + outcomeId;
-      
-   // asynchronous ajax code to populate program/degree selector
-   $.ajax({
-      url: urlform,
-      type: "POST",
-      dataType: "text",
-      error : function(xhr, status, error) {
-         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
-      },
-      success: function(partialHtml){
-        // clear any existing html in the partial div
-        $('#partialHolder').html(partialHtml);
-      },
-   });
-   
-   
+        urlform = urlform + '/' + selectedProgram;
+        
+        // asynchronous ajax code to populate program/degree selector
+        $.ajax({
+            url: urlform,
+            type: "POST",
+            data: { oid: outcomeId }, 
+            dataType: "text",
+            error : function(xhr, status, error) {
+                console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+            },
+            success: function(partialHtml){
+                // clear any existing html in the partial div
+                $('#partialHolder').html(partialHtml);
+            },
+        });   
     } else {
     // Do nothing!
     }   
 }
 
-
 function testFunction(prog){
     alert("clicked in program " + selectedProgram + "!");
 }
-
-
-
 </script>

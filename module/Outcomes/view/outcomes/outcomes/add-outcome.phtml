@@ -1,33 +1,65 @@
-<?php
-$form = $this->addForm;
-$form->setAttribute('action', $this->url(
-    'outcomes',
-    array(
-        'action' => 'addOutcome',
-     )));
-
-$form->prepare();
-
-echo("<div class='container'>");
-
-echo $this->form()->openTag($form);
-echo $this->formRow($form->get('outcome_text'));
-echo("<br />");
-echo $this->formSubmit($form->get('submit'));
-
-// make sure to include hidden fields
-echo $this->formHidden($form->get('id'));
-echo $this->formHidden($form->get('program_id'));
-echo $this->formHidden($form->get('active_flag'));
-echo $this->form()->closeTag();
-
-echo("</div>"); // end of container
-?>
+<textarea id="outcomeTextArea" rows="6" cols="90" placeholder=""></textarea>
+<br />
+<br />
+<button class="btn btn-primary btn-lg" id="back">Back to Outcomes</button>
+<button class="btn btn-primary btn-lg" id="add-button" value="Add">Add</button>
+<br />
+<br />
 
 <script>
- $(document).ready(function() {
+     $(document).ready(function(){
+ 
+     var program = <?php echo $this->escapeHtml($programChosen);?>;
+   
+     //  handle add button click
+     $("#add-button").click(function (){
 
-// initialize RTA stuff when page is ready			      
-$.rta(); 
- });
+	  var text = $('#outcomeTextArea').val();
+     
+	  // create url for redirect
+	  var urlform = "<?php echo $this->url('outcomes', array(
+                                    'controller'=>'outcomes',
+                                    'action'=>'getOutcomes')); ?>";
+	  urlform = urlform + '/' + program;
+      
+	  // asynchronous ajax code to populate program/degree selector
+	  $.ajax({
+	       url: urlform,
+	       type: "POST",
+	       data: { action: "add", pid: program, outcomeText: text  }, 
+	       dataType: "text",
+	       error : function(xhr, status, error) {
+	       console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+	       },
+	       success: function(partialHtml){
+		    // clear any existing html in the partial div
+		    $('#partialHolder').html(partialHtml);
+	       },
+	  });
+     });
+
+     //  handle back button click
+     $("#back").click(function (){
+  
+	  // create url for redirect
+	  var urlform = "<?php echo $this->url('outcomes', array(
+                                    'controller'=>'outcomes',
+                                    'action'=>'getOutcomes')); ?>";
+	  urlform = urlform + '/' + program;
+      
+	  // asynchronous ajax code to populate program/degree selector
+	  $.ajax({
+	       url: urlform,
+	       type: "GET",
+	       dataType: "text",
+	       error : function(xhr, status, error) {
+	       console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+	       },
+	       success: function(partialHtml){
+		    // clear any existing html in the partial div
+		    $('#partialHolder').html(partialHtml);
+	       },
+	  });
+     });
+});
 </script>

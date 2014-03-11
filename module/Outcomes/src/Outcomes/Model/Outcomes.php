@@ -11,6 +11,10 @@ class Outcomes implements InputFilterAwareInterface
 {
     // database attributes
     public $oid;
+    public $createdTimestamp;
+    public $deactivatedTimestamp;
+    public $createdUser;
+    public $deactivatedUser;
     public $programId;
     public $outcomeText;
     public $activeFlag;
@@ -20,6 +24,10 @@ class Outcomes implements InputFilterAwareInterface
     public function exchangeArray($data)
     {
         $this->oid = (isset($data['id'])) ? $data['id'] : null;
+        $this->createdTimestamp = (isset($data['created_ts'])) ? $data['created_ts'] : null;
+        $this->deactivatedTimestamp = (isset($data['deactivated_ts'])) ? $data['deactivated_ts'] : null;
+        $this->createdUser = (isset($data['created_user'])) ? $data['created_user'] : null;
+        $this->deactivatedUser = (isset($data['deactivated_user'])) ? $data['deactivated_user'] : null;
         $this->programId = (isset($data['program_id'])) ? $data['program_id'] : null;
         $this->outcomeText = (isset($data['outcome_text'])) ? $data['outcome_text'] : null;
         $this->activeFlag = (isset($data['active_flag'])) ? $data['active_flag'] : null;
