@@ -86,13 +86,17 @@ class IndexController extends AbstractActionController
             $namespace->userEmail = 'silahi@noctrl.edu';   
             $namespace->datatelID = 'silahi';
             
-            
         }
         else {
             echo 'Authentication failed';
-            return $this->redirect()->toRoute('application');
+            //return $this->redirect()->toRoute('application');
         }
 
         exit();        
+    }
+    
+    public function applicationAction()
+    {
+        
     }
 }
