@@ -23,6 +23,8 @@ use Application\Model\AllTables;
 
 class IndexController extends AbstractActionController
 {
+    protected $tableResults;
+    
     public function indexAction()
     {
         //Render LoginForm
@@ -59,53 +61,38 @@ class IndexController extends AbstractActionController
         $messages = $result->getMessages();
         
         //This checks the result of the authentication contained in $messages and
-        //if sucessful, it stores the necessary data in the session container and moves on to the main page
+        //if successful, it stores the necessary data in the session container and moves on to the main page
         //otherwise it goes back to the login screen
         if (strpos($messages[3], 'successful') == TRUE) {
             echo 'Authentication successful';
+            
+            //If login was successful, get more user info from LDAP server
+            //Currently not working
+            //$options = array(
+            //    'host' => 'ldap.nccnet.noctrl.edu',
+            //    'bindRequiresDn'    => true,
+            //    'accountDomainName' => 'noctrl.edu',
+            //    'baseDn'            => 'O=NCC',
+            //);
+        
+            //$ldap = new Ldap($options);
+            
+            //$ldap->bind();
+            //$userData = $ldap->getEntry('cn=' . $username . ',ou=Napvil,o=NCC');
+            
+            $namespace = new Container('user');
+            $namespace->usedID = '135';
+            $namespace->role = 1;
+            $namespace->userEmail = 'silahi@noctrl.edu';   
+            $namespace->datatelID = 'silahi';
             
             
         }
         else {
             echo 'Authentication failed';
+            return $this->redirect()->toRoute('application');
         }
 
-        
-        $options = array(
-            'host' => 'ldap.nccnet.noctrl.edu',
-            'bindRequiresDn'    => true,
-            'accountDomainName' => 'noctrl.edu',
-            'baseDn'            => 'O=NCC',
-        );
-        
-        $ldap = new Ldap($options);
-        
-        $ldap->bind();
-        //$userData = $ldap->getEntry('ou=Napvil,o=NCC');
-        //    var_dump($userData);
-          
-        
-        $namespace = new Container('user');
-        $namespace->usedID = 'Test ID';
-        $namespace->role = 2;
-        $namespace->userEmail = 'testID@foo.com';   
-        $namespace->datatelID = 'NCC ID';
-        
-
-        //$result = $this->getServiceConfig()->getUserInformation($username);
-
-       // $this->ShowContainer();
         exit();        
     }
-    
-    public function ShowContainer()
-    {
-        
-        $namespace = new Container('user');
-        foreach ($namespace as $content)
-            var_dump($content);
-        
-    }
-    
-    
 }
