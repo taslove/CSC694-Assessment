@@ -29,7 +29,10 @@ class ReportsController extends AbstractActionController
    //protected $userRole = 4;
 
    protected $userRole = 1;
+<<<<<<< HEAD
 
+=======
+>>>>>>> feature
    protected $userID = 9;   
    
    /*

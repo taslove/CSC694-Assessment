@@ -6,10 +6,8 @@ if(!$results){
 }else{
 
 ?>
-<<<<<<< HEAD
-		<div class="col-md-8">
-	
-     
+
+<div class="col-md-8">
   <div class="bs-example">
     <?php
     $form->setAttribute('action', $this->url('reports', array('action' => 'updateReport')));
@@ -27,9 +25,6 @@ if(!$results){
       
           <h6>Modify Report</h6>
        		    <h4><?php echo $report[0]['unit_id'] . ' - ' . $report[0]['name'] . ' - ' . $report[0]['year'];?></h4>
-
-      
-   
 	<div class="panel-group" id="accordion">
   <div class="panel panel-default">
     <div class="panel-heading">
@@ -162,26 +157,26 @@ if(!$results){
 </div><!-- /accordion-->
 
 <table>
-				<?php
-				    if(count($documents) > 0){ ?>
-				    				<th>File</th><th>&nbsp&nbspDescription</th><td>&nbsp&nbsp</td>
 <?php
-					foreach($documents as $doc){
-				?>
-					    <tr><td><a href="<?php echo $this->url('id',
-						    array('action'=>'download',
-						   'id' => $doc['id'],
-						   ));
-			     ?>"><?php echo $doc['file_name']; ?></a></td><td>
-		    <?php echo '&nbsp&nbsp' . $doc['file_description']; ?>
-		    </br></td><td><input type="checkbox" name="delete[]" value="<?php echo $doc['id'];?>">&nbsp&nbspDelete<br>
+	 if(count($documents) > 0){ ?>
+	<th>File</th><th>&nbsp&nbspDescription</th><td>&nbsp&nbsp</td>
+<?php
+    foreach($documents as $doc){
+?>
+    <tr><td><a href="<?php echo $this->url('id',
+			    array('action'=>'download',
+			   'id' => $doc['id'],
+			   ));
+     ?>"><?php echo $doc['file_name']; ?></a></td><td>
+<?php echo '&nbsp&nbsp' . $doc['file_description']; ?>
+</br></td><td><input type="checkbox" name="delete[]" value="<?php echo $doc['id'];?>">&nbsp&nbspDelete<br>
 </td></tr>
-		    <?php
-		}
-				    }
-				
-	?>
-	    </table>
+<?php
+}
+	    }
+	
+?>
+</table>
 
 <table>
     <th>Add Files</th>
@@ -233,244 +228,12 @@ if(!$results){
 	}
 ?>
    
-=======
-<div class="col-md-8">
-    <div class="table-responsive">
-	<table class="table table-bordered table-striped">
-	    <colgroup>
-		<col class="col-xs-8">
-	    </colgroup>
-	    <div class="bs-example">
-		<?php
-		$form->setAttribute('action', $this->url('reports', array('action' => 'updateReport')));
-		$form->setAttribute('name', 'data');
-		$form->setAttribute('id', 'data');
-		$form->setAttribute('enctype', 'multipart/form-data');
-	    
-		$form->prepare();
-		echo $this->form()->openTag($form);
-		echo $this->formHidden($form->get('id')->setAttribute('value', $report[0]['id']));
-		echo $this->formHidden($form->get('status')->setAttribute('value', '0'));
-	    
-		?>
-		<table class="table">
-		    <h6>Modify Report</h6>
-		    <h4><?php echo $report[0]['unit_id'] . ' - ' . $report[0]['name'] . ' - ' . $report[0]['year'];?></h4>
-		    <div class="controls">
-			<div class="panel-group" id="accordion">
-			    <div class="panel panel-default">
-				<div class="panel-heading">
-				    <h4 class="panel-title">
-					<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-					   Outcomes
-					</a>
-				    </h4>
-				</div>
-				<div id="collapseOne" class="panel-collapse collapse">
-				  <div class="panel-body">
-				    <div>
-				    <?php $ctr = 0;?>
-			    
-				    <?php foreach($descriptions as $description) : ?>
-					<?php $ctr++;?>
-					 <?php echo($ctr); ?>.<?php echo $description;?>
-					</br>
-					
-					<?php endforeach; ?>
-				    </div>
-				  </div>
-				</div>
-			    </div>
-			    </br>
-			    </div><!-- /.col-lg-6 -->      </div>
-			</div>
-		    </div>
-		    <div class="panel panel-default">
-			<div class="panel-heading">
-			  <h4 class="panel-title">
-			    <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-			       Population assessed
-			    </a>
-			  </h4>
-			</div>
-			<div id="collapseThree" class="panel-collapse collapse">
-			  <div class="panel-body">
-				      <?php echo $this->formRow($form->get('population')->setAttribute('value', $report[0]['population']))?>      </div>
-			</div>
-		      </div>
-  
-			<div class="panel panel-default">
-			  <div class="panel-heading">
-			    <h4 class="panel-title">
-			      <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
-				 Results
-			      </a>
-			    </h4>
-			  </div>
-			  <div id="collapseFour" class="panel-collapse collapse">
-			    <div class="panel-body">
-					<?php echo $this->formRow($form->get('results')->setAttribute('value', $report[0]['results']))?>      </div>
-			  </div>
-			</div>
-			
-			<div class="panel panel-default">
-			  <div class="panel-heading">
-			    <h4 class="panel-title">
-			      <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
-				 Conclusions
-			      </a>
-			    </h4>
-			  </div>
-			  <div id="collapseFive" class="panel-collapse collapse">
-			    <div class="panel-body">
-		      <?php echo $this->formRow($form->get('conclusions')->setAttribute('value', $report[0]['conclusions']))?>     </div>
-			  </div>
-			</div>
-			
-			<div class="panel panel-default">
-			  <div class="panel-heading">
-			    <h4 class="panel-title">
-			      <a data-toggle="collapse" data-parent="#accordion" href="#collapseSix">
-				 Actions
-			      </a>
-			    </h4>
-			  </div>
-			  <div id="collapseSix" class="panel-collapse collapse">
-			    <div class="panel-body">
-		      <?php echo $this->formRow($form->get('actions')->setAttribute('value', $report[0]['actions']))?>    </div>
-			  </div>
-			</div>
-			
-			<div class="panel panel-default">
-			  <div class="panel-heading">
-			    <h4 class="panel-title">
-			      <a data-toggle="collapse" data-parent="#accordion" href="#collapseSeven">
-				  <?php
-				      if($report[0]['feedback'] == 2){
-					  $flag = 2;
-				      }else{
-					  $flag = 1;
-				      }
-				  ?>
-				 Feedback -
-				 <?php
-			      if($role < 4){
-				  $read = '';		      
-			      }else{
-				  $read = 'readonly';
-				  if($report[0]['feedback'] == 2){
-				      $feedback = 'Final Version';
-				  }else{
-				      $feedback = 'In need of revision';
-				  }
-				  echo $feedback; 
-			      }
-			      
-			      ?>
-			      </a>
-			      <?php
-			      if($role < 4){
-				  $read = '';
-				  echo $this->formRow($form->get('feedbackFlag')->setAttribute('value', $flag));
-		      
-			      }
-			      ?>
-			    </h4>
-			    
-			  </div>
-			  <div id="collapseSeven" class="panel-collapse collapse">
-			    <div class="panel-body">
-			  <?php
-			      
-			      $row = $form->get('actions');
-			      $row->setAttribute('value', $report[0]['feedback_text']);
-			      $row->setAttribute('readonly', $read);
-			      echo $this->formRow($row);
-					       
-			      
-			      ?>    </div>
-			  </div>
-			</div>
-		    </div>
-		    <table>
-			<?php
-			    if(count($documents) > 0){ ?>
-			    <th>File</th><th>&nbsp&nbspDescription</th><td>&nbsp&nbsp</td>
-			<?php
-				foreach($documents as $doc){
-			?>
-			<tr><td><a href="<?php echo $this->url('id',
-				array('action'=>'download',
-			       'id' => $doc['id'],
-			       ));
-			?>"><?php echo $doc['file_name']; ?></a></td><td>
-			<?php echo '&nbsp&nbsp' . $doc['file_description']; ?>
-			    </br></td><td><input type="checkbox" name="delete[]" value="<?php echo $doc['id'];?>">&nbsp&nbspDelete<br>
-			    </td></tr>
-			<?php
-				}
-			    }
-			?>
-		    </table>
-		<table>
-		    <th>Add Files</th>
-		
-		    <tr><td>File Description</td></tr>
-		    
-		    <tr>
-			<td>
-			    <?php echo $this->formInput($form->get('fileDescription0')); ?>
-			</td>
-			<td>
-			    <?php echo $this->formFile($form->get('fileUpload')); ?>
-			</td>
-		
-			<td>
-			    <input type="button" value="Clear" onclick="$('#fileUpload').replaceWith($('#fileUpload').clone());document.getElementById('fileDescription0').value = '';"></input>
-			</td>
-		    </tr>
-		    <tr>
-			<td>
-			    <?php echo $this->formInput($form->get('fileDescription1')); ?>
-			</td>
-			<td>
-			    <?php echo $this->formFile($form->get('fileUpload1')); ?>
-			</td>
-		
-			<td>
-			    <input type="button" value="Clear" onclick="$('#fileUpload1').replaceWith($('#fileUpload1').clone());document.getElementById('fileDescription1').value = '';"></input>
-			</td>
-		    </tr>
-		</table>
-		</br>
-	    </div> <!-- controls -->
-	    <input class="btn btn-primary btn-md" onclick="" id="submitButton" value="Submit Changes"></input>
 
-		<?php
-		    if($report[0]['draft_flag'] == 1){
-		    ?>
-		       <input class="btn btn-primary btn-md" onclick="" id="draftButton" value="Save Draft"></input>
-	   
-		    <?php
-		   }
-		   if($role < 3){
-		   ?>
-		   <input class="btn btn-primary btn-md" onclick="" id="deleteButton" value="Delete Report"></input>
-		   <?php
-		   }
-		?>
-	    </table>
-	</table>
->>>>>>> 2c12ca3d2a141152cea0b03aeb9b7b85531cf317
     <?php echo $this->form()->closeTag();?>
   </div><!-- /example -->
-<<<<<<< HEAD
+
  <?php
  
 }
 ?></div>
-=======
-    <?php
-	}
-    ?>
->>>>>>> 2c12ca3d2a141152cea0b03aeb9b7b85531cf317
+
