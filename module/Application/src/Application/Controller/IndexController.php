@@ -12,6 +12,7 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Form\LoginForm;
+use Application\Form\ApplicationForm;
 use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Adapter\Ldap as AuthAdapter;
 use Zend\Config\Reader\Ini as ConfigReader;
@@ -27,12 +28,12 @@ class IndexController extends AbstractActionController
     
     public function indexAction()
     {
-        
+        /*
         $namespace = new Container('user');
-        $namespace->userID = '135';
+        $namespace->userID = '40';
         $namespace->role = 1;
-        $namespace->userEmail = 'silahi@noctrl.edu';   
-        $namespace->datatelID = 'silahi';
+        $namespace->userEmail = 'akalelkar@noctrl.edu';   
+        $namespace->datatelID = 'akalelkar';*/
         
         //Render LoginForm
         $form = new LoginForm();
@@ -106,7 +107,11 @@ class IndexController extends AbstractActionController
             $namespace->userEmail = $userEmail;   
             $namespace->datatelID = $userName;
             
-            return $this->redirect()->toRoute('application');        
+            
+            
+            $form = new ApplicationForm();
+            return new ViewModel(array('form' => $form));
+            //return $this->redirect()->toRoute('application');        
         }
         else {
             echo 'Authentication failed';

@@ -17,84 +17,54 @@ return array(
         'Review',
         'Mock',
     ),
-'module_listener_options' => array(
-        'config_glob_paths'    => array(
-            'config/autoload/{,*.}{global,local}.php',
-        ),
-        'module_paths' => array(
-            './module',
-            './vendor',
-        ),
-),
+    'module_listener_options' => array(
+            'config_glob_paths'    => array(
+                'config/autoload/{,*.}{global,local}.php',
+            ),
+            'module_paths' => array(
+                './module',
+                './vendor',
+            ),
+    ),
 
     'router' => array(
         'routes' => array(
             'home' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'literal',
                 'options' => array(
                     'route'    => '/',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\Index',
+                        '__NAMESPACE__' => 'Application\Controller',                        
+                        'controller' => 'Index',
                         'action'     => 'index',
+                    ),
+                    'constraints' => array(
+                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ),
                 ),
             ),
-            // The following is a route to simplify getting started creating
-            // new controllers and actions without needing to create a new
-            // module. Simply drop new controllers in, and you can access them
-            // using the path /application/:controller/:action
-            /*'application' => array(
-                'type'    => 'Literal',
+            'authenticate' => array(
+                 'type'    => 'literal',
+                 'options' => array(
+                     'route'    => '/index/authenticate',
+                     'defaults' => array(
+                         '__NAMESPACE__' => 'Application\Controller',
+                         'controller' => 'Index',
+                         'action'     => 'authenticate',
+                     ),
+                 ),
+             ),
+            'application' => array(
+                'type' => 'literal',
                 'options' => array(
                     'route'    => '/application',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Application\Controller',
-                        'controller'    => 'Index',
-                        'action'        => 'index',
+                        'controller' => 'Application',
+                        'action'     => 'index',
                     ),
                 ),
-                'may_terminate' => true,
-                'child_routes' => array(
-                    'default' => array(
-                        'type'    => 'Segment',
-                        'options' => array(
-                            'route'    => '/[:controller[/:action]]',
-                            'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
-                            ),
-                        ),
-                    ),
-                ),
-            ),*/
-            'authenticate' => array(
-                'type'    => 'Literal',
-                'options' => array(
-                    'route'    => '/authenticate',
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Application\Controller',
-                        'controller'    => 'Index',
-                        'action'        => 'authenticate',
-                    ),
-                ),
-                'may_terminate' => true,
-                'child_routes' => array(
-                    'default' => array(
-                        'type'    => 'Segment',
-                        'options' => array(
-                            'route'    => '/[:controller[/:action]]',
-                            'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
-                            ),
-                        ),
-                    ),
-                ),
-            ),
+            ),            
         ),
     ),
     'service_manager' => array(
@@ -118,7 +88,7 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'Application\Controller\Index' => 'Application\Controller\IndexController',
+            'Application\Controller\Index'       => 'Application\Controller\IndexController',
             'Application\Controller\Application' => 'Application\Controller\ApplicationController',
         ),
     ),
@@ -132,6 +102,7 @@ return array(
             'layout/layout'                  => __DIR__ . '/../view/layout/layout.phtml',
             'application/index/index'        => __DIR__ . '/../view/application/index/index.phtml',
             'application/index/authenticate' => __DIR__ . '/../view/application/index/authenticate.phtml',
+            'application/application/index ' => __DIR__ . '/../view/application/application/index.phtml',
             'error/404'                      => __DIR__ . '/../view/error/404.phtml',
             'error/index'                    => __DIR__ . '/../view/error/index.phtml',
         ),
