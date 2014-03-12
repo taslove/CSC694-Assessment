@@ -88,7 +88,19 @@ class UserForm extends Form
                 'value_options' => $args['roles'],
             ),
         ));      
-                 
+        $this->add(array(
+            'name' => 'roles',
+            'type' => 'Zend\Form\Element\Select',
+            'attributes' => array(
+                'class'=> 'form-control',
+                'id' => 'roles',
+            ),
+            'options' => array(
+                'value_options' => $args['roles'],
+            ),
+        ));  
+
+         
         $this->add(array(
             'name' => 'submit',
             'attributes' => array(
