@@ -1,0 +1,81 @@
+<?php
+    $title = 'Assessment Add Plan Base';
+    $this->headTitle($title);
+    
+    // Init Form
+    $form = $this->form;
+    $form->setAttribute('class', 'form-horizontal');
+    $form->prepare();
+?>	
+    
+    <!-- create the right side of the page -->
+    <div class="container">
+	<center><h3>Assessment Plans-What type of plan are you adding?</h3></center>
+        <p></p>  
+        <div class="row">
+	    <p></p>
+	    <!-- create header row -->
+	    <?php $label = "ADD PLAN FOR: " ?>
+	    <?php echo $this->partial('plans/plans/displayAllPrograms.phtml', array('programs' => $programs,
+										    'label' => $label,
+										    'unit' => $unit,
+										    'year' => $year,
+										    ));
+	
+		// create a string out of the programs array to use as a hidden element to pass between the pages
+		$allPrograms = "";
+		if (!empty($this->programs)) {
+		    foreach ($this->programs as $program) :
+			$allPrograms = $allPrograms . $program . ", ";
+		    endforeach;
+		    
+		    // remove the last ", " added on after the last loop above
+		    $allPrograms = substr($allPrograms, 0, -2);
+		}
+	        
+		// prepare hidden elements to pass data between pages	
+		$elem = $form->get('action');
+		$elem->setValue($action);					    
+		echo $this->formInput($elem);
+
+		$elem = $form->get('unit');
+		$elem->setValue($unit);					    
+		echo $this->formInput($elem);
+
+		$elem = $form->get('programs');
+		$elem->setValue($allPrograms);					    
+		echo $this->formInput($elem);
+		
+		$elem = $form->get('year');
+		$elem->setValue($year);					    
+		echo $this->formInput($elem);
+		
+                $elem = $form->get('dbMetaYear');
+		$elem->setValue($dbMetaYear);					    
+                echo $this->formInput($elem);
+?>
+		
+	    <!-- create meta assessment block -->
+		<div class="input-group">  
+		  <span class="input-group-addon"> 
+		  <h4>Are you conducting meta assessment?</h4>
+		    
+		    <!-- add two radio buttons, Yes & No -->
+                    <?php
+			$elem = $form->get('metaFlag');
+			$elem->setLabel("Yes");
+			$elem->setValue("yes");
+			echo $this->formLabel($elem); 
+			echo $this->formInput($elem);
+
+			//echo "<br>";
+			$elem = $form->get('metaFlag');
+			$elem->setLabel("No");
+			$elem->setValue("no");
+			echo $this->formLabel($elem); 
+			echo $this->formInput($elem);
+		    ?>
+		    </span>  
+		</div>
+          </div>
+    </div>

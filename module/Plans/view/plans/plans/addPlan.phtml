@@ -1,68 +1,69 @@
 <?php
-
-$title = 'Add New Assessment Plan';
-$this->headTitle($title);
+    $title = 'Add New Assessment Plan';
+    $this->headTitle($title);
 ?>
 
 <?php
     // Init Form
     $form = $this->form;
     $form->setAttribute('class', 'form-horizontal');
+    $form->setAttribute('name', 'addPlan');
+    $form->setAttribute('enctype', 'multipart/form-data');
+    $form->setAttribute('action', $this->url('plans',array('action'=>'insertplan')));
     $form->prepare();
-	
-    // Configure Errors Helper
-    $errorsHelper  = $this->plugin('formelementerrors');
-    $errorsHelper
-	->setMessageOpenFormat('<div class="help-block">')
-	->setMessageSeparatorString('</div><div class="help-block">')
-	->setMessageCloseString('</div>');
 ?>
 	
+<!-- create the right side of the page -->	
 <div class="container">
     <center><h3>Assessment Plans-ADD</h3></center>
-    <p></p>  
-    <div class="row">
-	<!-- Build the left hand side of the page -->                                 				
-	<?php echo $this->partial('plans/plans/plansLeftSidePartial.phtml', array()); ?>
+    <p></p>
+    
+    <!-- begin creating the form -->
+    <?php echo $this->form()->openTag($form); ?>
+	<div class="row">    	    
+	    <p></p>
+	    <div class="col-md-8"> 
+
+		<!-- create header line -->
+		<?php
+		    $label = "ADD PLAN FOR: ";
+		    echo "<h4>" . $label . $unit . ", " . $programs . ", " . $year . "</h4>";
+		    
+		    // prepare hidden elements to pass data between pages
+		    $elem = $form->get('action');
+		    $elem->setValue($action);					    
+		    echo $this->formInput($elem);
+				
+		    $elem = $form->get('unit');
+		    $elem->setValue($unit);					    
+		    echo $this->formInput($elem);
 		
-	<!--column 2-->
-	<p></p>
-	<?php echo $this->form()->openTag($form); ?>
-
-	    <div class="col-md-6">
-		<input type="hidden" name="year" value="<?php echo $year ?>">
-
-		<!-- create header row -->
-		<?php $label = "ADD PLAN FOR:" ?>
-		<?php echo $this->partial('plans/plans/displayAllPrograms.phtml', array('programs' => $programs,
-											'label' => $label,
-											'unit' => $unit,
-											'year' => $year,
-											))
+		    $elem = $form->get('programs');
+		    $elem->setValue($programs);					    
+		    echo $this->formInput($elem);
+				
+		    $elem = $form->get('year');
+		    $elem->setValue($year);					    
+		    echo $this->formInput($elem);	
 		?>
 		<p></p>
-		
-		<!-- create meta assessment block -->
-		<div class="input-group">
-		    <span class="input-group-addon"> <h6>Are you conducting Meta Assessment?</h6>
-			<input type="radio" id="metaFlag" name="metaFlag" value="yes">Yes &nbsp;&nbsp;
-			<input type="radio" id="metaFlag" name="metaFlag" value="no" checked="checked">No
-		    </span>
-		</div>
 	
+		<!-- create the accordion pannels -->
 		<div class="controls">
 		    <div class="panel-group" id="accordion">
-			<div class="panel panel-default">
+			
+			<!-- create the outcome panel -->
+			<div class="panel panel-success">
 			    <div class="panel-heading">
 				<h4 class="panel-title">
-				    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Outcomes</a>
+				    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOutcome">Outcomes</a>
 				</h4>
 			    </div>
 	
-			    <div id="collapseOne" class="panel-collapse collapse in">
+			    <div id="collapseOutcome" class="panel-collapse collapse in">
 				<div class="panel-body">
 				    <?php
-					// loo through the array of entity arrays
+					// loop through the array of entity arrays
 					$outcomeCount = 0;					
 					    if (!empty($outcomes)) {
 						
@@ -83,7 +84,7 @@ $this->headTitle($title);
 							}
 				    ?>
 							<!-- create each outcome check box -->
-							<p><input type="checkbox" id="checkboxOutcomes" name="checkboxOutcomes<?php echo $outcomeCount ?>" value="<?php echo $entity->getOutcomeId() ?>">
+							<p><input validate="true" type="checkbox" id="checkboxOutcomes<?php echo $outcomeCount ?>" name="checkboxOutcomes<?php echo $outcomeCount ?>" value="<?php echo $entity->getOutcomeId() ?>">
 							
 							<!-- add the counter with the outcome text to the row -->
 							<?php echo $entityCount; ?>. <?php echo $entity->getOutcomeText() ?></td></p>
@@ -96,401 +97,198 @@ $this->headTitle($title);
 				</div>
 			    </div>
 			</div>
-		    </div>
 	
-		    <!-- create a component for each attribut that can be updated in teh database -->
-		    <div class="panel panel-default">
-			<div class="panel-heading">
-			    <h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-				    1. Describe assessment method.
-				</a>
-			    </h4>
-			</div>
-	
-			<div id="collapseTwo" class="panel-collapse collapse">
-			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="textbox" id="textAssessmentMethod" name="textAssessmentMethod">
-				</textarea>  
+			<!-- create a component for each attribute that can be updated in the database -->
+			<div class="panel panel-success">
+			    <div class="panel-heading">
+				<h4 class="panel-title">
+				    <a data-toggle="collapse" data-parent="#accordion" href="#collapseAssessmentMethod">
+					Describe assessment method.
+				    </a>
+				</h4>
 			    </div>
-			</div>
-	
-			<div class="panel-heading">
-			    <h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-				    2. Describe population assessed.
-				</a>
-			    </h4>
-			</div>
-	
-			<div id="collapseThree" class="panel-collapse collapse">
-			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="textbox" id="textPopulation" name="textPopulation">
-				</textarea>      
+	    
+			    <div id="collapseAssessmentMethod" class="panel-collapse collapse">
+				<div class="panel-body">
+				    <?php
+					$elem = $form->get('textAssessmentMethod');
+					echo $this->formTextarea($elem);
+				    ?>
+				</div>
 			    </div>
-			</div>
-	
-			<div class="panel-heading">
-			    <h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
-				    3. Describe sample size assessed.
-				</a>
-			    </h4>
-			</div>
-	
-			<div id="collapseFour" class="panel-collapse collapse">
-			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="textbox" id="textSamplesize" name="textSamplesize">
-				</textarea>      
+	    
+			    <div class="panel-heading">
+				<h4 class="panel-title">
+				    <a data-toggle="collapse" data-parent="#accordion" href="#collapsePopulation">
+					Describe population assessed.
+				    </a>
+				</h4>
 			    </div>
-			</div>
-	
-			<div class="panel-heading">
-			    <h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
-				    4. Describe assessment date assessed.
-				</a>
-			    </h4>
-			</div>
-	
-			<div id="collapseFive" class="panel-collapse collapse">
-			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="textbox" id="textAssessmentDate" name="textAssessmentDate">
-				</textarea>      
+	    
+			    <div id="collapsePopulation" class="panel-collapse collapse">
+				<div class="panel-body">
+				    <?php
+					$elem = $form->get('textPopulation');
+					echo $this->formTextarea($elem);
+				    ?>		 
+				</div>
 			    </div>
-			</div>
-	
-			<div class="panel-heading">
-			    <h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordion" href="#collapseSix">
-				    5. Describe cost assessed.
-				</a>
-			    </h4>
-			</div>
-	
-			<div id="collapseSix" class="panel-collapse collapse">
-			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="textbox" id="textCost" name="textCost">
-				</textarea>      
+	    
+			    <div class="panel-heading">
+				<h4 class="panel-title">
+				    <a data-toggle="collapse" data-parent="#accordion" href="#collapseSampleSize">
+					Describe sample size assessed.
+				    </a>
+				</h4>
 			    </div>
-			</div>
-	
-			<div class="panel-heading">
-			    <h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordion" href="#collapseSeven">
-				    6. Describe analysis type assessed.
-				</a>
-			    </h4>
-			</div>
-	
-			<div id="collapseSeven" class="panel-collapse collapse">
-			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="textbox" id="textAnalysisType" name="textAnalysisType">
-				</textarea>      
+	    
+			    <div id="collapseSampleSize" class="panel-collapse collapse">
+				<div class="panel-body">
+				    <?php
+					$elem = $form->get('textSamplesize');
+					echo $this->formTextarea($elem);
+				    ?>	
+				</div>
 			    </div>
-			</div>
-	
-			<div class="panel-heading">
-			    <h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordion" href="#collapseEight">
-				    7. Describe administrator assessed.
-				</a>
-			    </h4>
-			</div>
-	
-			<div id="collapseEight" class="panel-collapse collapse">
-			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="textbox" id="textAdministrator" name="textAdministrator">
-				</textarea>      
+	    
+			    <div class="panel-heading">
+				<h4 class="panel-title">
+				    <a data-toggle="collapse" data-parent="#accordion" href="#collapseAssessmentDate">
+					Describe assessment date assessed.
+				    </a>
+				</h4>
 			    </div>
-			</div>
-	
-			<div class="panel-heading">
-			    <h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordion" href="#collapseNine">
-				    8. Describe analysis method assessed.
-				</a>
-			    </h4>
-			</div>
-	
-			<div id="collapseNine" class="panel-collapse collapse">
-			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="textbox" id="textAnalysisMethod" name="textAnalysisMethod">
-				</textarea>      
+	    
+			    <div id="collapseAssessmentDate" class="panel-collapse collapse">
+				<div class="panel-body">
+				    <?php
+					$elem = $form->get('textAssessmentDate');
+					echo $this->formTextarea($elem);
+				    ?>		    
+				</div>
 			    </div>
-			</div>
-	
-			<div class="panel-heading">
-			    <h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordion" href="#collapseTen">
-				    9. Describe scope assessed.
-				</a>
-			    </h4>
-			</div>
-	
-			<div id="collapseTen" class="panel-collapse collapse">
-			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="textbox" id="textScope" name="textScope">
-				</textarea>      
+	    
+			    <div class="panel-heading">
+				<h4 class="panel-title">
+				    <a data-toggle="collapse" data-parent="#accordion" href="#collapseCost">
+					Describe cost assessed.
+				    </a>
+				</h4>
 			    </div>
-			</div>
-	
-			<div class="panel-heading">
-			    <h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordion" href="#collapseEleven">
-				    10. Describe feedback assessed.
-				</a>
-			    </h4>
-			</div>
-	
-			<div id="collapseEleven" class="panel-collapse collapse">
-			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="textbox" id="textFeedback" name="textFeedback">
-				</textarea>      
+	    
+			    <div id="collapseCost" class="panel-collapse collapse">
+				<div class="panel-body">
+				    <?php
+					$elem = $form->get('textCost');
+					echo $this->formTextarea($elem);
+				    ?>		     
+				</div>
 			    </div>
-			</div>
-	
-			<div class="panel-heading">
-			    <h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwelve">
-				    11. Describe feedback flag assessed.
-				</a>
-			    </h4>
-			</div>
-	
-			<div id="collapseTwelve" class="panel-collapse collapse">
-			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="textbox" id="textFeedbackFlag" name="textFeedbackFlag">
-				</textarea>      
+		    
+			    <div class="panel-heading">
+				<h4 class="panel-title">
+				    <a data-toggle="collapse" data-parent="#accordion" href="#collapseFundingFlag">
+					Are you requesting funding?
+				    </a>
+				</h4>
 			    </div>
-			</div>					    
-	
-			<div class="panel-heading">
-			    <h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordion" href="#collapseThirteen">
-				    12. Describe plan status flag assessed.
-				</a>
-			    </h4>
-			</div>
-	
-			<div id="collapseThirteen" class="panel-collapse collapse">
-			    <div class="panel-body">
-				<textarea rows="6" cols="60" class="textbox" id="textPlanStatus" name="textPlanStatus">				    
-				</textarea>      
+	    
+			    <div id="collapseFundingFlag" class="panel-collapse collapse">
+				<div class="panel-body">
+				    <?php
+					echo $this->formRow($form->get('fundingFlag'));
+							
+					echo "<br>";
+					echo "<a href=\"http://northcentralcollege.edu/home/\" target=\"_blank\" >Funding Form</a>";
+				    ?>		     
+				</div>
+			    </div>	
+	    
+			    <div class="panel-heading">
+				<h4 class="panel-title">
+				    <a data-toggle="collapse" data-parent="#accordion" href="#collapseAnalysisType">
+					Describe analysis type assessed.
+				    </a>
+				</h4>
 			    </div>
-			</div>					    
+	    
+			    <div id="collapseAnalysisType" class="panel-collapse collapse">
+				<div class="panel-body">
+				    <?php
+					$elem = $form->get('textAnalysisType');
+					echo $this->formTextarea($elem);
+				     ?>	    
+				</div>
+			    </div>
+	    
+			    <div class="panel-heading">
+				<h4 class="panel-title">
+				    <a data-toggle="collapse" data-parent="#accordion" href="#collapseAdministrator">
+					Describe administrator assessed.
+				    </a>
+				</h4>
+			    </div>
+	    
+			    <div id="collapseAdministrator" class="panel-collapse collapse">
+				<div class="panel-body">
+				    <?php
+					$elem = $form->get('textAdministrator');
+					echo $this->formTextarea($elem);
+				    ?>	    
+				</div>
+			    </div>
+	    
+			    <div class="panel-heading">
+				<h4 class="panel-title">
+				    <a data-toggle="collapse" data-parent="#accordion" href="#collapseAnalysisMethod">
+					Describe analysis method assessed.
+				    </a>
+				</h4>
+			    </div>
+	    
+			    <div id="collapseAnalysisMethod" class="panel-collapse collapse">
+				<div class="panel-body">
+				    <?php
+					$elem = $form->get('textAnalysisMethod');
+					echo $this->formTextarea($elem);
+				     ?>		     
+				</div>
+			    </div>
+	    
+			    <div class="panel-heading">
+				<h4 class="panel-title">
+				    <a data-toggle="collapse" data-parent="#accordion" href="#collapseScope">
+					Describe scope assessed.
+				    </a>
+				</h4>
+			    </div>
+	    
+			    <div id="collapseScope" class="panel-collapse collapse">
+				<div class="panel-body">
+				    <?php
+					$elem = $form->get('textScope');
+					echo $this->formTextarea($elem);
+				    ?>	
+				</div>
+			    </div>
+					    				    
+			</div>
 		    </div>
 		</div> <!-- controls -->    
-	
-		<!-- create the submit and save draft button -->
-		<button type="submit" name="formSubmit" value="formSavePlan" class="btn btn-success pull-right">Submit</button>
-		<button type="submit" name="formSubmit" value="formSaveDraft" class="btn btn-primary pull-right">Save Draft</button>
-		<a class="btn btn-primary btn-md pull-right" href="../img/userguide.pdf"><?php echo $this->translate ('Preview') ?> &raquo;</a>
 
-	    </div>
-
-
-	    <!-- create the list of upload components -->
-	    <fieldset>
-		<div class="row">
-		    <div class="col-md-5">
-			<?php
-			    $fileCollection = $form->get('file-collection');
-			    foreach ($fileCollection as $elem) {
-			        $elem->setLabelAttributes(array('class' => 'control-label'));
-			        $errors = $elem->getMessages();
-			        $errorClass = (!empty($errors)) ? ' error' : '';
-			?>
-			        <div class="control-group<?php echo $errorClass ?>">
-				    <?php echo $this->formLabel($elem); ?>
-				    <div class="controls">
-					<?php echo $this->formFile($elem); ?>
-					<?php echo $errorsHelper($elem); ?>
-				    </div>
-				</div>
-			<?php
-			    }
-			?>
-			<?php
-			    if (!empty($this->tempFiles)) { ?>
-				<div class="control-group"><div class="controls">
-				    <div class="help-block">
-					Uploaded:
-					<ul>
-					    <?php foreach ($this->tempFiles as $tempFile) { ?>
-					    <li><?php echo $this->escapeHtml($tempFile['name']) ?></li>
-			<?php
-			    }
-			?>
-					</ul>
-				    </div>
-				    </div>
-				</div>
-			<?php
-			    }
-			?>
-			
-			
-		    </div>
+		<!-- use partials to load the upload buttons -->
+		<?php echo $this->partial('plans/plans/plansUploadButtonPartial.phtml', array('form' => $form,)); ?>
 		    
-		    <!-- create the list of description text boxes -->
-		    <div class="col-md-5">
-			<?php
-			    $textCollection = $form->get('text-collection');
-			    foreach ($textCollection as $elem) {
-				$elem->setLabelAttributes(array('class' => 'control-label'));
-				$errors = $elem->getMessages();
-				$errorClass = (!empty($errors)) ? ' error' : '';
-			?>
-				<div class="control-group<?php echo $errorClass ?>">
-				    <?php echo $this->formLabel($elem); ?>
-				    <div class="controls">
-					<?php echo $this->formText($elem); ?>
-					<?php echo $errorsHelper($elem); ?>
-				    </div>
-				</div>
-			<?php
-			    }
-			?>
-		    </div>
-		</div>
-	    </fieldset>		
-
-	<?php echo $this->form()->closeTag($form); ?>
-
-    </div>       
-</div>
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/bootstrap-rta.min.js"></script>
-<script src="../js/bootstrap-select.js"></script>
-
-<script>
-
-$(document).on('change', '#metaFlag', function () {
-    
-    $action = $('#metaFlag').val();
-    if ($action=="yes") {
-        $(this).closest('form').submit();
-    }
-});
-
-// load actions based on user privileges
-$(document).ready(function() {
-     $.rta(); // load rta features - simplest implementation
-  
-   var actions = <?php print json_encode($useractions); ?>;
-   for (var i = 0; i < actions.length; i++){
-      $('#action-menu').append('<option>' + actions[i] + '</option>');
-   }
-   
-   // call code to initialize the selectpicker
-   // this must come after the options are initialized
-   $('.selectpicker').selectpicker();
-});
-
-// update unit/department options based on actions
-$(document).on('change', '#action-menu', function () {
-   $action = $('#action-menu option:selected').val();
-   // clear selectorlist before adding unit/department options
-   var oldSelections = $('#unit-menu option');
-   for (var i = 0; i < oldSelections.length; i++){
-      oldSelections.remove();
-   }
-   // data-hidden="true" shows title on button
-   $('#unit-menu').append('<option  data-hidden="true"></option>');
-   $('#unit-menu').selectpicker('refresh');
-   
-   // create url for redirect
-   var urlform = "<?php echo $this->url('plans', array(
-                                    'controller'=>'plans',
-                                    'action'=>'getUnits')); ?>";
-   urlform = urlform + '/' + $action;
-     
-   // asynchronous ajax code to populate unit/department selector
-   $.ajax({
-      url: urlform,
-      type: "GET",
-      dataType: "json",
-      error : function(xhr, status, error) {
-         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
-      },
-      success: function(unitsJson){
-         for (var i = 0; i < unitsJson.length; i++){
-            $('#unit-menu').append('<option>' + unitsJson[i].id + '</option>');
-         }
-         $('#unit-menu').selectpicker('refresh');
-      },
-   });
-});
-
-// update program options based on unit/department
-$(document).on('change', '#unit-menu', function () {
-   $unit = $('#unit-menu option:selected').val();
-   // clear selectorlist before adding program/degree options
-   var oldSelections = $('#prog-menu option');
-   for (var i = 0; i < oldSelections.length; i++){
-      oldSelections.remove();
-   }
-   $('#prog-menu').selectpicker('refresh');
-   
-   // create url for redirect
-   var urlform = "<?php echo $this->url('plans', array(
-                                    'controller'=>'plans',
-                                    'action'=>'getPrograms')); ?>";
-   urlform = urlform + '/' + $unit;
-   
-   // asynchronous ajax code to populate program/degree selector
-   $.ajax({
-      url: urlform,
-      type: "GET",
-      dataType: "json",
-      error : function(xhr, status, error) {
-         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
-      },
-      success: function(programsJson){
-         for (var i = 0; i < programsJson.length; i++){
-            $('#prog-menu').append('<option>' + programsJson[i].name + '</option>');
-         }
-         $('#prog-menu').selectpicker('refresh');
-      },
-   });
-});
-
-// load all the year options after the unit/department & unit/department are selected
-$(document).on('change', '#prog-menu', function () {
-   // clear selectorlist before adding all the years
-   var oldSelections = $('#year-menu option');
-   for (var i = 0; i < oldSelections.length; i++){
-      oldSelections.remove();
-   }
-   
-   // data-hidden="true" shows title on button
-   $('#year-menu').append('<option  data-hidden="true"></option>');
-   $('#year-menu').selectpicker('refresh');
-   
-   // create url for redirect
-   var urlform = "<?php echo $this->url('plans', array(
-                                    'controller'=>'plans',
-                                    'action'=>'getYears')); ?>";
-   urlform = urlform;
-   
-   // asynchronous ajax code to populate program/degree selector
-   $.ajax({
-      url: urlform,
-      type: "GET",
-      dataType: "json",
-      error : function(xhr, status, error) {
-         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
-      },
-      success: function(programsJson){
-         for (var i = 0; i < programsJson.length; i++){
-            $('#year-menu').append('<option>' + programsJson[i].year + '</option>');
-         }
-         $('#year-menu').selectpicker('refresh');
-      },
-   });
-});
-</script>		
+		<!-- create the save draft and submit buttons -->    
+		<?php
+		    $elem = $form->get('formSavePlan');
+		    $elem->setName('formSubmitPlan');
+		    echo $this->formButton($elem);
+			
+		    $elem = $form->get('formSubmitPlan');
+		    echo $this->formButton($elem);
+		?>
+	     </div>  <!-- column -->
+        </div>  <!-- row -->
+    <?php echo $this->form()->closeTag($form); ?>
+</div> <!-- container -->

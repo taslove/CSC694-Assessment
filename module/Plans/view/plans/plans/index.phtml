@@ -1,11 +1,632 @@
-<div class="jumbotron">
-    <h1><?php echo sprintf($this->translate('Assessment System'), '<span class="zf-green">', '</span>') ?></h1>
-</div>
+<?php
+    $title = 'Assessment Plan Home';
+    $this->headTitle($title);
+?>	
 
-<div class="row">
-<!--This is Viken's file-->
-</div>
+<!-- Display the initial plans page -->	
+<div class="container">
+    <p></p>  
+    <div class="row">
+	<!-- Build the left hand side of the page -->
+        <?php echo $this->partial('plans/plans/plansLeftSidePartial.phtml', array()); ?>
 
-<div class="row">
-<!-- Scott File -->
+	    <!--Build the right side of the acreen using an ajax call -->
+	    <div id="content">
+		<center><h3>Assessment Plans-HOME</h3></center>
+	    </div>
+        </div>
+    </div>
 </div>
+ 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script> 
+<script src="js/bootstrap-rta.min.js"></script>
+<script src="js/bootstrap-select.js"></script>
+<script src="js/customPlan.js"></script>
+
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-rta.min.js"></script>
+<script src="../js/bootstrap-select.js"></script>
+<script src="../js/customPlan.js"></script>
+
+
+
+<script>
+/********** All jQuery Ajax functions and jQuery function calls listed below **********/ 
+
+/**
+ * load actions based on the user privileges
+ */
+$(document).ready(function() {
+     $.rta(); // load rta features - simplest implementation
+
+    // disable the submit button until all the selections are choosen
+    $("#formListPlans").attr("disabled", "disabled");
+    
+    // load the actions selector
+    var actions = <?php print json_encode($useractions); ?>;
+    for (var i = 0; i < actions.length; i++){
+       $('#action-menu').append('<option>' + actions[i] + '</option>');
+    }
+   
+    // call code to initialize the selectpicker
+    // this must come after the options are initialized
+    $('.selectpicker').selectpicker();
+});
+
+
+/**
+ * load unit/department options based on the action selected
+ */
+$(document).on('change', '#action-menu', function () {
+   $action = $('#action-menu option:selected').val();
+   
+    // disable the submit button until all the selections are choosen
+    $("#formListPlans").attr("disabled", "disabled");
+    
+    // clear selectorlist before adding unit/department options
+    var oldSelections = $('#unit-menu option');
+    for (var i = 0; i < oldSelections.length; i++){
+       oldSelections.remove();
+    }
+    // data-hidden="true" shows title on button
+    $('#unit-menu').append('<option  data-hidden="true"></option>');
+    $('#unit-menu').selectpicker('refresh');
+   
+    // clear selectorlist for programs
+    var oldSelections = $('#prog-menu option');
+    for (var i = 0; i < oldSelections.length; i++){
+       oldSelections.remove();
+    }
+    $('#prog-menu').append('<option  data-hidden="true"></option>');
+    $('#prog-menu').selectpicker('refresh');
+   
+    // clear selectorlist for years
+    var oldSelections = $('#year-menu option');
+    for (var i = 0; i < oldSelections.length; i++){
+       oldSelections.remove();
+    }
+    // data-hidden="true" shows title on button
+    $('#year-menu').append('<option  data-hidden="true"></option>');
+    $('#year-menu').selectpicker('refresh');
+   
+    // create url for redirect
+    var urlform = "<?php echo $this->url('plans', array(
+                                     'controller'=>'plans',
+                                     'action'=>'getUnits')); ?>";
+    urlform = urlform + '/' + $action;
+    
+    // asynchronous ajax code to populate unit/department selector
+    $.ajax({
+       url: urlform,
+       type: "GET",
+       dataType: "json",
+       error : function(xhr, status, error) {
+          console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+       },
+       success: function(unitsJson){
+          for (var i = 0; i < unitsJson.length; i++){
+             $('#unit-menu').append('<option>' + unitsJson[i].id + '</option>');
+          }
+          $('#unit-menu').selectpicker('refresh');
+       },
+    });
+});
+
+
+/**
+ * load program options based on the unit/department selection
+ */
+$(document).on('change', '#unit-menu', function () {
+    $unit = $('#unit-menu option:selected').val();
+   
+    // disable the submit button until all the selections are choosen
+    $("#formListPlans").attr("disabled", "disabled");
+    
+    // clear selectorlist before adding program/degree options
+    var oldSelections = $('#prog-menu option');
+    for (var i = 0; i < oldSelections.length; i++){
+       oldSelections.remove();
+    }
+    $('#prog-menu').selectpicker('refresh');
+   
+    // clear selectorlist before adding all the years
+    var oldSelections = $('#year-menu option');
+    for (var i = 0; i < oldSelections.length; i++){
+       oldSelections.remove();
+    }
+   // data-hidden="true" shows title on button
+   $('#year-menu').append('<option  data-hidden="true"></option>');
+   $('#year-menu').selectpicker('refresh');
+   
+   // create url for redirect
+   var urlform = "<?php echo $this->url('plans', array(
+                                    'controller'=>'plans',
+                                    'action'=>'getPrograms')); ?>";
+   urlform = urlform + '/' + $unit;
+   
+   // asynchronous ajax code to populate program/degree selector
+   $.ajax({
+      url: urlform,
+      type: "GET",
+      dataType: "json",
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+      success: function(programsJson){
+         for (var i = 0; i < programsJson.length; i++){
+            $('#prog-menu').append('<option>' + programsJson[i].name + '</option>');
+         }
+         $('#prog-menu').selectpicker('refresh');
+      },
+   });
+});
+
+
+/**
+ * load all the year options after the unit/department & programs are selected
+ */
+$(document).on('change', '#prog-menu', function () {
+    
+    // disable the submit button until all the selections are choosen
+    $("#formListPlans").attr("disabled", "disabled");
+    
+   // clear selectorlist before adding all the years
+   var oldSelections = $('#year-menu option');
+   for (var i = 0; i < oldSelections.length; i++){
+      oldSelections.remove();
+   }   
+   // data-hidden="true" shows title on button
+   $('#year-menu').append('<option  data-hidden="true"></option>');
+   $('#year-menu').selectpicker('refresh');
+   
+   // create url for redirect
+   var urlform = "<?php echo $this->url('plans', array(
+                                    'controller'=>'plans',
+                                    'action'=>'getLowYear')); ?>";
+   
+   // asynchronous ajax code to populate year selector
+   $.ajax({
+        url: urlform,
+        type: "GET",
+        dataType: "json",
+        error : function(xhr, status, error) {
+          console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+        },
+        success: function(programsJson){
+        
+	// get the action from the page, the action is needed to restrict access for certain roles
+	var action = $('#action-menu option:selected').val();
+	 
+	// get the low year from the database
+	var dbLowYear = programsJson.lowYear;
+	
+	// get the role from the page (session variable)
+	var role = programsJson.role;
+	
+	// create the list of years the user can select
+	// the lowest year in the database is returned
+	// identify today's date and adjust to the current school year
+	// 2013 - 2014 is from Sept 2013 - Aug 2014
+	// 2012 - 2013 is from Sept 2012 - Aug 2013
+	// repeat until the lowest year returned from the database
+	
+	// get today's data
+	var today = new Date();
+
+	// identify the month and year
+	var month= today.getMonth() + 1; //January is 0
+	var year = today.getFullYear(); // yyyy
+
+	// if the current month is Jan - Aug the current year is correct
+	// if the current month is Sept - Dec then current year needs to be incremented by 1
+	if (month >= 9 && month <= 12) {
+	    year++;
+	}
+	
+	// set the complete number of years to display in the year selector used for the admin user
+	var yearsToDisplay = year - dbLowYear + 1; // add one since the last entry needs to be the (year before the low year) to the (low year)
+
+	// restrict the years to display for:
+	// action: modify and add
+	// certain users: chair, liason, assessor
+	if ((action.toLowerCase() == "add" || action.toLowerCase() == "modify") && (role == 2 || role == 3 || role == 4)) {
+	    yearsToDisplay = 2; // current year and previous year 
+	}
+	
+	// load the year selector
+	for (var i = 0; i < yearsToDisplay; i++){	    
+           $('#year-menu').append('<option>' + (year-1) + ' - ' + year + '</option>');
+	   year--;
+        }
+        $('#year-menu').selectpicker('refresh');
+      },
+   });
+});
+
+
+/**
+ * Enable the submit button upon entering the year information
+ */
+$(document).on('change', '#year-menu', function () {
+    // enable the submit button
+    $("#formListPlans").removeAttr("disabled");
+});
+
+
+/**
+ * index submit button - used to display the list of plans or add page
+ */
+$(document).on('click', '#formListPlans', function () {
+
+    // obtain the data from all the selector elements
+    var action = $('#action-menu option:selected').val();
+    var unit = $('#unit-menu option:selected').val();
+    var programs = $('[name=prog-menu]').val();
+    var year = $('#year-menu option:selected').val();
+ 
+    // subtring the right most year (2013 - 2014) leaves (2014)
+    year = year.substring(7)
+
+    // create the url base on the user action (View, Add, Modify) 
+    if (action.toLowerCase() == "add") {
+        // create url for redirect to the add plan page
+        var urlform = "<?php echo $this->url('plans', array(
+                                    'controller'=>'plans',
+                                    'action'=>'addplanbase')); ?>";	
+    }
+    else {
+    // create url for redirect to the list plans page
+	var urlform = "<?php echo $this->url('plans', array(
+                                    'controller'=>'plans',
+                                    'action'=>'listplans')); ?>";
+    }			    
+   
+   // asynchronous ajax code to generate the partial list plans page
+   $.ajax({
+      url: urlform,
+      type: "POST",
+//      data: {"action":action, "unit":unit, "programs":programs,"year":year, "planId":"-1"},
+
+// used for testing
+      data: {"action":action, "unit":"CSC", "programs":["BA Computer Science","BS Computer Science"],"year":"2010", "planId":"-1"},
+      dataType: "text", // data returned from the controller "json", "text"
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+      success: function(html){
+	document.getElementById('content').innerHTML = html;
+      },
+   });
+});
+
+
+/**
+ * modify delete button - used to delete the selected plan
+ */
+$(document).on('click', '#modifyDelete', function () {
+
+    // obtain the data from the elements on the page
+    var planId = $(this).attr("value");
+    var action = document.getElementById("action").value;
+    var unit = document.getElementById("unit").value;
+    var programs = document.getElementById("programs").value;
+    var year = document.getElementById("year").value;
+
+    // create the url to redirect back to the list plans page
+    var urlform = "<?php echo $this->url('plans', array(
+                                    'controller'=>'plans',
+                                    'action'=>'listplans')); ?>";
+
+   // asynchronous ajax code to re-generate the partial list plans page
+   $.ajax({
+      url: urlform,
+      type: "POST",
+      data: {"unit":unit, "programs":programs, "year":year, "action":action, "planId":planId},
+      dataType: "text", // data returned from the controller
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+	success: function(html){
+	document.getElementById('content').innerHTML = html;
+      },
+   });
+});
+
+
+/**
+ * list plans select button - determines which plan to view or modify
+ */
+$(document).on('click', '#viewModifySelect', function () {
+
+    // obtain the data from the elements on the page
+    var planId = $(this).attr("value");   
+    var action = document.getElementById("action").value;
+    var unit = document.getElementById("unit").value;
+    var programs = document.getElementById("programs").value;
+    var year = document.getElementById("year").value;
+
+    // select the next page view or modify?
+    if (action.toLowerCase() == "view") {
+        // create the url to redirect to the view plan page
+        var urlform = "<?php echo $this->url('plans', array(
+                                    'controller'=>'plans',
+                                    'action'=>'viewplan')); ?>";
+    }
+    else {
+	// create the url to redirect to the modify plans page
+        var urlform = "<?php echo $this->url('plans', array(
+                                    'controller'=>'plans',
+                                    'action'=>'modifyplan')); ?>";
+    }
+
+   // asynchronous ajax code generate the partial view plan or modify plan page
+   $.ajax({
+      url: urlform,
+      type: "POST",
+      data: {"unit":unit, "programs":programs, "year":year, "action":action, "planId":planId},
+      dataType: "text", // data returned from the controller
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+	success: function(html){
+	document.getElementById('content').innerHTML = html;
+      },
+   });
+});
+
+
+/**
+ * meta flag radio button - used to determine if a meta plan or regular plan needs to be added
+ */
+$(document).on('change', '#metaFlag', function () {
+
+    // set the number of years required between meta plans for a program
+    var numMetaYears = 7;
+    
+    // obtain the data from the elements on the page    
+    var option = $(this).attr("value");
+    var action = document.getElementById("action").value;
+    var unit = document.getElementById("unit").value;
+    var programs = document.getElementById("programs").value;
+    var year = document.getElementById("year").value;
+
+    // defaulting the url to the add plan page
+    var urlform = "<?php echo $this->url('plans', array(
+                                'controller'=>'plans',
+                                'action'=>'addplan')); ?>";
+				    
+    // over ride the url if a valid meta plan is required
+    if (option.toLowerCase() == "yes") {
+	// check to make sure a meta plan can be entered
+	var dbMetaYear = document.getElementById("dbMetaYear").value;
+	
+	// translate no returned year to zero
+	if (dbMetaYear == "") {
+	    dbMetaYear = 0;
+	}
+
+	// If a meta plan doesn't exist in the last 7 years then go to the add meta plan page
+	// otherwise give the user an alert and redirect them to the regular add plans page
+	if (year - dbMetaYear >= numMetaYears) {
+	    var urlform = "<?php echo $this->url('plans', array(
+	                                'controller'=>'plans',
+	                                'action'=>'addplanmeta')); ?>";
+	}
+	else {
+	    alert("A meta plan exists within the last " + numMetaYears + " years, a new meta plan cannot be entered.  Re-directing to the add plans page.");
+	}
+    }
+   
+   // asynchronous ajax code to redirect to the add meta or add plan page
+   $.ajax({
+      url: urlform,
+      type: "POST",
+      data: {"unit":unit, "programs":programs, "year":year, "action":action},
+      dataType: "text", // data returned from the controller
+      error : function(xhr, status, error) {
+         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+      },
+	success: function(html){
+	document.getElementById('content').innerHTML = html;
+      },
+   });
+});
+
+
+/**
+ * delete document button - used to delete a file from the database and server
+ */
+$(document).on('click', '#deleteDocument', function () {
+	
+    //confirm deletion
+    var conf = confirm("Are you sure you want to delete this file?");
+
+    // if confirmed?
+    if(conf == true){
+    
+	// obtain the data from the elements on the page
+	var id = $(this).attr("value");
+	var planId = document.getElementById("planId").value;
+	
+	// create the url to redirect back to the modify plan page
+	var urlform = "<?php echo $this->url('plans', array(
+					'controller'=>'plans',
+					'action'=>'deletefile')); ?>";
+    
+	// asynchronous ajax code re-generate the partial mpdify plans page with the document removed
+	$.ajax({
+	   url: urlform,
+	   type: "POST",
+	   data: {"id":id, "planId":planId},
+	   dataType: "json", // data returned from the controller
+	   error : function(xhr, status, error) {
+	      console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+	   },
+	     success: function(jsonData){
+	     document.getElementById('contentModify').innerHTML = jsonData.data;
+	   },
+	});
+    }
+});
+
+
+/**
+ * After a plan document is deleted on the modify page only the plan document section of the page re-renders using an ajax call.
+ * Now the plan documents that are still left need an Ajax way to be downloaded.
+ *
+ * This will download any plan documents still left on the modify page after some plan documents have been deleted.
+ */
+$(document).on('click', '#downloadFile', function () {
+	
+	// get the plan document id to download
+	var id = $(this).attr("value");
+	
+	// create the url to redirect to the downloadfile controller
+	var urlform = "<?php echo $this->url('plans', array(
+					'controller'=>'plans',
+					'action'=>'downloadfile',
+					)); ?>";
+	
+	// append the id of the plan document to download					
+        urlform = urlform + '/' + id;
+	
+	// asynchronous ajax code to download the plan document
+	$.ajax({
+	   url: urlform,
+	   type: "GET",
+	   error : function(xhr, status, error) {
+	    		    alert("BAD");
+	      console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+	   },
+	     success: function(response){
+		
+		// download the plan document
+		window.location.href = urlform;	
+	   },
+	});
+});
+
+
+/**
+ * File upload button #0 - check to make sure the file size is not too large
+ */
+$(document).on('change', '#fileUpload0', function () {
+
+    // get the file size    
+    var fileSize = ($("#fileUpload0")[0].files[0].size);
+    
+    // check the file size against the max file size allowed   
+    if (!validateFileSize(fileSize)) {
+    	// remove the file from the upload element
+	$("#fileUpload0").val('');
+	$("#textFileDescription0").val('');
+    }
+});
+
+
+/**
+ * File upload button #1 - check to make sure the file size is not too large
+ */
+$(document).on('change', '#fileUpload1', function () {
+    
+    // get the file size    
+    var fileSize = ($("#fileUpload1")[0].files[0].size);
+    
+    // check the file size against the max file size allowed   
+    if (!validateFileSize(fileSize)) {
+    	// remove the file from the upload element
+	$("#fileUpload1").val('');
+	$("#textFileDescription1").val('');
+    }
+});
+
+
+/**
+ * Validate the passed file size against the max file size allowed
+ *
+ * return true if the file size is less than the max
+ * return false if the file size is greater than the max
+ */
+function validateFileSize(fileSize)
+{
+    var mb = 1000000;
+    var maxFileSize = 2000000;
+    
+    // check the file size
+    if (fileSize > maxFileSize) {
+        //display the large file in MB rounds to 1 decimal place
+	var mbSize = (fileSize/mb).toFixed(1);
+	alert("Your file size is " + mbSize + "MB and is too large to upload.  The max file size is " + (maxFileSize/mb) + " MB.");
+
+	return false;
+    }
+    
+    return true;
+}
+
+
+/**
+ * Remove File hyperlink - removes the selected file and blanks out the file description textbox
+ */
+$(document).on('click', '#removeFile0', function () {
+   $("#fileUpload0").val('');
+   $("#textFileDescription0").val('');
+});
+
+
+/**
+ * Remove File hyperlink - removes the selected file and blanks out the file description textbox
+ */
+$(document).on('click', '#removeFile1', function () {
+   $("#fileUpload1").val('');
+   $("#textFileDescription1").val('');
+});
+
+
+/**
+ * Add plan submit button - run validation to make sure the user has selected an outcome
+ */
+$(document).on('click', '#formSubmitPlan', function () {
+    return validateAddPlan();
+});
+
+
+/**
+ * Add plan save draft button - run validation to make sure the user has selected an outcome
+ */
+$(document).on('click', '#formSavePlan', function () {
+    return validateAddPlan();
+});
+
+
+/**
+ * add plan page submit form validation
+ *
+ * return true if the form is valid, at least one outcome is selected
+ * return false if the form is in-valid, no outcomes selected
+ */
+function validateAddPlan()
+{
+    // get the number of checkboxes on the form
+    var outcomeCount = document.getElementById("outcomeCount").value;
+    var numChecks = 0;      
+
+    // loop through the checkboxes and count the nummber of selected
+    for (var x = 1; x <= outcomeCount; x++)
+    {
+	if (document.getElementById("checkboxOutcomes" + x).checked) {
+	    numChecks++;
+	}
+    }
+      
+    // process no selected checkboxes
+    if (numChecks == 0){
+	alert("There are no outcomes selected in the checkboxes.  Please select an outcome from each section.");
+	return false;
+    }
+
+    return true;    
+}
+
+</script>		
