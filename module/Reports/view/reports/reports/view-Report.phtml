@@ -5,16 +5,12 @@ if(!$results){
 }else{
 ?>
 <div class="col-md-8">
-    <div class="table-responsive">
-	<table class="table table-bordered table-striped">
-	    <colgroup>
-		<col class="col-xs-8">
-	    </colgroup>  
+   
 	    <div class="bs-example">
 		<table class="table">
 		    <h6>View Report</h6>
 		    <h4><?php echo $report[0]['unit_id'] . ' - ' . $report[0]['name'] . ' - ' . $report[0]['year'];?></h4>
-		    <div class="controls">
+		
 			<div class="panel-group" id="accordion">
 			    
 			    <div class="panel panel-default">
@@ -41,7 +37,7 @@ if(!$results){
 					    echo($ctr); ?>.<?php echo $description . '</br>';
 					endforeach;
 					?>
-				   
+				    </div>
 				</div>
 			    </div>
 				
