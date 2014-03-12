@@ -66,22 +66,9 @@ class IndexController extends AbstractActionController
         if (strpos($messages[3], 'successful') == TRUE) {
             echo 'Authentication successful';
             
-            //If login was successful, get more user info from LDAP server
-            //Currently not working
-            //$options = array(
-            //    'host' => 'ldap.nccnet.noctrl.edu',
-            //    'bindRequiresDn'    => true,
-            //    'accountDomainName' => 'noctrl.edu',
-            //    'baseDn'            => 'O=NCC',
-            //);
-        
-            //$ldap = new Ldap($options);
-            
-            //$ldap->bind();
-            //$userData = $ldap->getEntry('cn=' . $username . ',ou=Napvil,o=NCC');
             
             $namespace = new Container('user');
-            $namespace->usedID = '135';
+            $namespace->userID = '135';
             $namespace->role = 1;
             $namespace->userEmail = 'silahi@noctrl.edu';   
             $namespace->datatelID = 'silahi';
