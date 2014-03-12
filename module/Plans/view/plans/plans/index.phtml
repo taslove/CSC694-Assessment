@@ -117,7 +117,7 @@ $(document).on('change', '#action-menu', function () {
  * load program options based on the unit/department selection
  */
 $(document).on('change', '#unit-menu', function () {
-    $unit = $('#unit-menu option:selected').val();
+    var unit = $('#unit-menu option:selected').val();
    
     // disable the submit button until all the selections are choosen
     $("#formListPlans").attr("disabled", "disabled");
@@ -142,7 +142,7 @@ $(document).on('change', '#unit-menu', function () {
    var urlform = "<?php echo $this->url('plans', array(
                                     'controller'=>'plans',
                                     'action'=>'getPrograms')); ?>";
-   urlform = urlform + '/' + $unit;
+   urlform = urlform + '/' + unit;
    
    // asynchronous ajax code to populate program/degree selector
    $.ajax({
@@ -206,8 +206,8 @@ $(document).on('change', '#prog-menu', function () {
 	// create the list of years the user can select
 	// the lowest year in the database is returned
 	// identify today's date and adjust to the current school year
-	// 2013 - 2014 is from Sept 2013 - Aug 2014
-	// 2012 - 2013 is from Sept 2012 - Aug 2013
+	// 2013 - 2014 is from July 2013 - June 2014
+	// 2012 - 2013 is from July 2012 - June 2013
 	// repeat until the lowest year returned from the database
 	
 	// get today's data
@@ -217,9 +217,9 @@ $(document).on('change', '#prog-menu', function () {
 	var month= today.getMonth() + 1; //January is 0
 	var year = today.getFullYear(); // yyyy
 
-	// if the current month is Jan - Aug the current year is correct
-	// if the current month is Sept - Dec then current year needs to be incremented by 1
-	if (month >= 9 && month <= 12) {
+	// if the current month is Jan - June the current year is correct
+	// if the current month is July - Dec then current year needs to be incremented by 1
+	if (month >= 7 && month <= 12) {
 	    year++;
 	}
 	
