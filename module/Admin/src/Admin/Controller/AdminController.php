@@ -17,11 +17,13 @@ class AdminController extends AbstractActionController
             return $this->redirect()->toRoute('application');
         }
         else{
+            $namespace = new Container('user');
+            if($namespace->role != 1)
+            {
+              return $this->redirect()->toRoute('application');
+            }
             return parent::onDispatch( $e );
         }
-        $namespace = new Container('user');
-        
-        return parent::onDispatch( $e );
    }
    
    public function indexAction()
