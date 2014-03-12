@@ -285,10 +285,10 @@ $(document).on('click', '#formListPlans', function () {
    $.ajax({
       url: urlform,
       type: "POST",
-//      data: {"action":action, "unit":unit, "programs":programs,"year":year, "planId":"-1"},
+      data: {"action":action, "unit":unit, "programs":programs,"year":year, "planId":"-1"},
 
-// used for testing
-      data: {"action":action, "unit":"CSC", "programs":["BA Computer Science","BS Computer Science"],"year":"2010", "planId":"-1"},
+// used for testing so you do not have to keep selecting data from all the drop downs.  To use this turn off the disabling of the submit button
+//      data: {"action":action, "unit":"CSC", "programs":["BA Computer Science","BS Computer Science"],"year":"2010", "planId":"-1"},
       dataType: "text", // data returned from the controller "json", "text"
       error : function(xhr, status, error) {
          console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());

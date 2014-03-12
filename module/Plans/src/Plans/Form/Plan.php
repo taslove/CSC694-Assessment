@@ -135,7 +135,7 @@ class Plan extends Form
         $this->add(array(
             'type' => 'Radio',
             'name' => 'feedbackFlag',
-            'id' => 'feedbackFlag',
+            'id' => 'feedbackFlag',            
             'options' => array(               
                 'value_options' => array(
                     '1' => 'In Need of Revision',
@@ -143,7 +143,7 @@ class Plan extends Form
                 ),
             ),
             'attributes' => array(
-                'value' => '2'
+                'value' => '1',
             )
         ));
         
