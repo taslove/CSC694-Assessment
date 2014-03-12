@@ -14,7 +14,7 @@ use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use Application\Form\ApplicationForm;
 
-class IndexController extends AbstractActionController
+class ApplicationController extends AbstractActionController
 {
     protected $tableResults;
     

@@ -109,16 +109,14 @@ class IndexController extends AbstractActionController
             
             
             
-            $form = new ApplicationForm();
-            return new ViewModel(array('form' => $form));
-            //return $this->redirect()->toRoute('application');        
+            //$form = new ApplicationForm();
+            //return new ViewModel(array('form' => $form));
+            return $this->redirect()->toRoute('application');        
         }
         else {
             echo 'Authentication failed';
             return $this->redirect()->toRoute('home');
-        }
-
-        exit();        
+        }   
     }
     
     public function getAllTables()

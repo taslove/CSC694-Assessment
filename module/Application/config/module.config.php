@@ -32,7 +32,7 @@ return array(
             'home' => array(
                 'type' => 'literal',
                 'options' => array(
-                    'route'    => '/',
+                    'route'    => '/index',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Application\Controller',                        
                         'controller' => 'Index',
