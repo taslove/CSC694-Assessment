@@ -45,7 +45,7 @@ class IndexController extends AbstractActionController
         $request = $this->getRequest();
         
         if ($request->isPost()) {
-            $username = $request->getPost('userName', null);
+            $userName = $request->getPost('userName', null);
             $password = $request->getPost('password', null);
         }
      
@@ -59,7 +59,7 @@ class IndexController extends AbstractActionController
         //this sets up the adapter to talk to the LDAP server
         $auth = new AuthenticationService();
         $adapter = new AuthAdapter($settings,
-                                   $username,
+                                   $userName,
                                    $password);
         
         $result = $auth->authenticate($adapter);        
@@ -78,7 +78,7 @@ class IndexController extends AbstractActionController
             //If it's a student, I treat it like a failed authentication
             $password2 = $password.$password;
             $adapter2 = new AuthAdapter($settings,
-                                       $username,
+                                       $userName,
                                        $password2);
             
             $result2 = $auth->authenticate($adapter2);            
@@ -89,7 +89,7 @@ class IndexController extends AbstractActionController
             if (strpos($messages2[3], 'stdnts') == FALSE)
                 return $this->redirect()->toRoute('home');
             
-            $results = $this->getAllTables()->getUserInformation($username);
+            $results = $this->getAllTables()->getUserInformation($userName);
             
             foreach ($results as $result) {
                 $userID = $result['id'];
@@ -104,7 +104,7 @@ class IndexController extends AbstractActionController
             $namespace->userID = $userID;
             $namespace->role = $userRole;
             $namespace->userEmail = $userEmail;   
-            $namespace->datatelID = $username;
+            $namespace->datatelID = $userName;
             
             return $this->redirect()->toRoute('application');        
         }
