@@ -8,6 +8,10 @@ $form = $this->form;
 $form->setAttribute('action', 'index/authenticate');
 $form->prepare();
 
+echo '<br>';
+echo $message;
+
+
 echo '<br><br><br>';
 echo $this->form()->openTag($form);
 echo $this->formCollection($form);

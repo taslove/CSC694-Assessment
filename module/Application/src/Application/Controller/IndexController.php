@@ -25,19 +25,24 @@ use Application\Model\AllTables;
 class IndexController extends AbstractActionController
 {
     protected $tableResults;
+    public $message;
     
     public function indexAction()
     {
-        /*
         $namespace = new Container('user');
+        /*
         $namespace->userID = '40';
         $namespace->role = 1;
         $namespace->userEmail = 'akalelkar@noctrl.edu';   
-        $namespace->datatelID = 'akalelkar';*/
+        $namespace->datatelID = 'akalelkar';
+        */
         
-        //Render LoginForm
+        //$message = 'Please log in using your North Central username and password';
+
+        //Render LoginForm        
         $form = new LoginForm();
-        return array('form' => $form);
+        return array('form' => $form,
+                     'message' => 'Please log in using your North Central username and password');
     }
     
     public function authenticateAction()
@@ -87,7 +92,7 @@ class IndexController extends AbstractActionController
             $messages2 = $result2->getMessages();
             
             //if it was a student logging in, send them back otherwise continue
-            if (strpos($messages2[3], 'stdnts') == FALSE)
+            if (strpos($messages2[3], 'stdnts') == TRUE)
                 return $this->redirect()->toRoute('home');
             
             $results = $this->getAllTables()->getUserInformation($userName);
@@ -114,7 +119,8 @@ class IndexController extends AbstractActionController
             return $this->redirect()->toRoute('application');        
         }
         else {
-            echo 'Authentication failed';
+            
+            $namespace->message = 'Login failed';
             return $this->redirect()->toRoute('home');
         }   
     }

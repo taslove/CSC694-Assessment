@@ -19,7 +19,7 @@ class LoginForm extends Form
                 'type' => 'text',
             ),
             'options' => array(
-                'label' => 'User Name',                
+                'label' => 'User ID ',                
             ),
         ));
         $this->add(array(
@@ -28,7 +28,7 @@ class LoginForm extends Form
                 'type' => 'password',
             ),
             'options' => array(
-                'label' => 'Password',                
+                'label' => 'Password ',                
             ),
             
         ));

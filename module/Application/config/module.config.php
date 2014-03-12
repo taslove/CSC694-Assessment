@@ -37,9 +37,11 @@ return array(
                         '__NAMESPACE__' => 'Application\Controller',                        
                         'controller' => 'Index',
                         'action'     => 'index',
+                        'message' => '',
                     ),
                     'constraints' => array(
                          'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                         'message' => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ),
                 ),
             ),
