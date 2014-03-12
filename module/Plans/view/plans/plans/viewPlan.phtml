@@ -12,7 +12,7 @@
 
 <!-- create the right side of the page -->
 <div class="container">
-    <center><h3>Assessment Plans-VIEW Specific Plan</h3></center>
+    <center><h3>Assessment Plans - View Specific Plan</h3></center>
    
     <p></p>  
     <div class="row">
@@ -26,7 +26,7 @@
 			<table class="table">
 			    <!-- create header line -->
 			    <?php
-				$label="VIEW PLAN FOR: ";
+				$label="";
 				echo "<h4>" . $label . $unit . ", " . $programs . ", " . $year . "</h4>";
 			    ?>
 			     
@@ -294,7 +294,7 @@
 						<div id="collapseFeedback" class="panel-collapse collapse">
 						    <div class="panel-body">
 							<?php
-							    $elem = $form->get('textFeedback');
+							    $elem = $form->get('textAreaViewOnly');
 							    $elem->setValue($plan['feedback_text']);
 							    echo $this->formTextarea($elem);
 							?>						
@@ -313,9 +313,16 @@
 						    <div class="panel-body">
 							<?php
 							    $feedbackFlag = $plan['feedback'];
-							    $elem = $form->get('feedbackFlag');
-							    $elem->setValue($feedbackFlag);
-							    echo $this->formRow($form->get('feedbackFlag'));
+							    $label = "";
+							    if ($feedbackFlag == 1) {
+								$label = "In Need of Revision";
+							    } else if ($feedbackFlag == 2){
+								$label = "Ready to be Carried Out";
+							    }
+							    
+							    $elem = $form->get('textAreaViewOnly');
+							    $elem->setValue($label);
+							    echo $this->formTextarea($elem);
 							?>						
 						    </div>
 						</div>
@@ -324,7 +331,7 @@
 			    </div> <!-- controls -->
 
 			    <!-- display all the plan documents and set them to no print -->
-			    <div id="divNoPrint2">
+			    <div id="divNoPrint1">
 				<div>
 				    <?php
 					// loop through all the plan documents
@@ -357,7 +364,7 @@
 				</div>
 				
 				<!-- create a print button -->
-				<button type="button" class="btn btn-primary" onclick="printPage()">Print</button>&nbsp;  <!--window.print()-->
+				<button type="button" class="btn btn-primary" onclick="printPage()">Print &raquo;</button>  <!--window.print()-->
 			    </div>
 			</table>
 		    </div>
