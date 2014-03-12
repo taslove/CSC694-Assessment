@@ -1,10 +1,9 @@
-<div class="row">
+<?php echo $this->partial('admin/admin/menu.phtml',array('active'=>'user')); ?>
 <?php
-// module/Admin/view/user/add.phtml:
-
 $title = 'Add new User';
 $this->headTitle($title);
 ?>
+<div class="row user-content">
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 <div class="col-md-12" style="overflow:hidden;">
     <div class="col-md-8">
