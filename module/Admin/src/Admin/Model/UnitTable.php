@@ -69,6 +69,24 @@ class UnitTable extends AbstractTableGateway
     }
     
     /*
+     * get unit by id
+     */
+    public function getUnitsForSelect()
+    {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select($this->table)
+                      ->columns(array('id'))
+                      ->where(array('active_flag' =>'1'));                   
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $results = array();
+        foreach($result as $key => $value){
+            $results[$value['id']] = $value['id'];
+        }
+        return $results;
+    }
+    
+    /*
      * Add a record to one of the two priv tables, liaison_priv or unit_priv
      */
     function addPriv($id,$user,$table)
@@ -79,7 +97,7 @@ class UnitTable extends AbstractTableGateway
                 'user_id' => $user,
                 'unit_id' => $id,
                 'created_user' => $namespace->userID,
-                'created_ts' => date('Y-m-d g:i:s', time()),
+                'created_ts' => date('Y-m-d h:i:s', time()),
                 'active_flag' => 1
             );
             $sql = new Sql($this->adapter);
@@ -99,7 +117,7 @@ class UnitTable extends AbstractTableGateway
             case 'disable':
                 $data = array(
                         'active_flag' => 0,
-                        'deactivated_ts' =>  date('Y-m-d g:i:s', time()),
+                        'deactivated_ts' =>  date('Y-m-d h:i:s', time()),
                         'deactivated_user' =>  $namespace->userID
                     );
                 break;
@@ -198,7 +216,7 @@ class UnitTable extends AbstractTableGateway
               
         //deactivating an existing program
         if(!$unit->active_flag){
-            $data['deactivated_ts'] =  date('Y-m-d g:i:s', time());
+            $data['deactivated_ts'] =  date('Y-m-d h:i:s', time());
             $data['deactivated_user'] =  $namespace->userID;
         }
    
@@ -209,7 +227,7 @@ class UnitTable extends AbstractTableGateway
         
         //if program doesn't exists
         if (!$exists) {
-            $data['created_ts'] =  date('Y-m-d g:i:s', time());
+            $data['created_ts'] =  date('Y-m-d h:i:s', time());
             $data['created_user'] = $namespace->userID;     
             
             //insert unit

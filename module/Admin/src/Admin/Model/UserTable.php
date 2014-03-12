@@ -149,7 +149,7 @@ class UserTable extends AbstractTableGateway
                 'user_id' => $userID,
                 'role' => $value,
                 'created_user' => $namespace->userID,
-                'created_ts' => date('Y-d-m g:i:s', time()),
+                'created_ts' => date('Y-d-m h:i:s', time()),
                 'active_flag' => 1
             );
             $sql = new Sql($this->adapter);
@@ -215,7 +215,7 @@ class UserTable extends AbstractTableGateway
             case 'disable':
                 $data = array(
                         'active_flag' => 0,
-                        'deactivated_ts' =>  date('Y-m-d g:i:s', time()),
+                        'deactivated_ts' =>  date('Y-m-d h:i:s', time()),
                         'deactivated_user' =>  $namespace->userID
                     );
                 break;

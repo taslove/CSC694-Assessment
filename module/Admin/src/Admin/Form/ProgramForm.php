@@ -8,9 +8,9 @@ use Zend\Form\Form;
 
 class ProgramForm extends Form
 {
-    public function __construct($name = null)
+    public function __construct($units)     
     {
-        // we want to ignore the name passed
+
         parent::__construct('program');
         $this->setAttribute('method', 'post');
         $this->add(array(
@@ -53,14 +53,7 @@ class ProgramForm extends Form
             ),
             'options' => array(
                 'label' => 'Unit ID',
-                'value_options' => array(
-                    'ACC'=>'ACC',
-                    'BIO'=>'BIO',
-                    'CSC'=>'CSC',
-                    'HST'=>'HST',
-                    'MTH'=>'MTH',
-                    'PHL'=>'PHL'
-                ),
+                'value_options' => $units,
             ),
         ));
         $this->add(array(
@@ -69,7 +62,7 @@ class ProgramForm extends Form
                 'type' => 'submit',
                 'value' => 'Go',
                 'id' => 'submitbutton',
-                'class'=> 'btn btn-default',
+                'class'=> 'btn btn-primary btn-md',
             ),
         ));
     }

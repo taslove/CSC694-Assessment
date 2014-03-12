@@ -43,9 +43,9 @@ $this->headTitle($title);
                                     <td><?php echo ($program->active_flag)? 'Yes': 'No';?></td>   
                                     <td>
                                         <a class="btn btn-primary btn-xs" href="<?php echo $this->url('program',
-                                            array('action'=>'edit', 'id' => $program->id));?>"><?php echo $this->translate ('Edit') ?> &raquo;</a>
-                                        <a class="btn btn-warning btn-xs" href="<?php echo $this->url('program',
-                                            array('action'=>'delete', 'id' => $program->id));?>"><?php echo $this->translate ('Delete') ?> &raquo;</a>
+                                            array('action'=>'edit', 'id' => $program->prog_id));?>"><?php echo $this->translate ('Edit') ?> &raquo;</a>
+                                        <a class="btn btn-warning btn-xs" onclick="if (confirm('Are you sure you want to delete the program <?php echo $program->name;?>?')) { document.location = this.href; } return false;" href="<?php echo $this->url('program',
+                                            array('action'=>'delete', 'id' => $program->prog_id));?>"><?php echo $this->translate ('Delete') ?> &raquo;</a>
                                     </td>
                         </tr>
                         <?php endforeach; ?>
