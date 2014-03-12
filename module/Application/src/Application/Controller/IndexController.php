@@ -69,7 +69,7 @@ class IndexController extends AbstractActionController
             
             $namespace = new Container('user');
             $namespace->userID = '135';
-            $namespace->role = 2;
+            $namespace->role = 1;
             $namespace->userEmail = 'silahi@noctrl.edu';   
             $namespace->datatelID = 'silahi';
             
