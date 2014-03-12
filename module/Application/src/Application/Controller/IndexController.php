@@ -37,16 +37,15 @@ class IndexController extends AbstractActionController
         $namespace->datatelID = 'akalelkar';
         */
         
-        //$message = 'Please log in using your North Central username and password';
-
         //Render LoginForm        
         $form = new LoginForm();
         return array('form' => $form,
-                     'message' => 'Please log in using your North Central username and password');
+                     'message' => $namespace->message);
     }
     
     public function authenticateAction()
     {
+        $namespace = new Container('user');
         //Get POST data
         $request = $this->getRequest();
         
@@ -92,34 +91,35 @@ class IndexController extends AbstractActionController
             $messages2 = $result2->getMessages();
             
             //if it was a student logging in, send them back otherwise continue
-            if (strpos($messages2[3], 'stdnts') == TRUE)
+            if (strpos($messages2[3], 'stdnts') == FALSE) {
+                $namespace->message = 'Assessment Portal accessible to Faculty and Administration only';
                 return $this->redirect()->toRoute('home');
+            }
             
+            //Now we retrieve application specific information about the user using DB queries
+            //located in Models\AllTables.php and store the info in the session namespace container
             $results = $this->getAllTables()->getUserInformation($userName);
+            $namespace = new Container('user');
+
             
             foreach ($results as $result) {
-                $userID = $result['id'];
-                $userEmail = $result['email'];
+                $namespace->userID = $result['id'];
+                $namespace->userEmail = $result['email'];
             }
             
             $results = $this->getAllTables()->getUserRole($userID);
             foreach ($results as $result)
-                $userRole = $result['role'];
+                $namespace->role = $result['role'];
                 
-            $namespace = new Container('user');
-            $namespace->userID = $userID;
-            $namespace->role = $userRole;
-            $namespace->userEmail = $userEmail;   
+            //$namespace->userID = $userID;
+            //$namespace->role = $userRole;
+            //$namespace->userEmail = $userEmail;   
             $namespace->datatelID = $userName;
+            $namespace->message = NULL;
             
-            
-            
-            //$form = new ApplicationForm();
-            //return new ViewModel(array('form' => $form));
             return $this->redirect()->toRoute('application');        
         }
-        else {
-            
+        else {            
             $namespace->message = 'Login failed';
             return $this->redirect()->toRoute('home');
         }   
@@ -134,4 +134,10 @@ class IndexController extends AbstractActionController
         return $this->tableResults;
     }
     
+    public function logoutAction()
+    {
+        $namespace = new Container('user');
+        $namespace->getManager()->getStorage()->clear();
+        return $this->redirect()->toRoute('home');
+    }
 }

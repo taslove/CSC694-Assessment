@@ -13,15 +13,22 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use Application\Form\ApplicationForm;
+use Application\Authentication\AuthUser;
 
 class ApplicationController extends AbstractActionController
 {
-    protected $tableResults;
+    
+    public function onDispatch(\Zend\Mvc\MvcEvent $e)
+    {
+        $validUser = new AuthUser();
+        if (!$validUser->Validate()) {
+            return $this->redirect()->toRoute('home');
+        }
+        return parent::onDispatch($e);
+    }
     
     public function indexAction()
     {
-        
-        
         $form = new ApplicationForm();
         return array('form' => $form);
     }

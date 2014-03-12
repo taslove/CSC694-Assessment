@@ -56,6 +56,17 @@ return array(
                      ),
                  ),
              ),
+            'logout' => array(
+                 'type'    => 'literal',
+                 'options' => array(
+                     'route'    => '/index/logout',
+                     'defaults' => array(
+                         '__NAMESPACE__' => 'Application\Controller',
+                         'controller' => 'Index',
+                         'action'     => 'logout',
+                     ),
+                 ),
+             ),
             'application' => array(
                 'type' => 'literal',
                 'options' => array(
