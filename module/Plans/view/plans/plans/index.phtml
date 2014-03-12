@@ -22,7 +22,6 @@
 <script src="js/bootstrap.min.js"></script> 
 <script src="js/bootstrap-rta.min.js"></script>
 <script src="js/bootstrap-select.js"></script>
-<script src="js/customPlan.js"></script>
 
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/bootstrap-rta.min.js"></script>
@@ -41,7 +40,7 @@ $(document).ready(function() {
      $.rta(); // load rta features - simplest implementation
 
     // disable the submit button until all the selections are choosen
-    $("#formListPlans").attr("disabled", "disabled");
+//    $("#formListPlans").attr("disabled", "disabled");
     
     // load the actions selector
     var actions = <?php print json_encode($useractions); ?>;
@@ -62,7 +61,7 @@ $(document).on('change', '#action-menu', function () {
    $action = $('#action-menu option:selected').val();
    
     // disable the submit button until all the selections are choosen
-    $("#formListPlans").attr("disabled", "disabled");
+//    $("#formListPlans").attr("disabled", "disabled");
     
     // clear selectorlist before adding unit/department options
     var oldSelections = $('#unit-menu option');
@@ -286,10 +285,10 @@ $(document).on('click', '#formListPlans', function () {
    $.ajax({
       url: urlform,
       type: "POST",
-      data: {"action":action, "unit":unit, "programs":programs,"year":year, "planId":"-1"},
+//      data: {"action":action, "unit":unit, "programs":programs,"year":year, "planId":"-1"},
 
 // used for testing
-//      data: {"action":action, "unit":"CSC", "programs":["BA Computer Science","BS Computer Science"],"year":"2010", "planId":"-1"},
+      data: {"action":action, "unit":"CSC", "programs":["BA Computer Science","BS Computer Science"],"year":"2010", "planId":"-1"},
       dataType: "text", // data returned from the controller "json", "text"
       error : function(xhr, status, error) {
          console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
@@ -629,4 +628,34 @@ function validateAddPlan()
     return true;    
 }
 
+
+/**
+ * Only print specific elements on the view page.  To mark elements as non printable wrap the selements in a div tag
+ * and set the if to divNoPrint# where # is a numeric value bewteen 1 and 10
+ *
+ * divNoPrint1 = are the view plan document elements and the print button
+ * divNoPrint2 = are the headers the Application/view/layout/layout.phtml
+ * divNoPrint3 = next one to use
+ */
+function printPage()
+{
+        // only print the elements with ids not set to divNoPrint# where the # is a number betwenn 1 and 10
+        var numDivs = 10;
+        for(i = 1; i < numDivs; i++)
+        {
+                if(document.all['divNoPrint' + i])
+                {
+                        document.all['divNoPrint' + i].style.display = 'none';
+                }
+        }
+
+        window.print();
+        for(i = 1; i < numDivs; i++)
+        {
+                if(document.all['divNoPrint' + i])
+                {
+                        document.all['divNoPrint' + i].style.display = '';
+                }
+        }
+}
 </script>		

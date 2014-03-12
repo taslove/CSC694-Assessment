@@ -5,19 +5,10 @@ namespace Plans;
 use Plans\Model\DatabaseSql;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
-use Zend\Mvc\ModuleRouteListener;
-use Zend\Mvc\MvcEvent;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 
 class Module
-{
-    public function onBootstrap(MvcEvent $e)
-    {
-        $eventManager        = $e->getApplication()->getEventManager();
-        $moduleRouteListener = new ModuleRouteListener();
-        $moduleRouteListener->attach($eventManager);
-    }
-    
+{   
     public function getAutoloaderConfig()
     {
         return array(
@@ -45,8 +36,8 @@ class Module
                 },
                 'Plans\Model\DatabaseSql' => function($sm) {
                     $dbAdapter = $sm->get('dbAdapter');
-                    $tableMock = new DatabaseSql($dbAdapter);
-                    return $tableMock;                    
+                    $tablePlan = new DatabaseSql($dbAdapter);
+                    return $tablePlan;                    
                 },                    
             ),
         );

@@ -41,13 +41,13 @@ class PlansController extends AbstractActionController
    // TODO remove these attributes.  They will be set in the loggon page.  Just setting for testing
    // get these values from the session namespace
 //   protected $testRole = null;
-//   protected $testRole = 1; // admin
+   protected $testRole = 1; // admin
 //   protected $testRole = 2; // liaison
 //   protected $testRole = 3; // chair
 //   protected $testRole = 4; // assessor
-//   protected $testUserID = 19;   //9 = ACC, 19 = CSC, 135 = admin
-//   protected $testUserEmail = ""; 
-//   protected $testDatatelID = "GoodDatatelID";
+   protected $testUserID = 19;   //9 = ACC, 19 = CSC, 135 = admin
+   protected $testUserEmail = ""; 
+   protected $testDatatelID = "GoodDatatelID";
 //   protected $testDatatelID = null;
 
    
@@ -278,11 +278,11 @@ class PlansController extends AbstractActionController
    {
       // create session variables used for testing only
       // TODO - remove or comment out for production
-//      $namespace = new Container('user');
-//      $namespace->userID = $this->testUserID;
-//      $namespace->userEmail = $this->testUserEmail;
-//      $namespace->role = $this->testRole; // if null then view only
-//      $namespace->datatelID = $this->testDatatelID; // if null the user is not logged in, redirect to the logon screen 
+      $namespace = new Container('user');
+      $namespace->userID = $this->testUserID;
+      $namespace->userEmail = $this->testUserEmail;
+      $namespace->role = $this->testRole; // if null then view only
+      $namespace->datatelID = $this->testDatatelID; // if null the user is not logged in, redirect to the logon screen 
       
       // get the session variables
       $namespace = new Container('user');
