@@ -103,7 +103,7 @@ class AllTables extends AbstractTableGateway
                                       'users.email',
                                       'user_roles.role',))
                       ->join('user_roles','users.id = user_roles.user_id', array('role'))
-                      ->where(array('datatel_id' => $userid));
+                      ->where(array('datatel_id' => $userID));
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

@@ -62,19 +62,10 @@ class IndexController extends AbstractActionController
                                    $username,
                                    $password);
         
-        $result = $auth->authenticate($adapter);
-        
+        $result = $auth->authenticate($adapter);        
         //This is the result of the query to the authentication service
         $messages = $result->getMessages();
-        
-        
-        //add code to check if student based on $messages2
-        
-        foreach ($messages2 as $message) {
-            echo '<br>';
-            var_dump($message);
-        }
-        
+  
         
         //This checks the result of the authentication contained in $messages and
         //if successful, it stores the necessary data in the session container and moves on to the main page
@@ -90,8 +81,7 @@ class IndexController extends AbstractActionController
                                        $username,
                                        $password2);
             
-            $result2 = $auth->authenticate($adapter2);
-            
+            $result2 = $auth->authenticate($adapter2);            
             //This is the result of the query to the authentication service
             $messages2 = $result2->getMessages();
             
@@ -125,4 +115,14 @@ class IndexController extends AbstractActionController
 
         exit();        
     }
+    
+    public function getAllTables()
+    {
+        if (!$this->tableResults) {
+            $sm = $this->getServiceLocator();
+            $this->tableResults = $sm->get('Application\Model\AllTables');
+        }
+        return $this->tableResults;
+    }
+    
 }
