@@ -29,10 +29,10 @@ class IndexController extends AbstractActionController
     {
         
         $namespace = new Container('user');
-            $namespace->userID = '135';
-            $namespace->role = 1;
-            $namespace->userEmail = 'silahi@noctrl.edu';   
-            $namespace->datatelID = 'silahi';
+        $namespace->userID = '135';
+        $namespace->role = 1;
+        $namespace->userEmail = 'silahi@noctrl.edu';   
+        $namespace->datatelID = 'silahi';
         
         //Render LoginForm
         $form = new LoginForm();
