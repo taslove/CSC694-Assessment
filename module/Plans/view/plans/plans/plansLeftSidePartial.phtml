@@ -1,0 +1,43 @@
+    <!-- create the left hand side of the page --> 
+    <div class="col-md-4" id="divNoPrint3">		    
+        <div class="container">
+            <br />
+            <br />
+            <!-- Choose Action -->
+            <select class="selectpicker" id="action-menu" name="action-menu" data-style="btn-primary" title='Choose Action'>
+                <option data-hidden="true"></option>
+            </select>  
+            <br />
+            <br />
+        
+            <!-- Choose Department/Unit -->
+            <select class="selectpicker" id="unit-menu" name="unit-menu" data-style="btn-primary" title='Choose Department/Unit'>
+                <option data-hidden="true"></option>
+            </select>  
+            <br />
+            <br />
+        
+            <!-- Choose Program/Degree -->
+            <select class="selectpicker" id="prog-menu" name="prog-menu" data-style="btn-primary" title='Choose Program/Degree' multiple>
+                <option data-hidden="true"></option>
+            </select>
+            <br />
+            <br />
+        
+            <!-- Choose Years -->
+            <select class="selectpicker" id="year-menu" name="year-menu" data-style="btn-primary" title='Choose Year'>
+               <option data-hidden="true"></option>
+            </select>
+            <br />
+            <br />
+        
+            <!-- Submit Button used to get the plan data from the database -->
+            <button type="submit" id="formListPlans" name="formListPlans" value="formListPlans" class="btn btn-success btn-md">Submit &raquo;</button>
+            <p></p>
+        
+            <!-- Back to Main Button used to return to the main page -->
+            <a class="btn btn-primary btn-md" href="<?php echo $this->url('application',array('action'=>'index')) ?>">&laquo;<?php echo $this->translate ('Back to Main') ?>
+            </a>
+            <p></p>
+        </div><!--close container-->
+    </div><!--close column-->

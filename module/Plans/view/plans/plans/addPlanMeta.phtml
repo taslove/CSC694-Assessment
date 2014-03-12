@@ -1,0 +1,69 @@
+<?php
+
+    $title = 'Assessment Meta Plan';
+    $this->headTitle($title);
+    
+    // Init Form
+    $form = $this->form;
+    $form->setAttribute('class', 'form-horizontal');
+    $form->setAttribute('enctype', 'multipart/form-data');
+    $form->setAttribute('action', $this->url('plans',array('action'=>'insertmeta')));
+    $form->prepare();
+?>	
+
+    <!-- create the right side of the page -->
+    <div class="container">
+	<center><h3>Assessment Plans-ADD Meta</h3></center>
+        <p></p>
+	
+	<!-- begin creating the form -->
+	<?php echo $this->form()->openTag($form); ?>
+	    <div class="row">
+		<p></p>
+		<!-- create header line -->
+		<?php
+		    $label = "ADD META PLAN FOR: ";
+		    echo "<h4>" . $label . $unit . ", " . $programs . ", " . $year . "</h4>";
+		    
+		    // prepare hidden elements to pass data between pages	
+		    $elem = $form->get('programs');
+		    $elem->setValue($programs);					    
+		    echo $this->formInput($elem);
+		    
+		    $elem = $form->get('year');
+		    $elem->setValue($year);					    
+		    echo $this->formInput($elem);
+		    
+		?>
+		    
+		<!-- create meta assessment block -->
+		<div class="col-md-8">
+		    <div class="controls">
+			<h4>Describe the Meta Assessment Plan & Rationale</h4>
+			<p></p>
+			    
+			<div class="controls">
+			    <?php
+				$elem = $form->get('textMetaDescription');
+				echo $this->formTextarea($elem);
+			    ?>
+		    
+			</div>
+			
+	    		<!-- use partials to load the upload buttons -->
+			<?php echo $this->partial('plans/plans/plansUploadButtonPartial.phtml', array('form' => $form,)); ?>
+    
+			<!-- add the save draft and submit buttons -->
+			<?php
+			    $elem = $form->get('formSavePlan');
+			    $elem->setName('formSubmitPlan');
+			    echo $this->formButton($elem);
+			    
+			    $elem = $form->get('formSubmitPlan');
+			    echo $this->formButton($elem);
+			?>
+		    </div>
+		</div>
+	    </div>
+	<?php echo $this->form()->closeTag($form); ?>	
+    </div>
