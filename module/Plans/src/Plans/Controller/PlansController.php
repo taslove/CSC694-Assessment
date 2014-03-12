@@ -291,11 +291,6 @@ class PlansController extends AbstractActionController
       $role = $namespace->role;
       $datatelID = $namespace->datatelID;
   
-  
-    var_dump($role);
-    var_dump($userID);
-  exit();
-  
       // check to make sure the user is properly logged into the system
       if ($datatelID == null) {
           return $this->redirect()->toRoute('application');
