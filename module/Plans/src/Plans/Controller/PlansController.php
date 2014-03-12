@@ -44,10 +44,10 @@ class PlansController extends AbstractActionController
 //   protected $testRole = 1; // admin
 //   protected $testRole = 2; // liaison
 //   protected $testRole = 3; // chair
-   protected $testRole = 4; // assessor
-   protected $testUserID = 19;   //9 = ACC, 19 = CSC, 135 = admin
-   protected $testUserEmail = ""; 
-   protected $testDatatelID = "GoodDatatelID";
+//   protected $testRole = 4; // assessor
+//   protected $testUserID = 19;   //9 = ACC, 19 = CSC, 135 = admin
+//   protected $testUserEmail = ""; 
+//   protected $testDatatelID = "GoodDatatelID";
 //   protected $testDatatelID = null;
 
    
@@ -278,11 +278,11 @@ class PlansController extends AbstractActionController
    {
       // create session variables used for testing only
       // TODO - remove or comment out for production
-      $namespace = new Container('user');
-      $namespace->userID = $this->testUserID;
-      $namespace->userEmail = $this->testUserEmail;
-      $namespace->role = $this->testRole; // if null then view only
-      $namespace->datatelID = $this->testDatatelID; // if null the user is not logged in, redirect to the logon screen 
+//      $namespace = new Container('user');
+//      $namespace->userID = $this->testUserID;
+//      $namespace->userEmail = $this->testUserEmail;
+//      $namespace->role = $this->testRole; // if null then view only
+//      $namespace->datatelID = $this->testDatatelID; // if null the user is not logged in, redirect to the logon screen 
       
       // get the session variables
       $namespace = new Container('user');
@@ -290,7 +290,12 @@ class PlansController extends AbstractActionController
       $userEmail = $namespace->userEmail;
       $role = $namespace->role;
       $datatelID = $namespace->datatelID;
-        
+  
+  
+    var_dump($role);
+    var_dump($userID);
+  exit();
+  
       // check to make sure the user is properly logged into the system
       if ($datatelID == null) {
           return $this->redirect()->toRoute('application');
@@ -299,17 +304,12 @@ class PlansController extends AbstractActionController
       // if general user - only view
       // get all units, since only view option is displayed
       if ($role == null){
-                       
-         // set the correct user actions
-         $useractions = array('View');
                    
          return new ViewModel(array(
             'useractions' => array('View'),
          ));
       }
       else{
-         // set the correct user actions
-         $useractions = array('View', 'Add', 'Modify');
             
          // user in table with role - show actions
          // wait to populate units until action chosen
