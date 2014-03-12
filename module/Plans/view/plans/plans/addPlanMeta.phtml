@@ -13,7 +13,7 @@
 
     <!-- create the right side of the page -->
     <div class="container">
-	<center><h3>Assessment Plans-ADD Meta</h3></center>
+	<center><h3>Assessment Plans - Add Meta Assessment Plan</h3></center>
         <p></p>
 	
 	<!-- begin creating the form -->
@@ -22,7 +22,7 @@
 		<p></p>
 		<!-- create header line -->
 		<?php
-		    $label = "ADD META PLAN FOR: ";
+		    $label = "&nbsp;&nbsp;";
 		    echo "<h4>" . $label . $unit . ", " . $programs . ", " . $year . "</h4>";
 		    
 		    // prepare hidden elements to pass data between pages	
@@ -32,8 +32,7 @@
 		    
 		    $elem = $form->get('year');
 		    $elem->setValue($year);					    
-		    echo $this->formInput($elem);
-		    
+		    echo $this->formInput($elem);		    
 		?>
 		    
 		<!-- create meta assessment block -->
@@ -55,10 +54,11 @@
     
 			<!-- add the save draft and submit buttons -->
 			<?php
+			    
 			    $elem = $form->get('formSavePlan');
 			    $elem->setName('formSubmitPlan');
 			    echo $this->formButton($elem);
-			    
+
 			    $elem = $form->get('formSubmitPlan');
 			    echo $this->formButton($elem);
 			?>
