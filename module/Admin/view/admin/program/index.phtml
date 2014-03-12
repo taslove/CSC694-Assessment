@@ -1,5 +1,4 @@
 <?php
-// module/Admin/view/admin/user/index.phtml:
 $title = 'Manage Programs';
 $this->headTitle($title);
 ?>
@@ -28,7 +27,7 @@ $this->headTitle($title);
                             <th>Unit ID</th>
                             <th>Name</th>
                             <th>Created Date</th>
-                            <th>Created User ID</th>
+                            <th>Created User</th>
                             <th>Active</th>
                             <th>Action</th>
                         </tr>
@@ -36,12 +35,12 @@ $this->headTitle($title);
                     <tbody>
                         <?php foreach ($this->paginator as $program) : ?>
                         <tr class="active">
-                                    <td><?php echo $this->escapeHtml($program->id);?></td>
+                                    <td><?php echo $this->escapeHtml($program->prog_id);?></td>
                                    <td><?php echo $this->escapeHtml($program->unit_id);?></td>
                                     <td><?php echo $this->escapeHtml($program->name);?></td>
-                                    <td><?php echo $this->escapeHtml($program->created_ts);?></td>
-                                    <td><?php echo $this->escapeHtml($program->created_user);?></td>
-                                    <td><?php echo $this->escapeHtml($program->active_flag);?></td>   
+                                    <td><?php echo date("M j, Y, g:i a", strtotime($program->created_ts));?></td>
+                                    <td><?php echo $this->escapeHtml($program->last_name .',  ' .$program->first_name);?></td>
+                                    <td><?php echo ($program->active_flag)? 'Yes': 'No';?></td>   
                                     <td>
                                         <a class="btn btn-primary btn-xs" href="<?php echo $this->url('program',
                                             array('action'=>'edit', 'id' => $program->id));?>"><?php echo $this->translate ('Edit') ?> &raquo;</a>

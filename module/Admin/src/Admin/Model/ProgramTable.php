@@ -28,8 +28,11 @@ class ProgramTable extends AbstractTableGateway {
     public function fetchAll($paginated = false) {
         if ($paginated) {
             // create a new Select object for the table album
-            $select = new Select('programs');
-            // create a new result set based on the Album entity
+            $select = new Select();
+            $select->from('programs')
+                    ->columns(array('prog_id' => 'id','unit_id','name','created_ts','active_flag'))
+                    ->join(array('u' => 'users'), 'u.id = created_user');
+            // create a new result set based on the Program entity
             $resultSetPrototype = new ResultSet();
             $resultSetPrototype->setArrayObjectPrototype(new Program());
             // create a new pagination adapter object
