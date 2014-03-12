@@ -68,12 +68,9 @@ class ReportTable extends AbstractTableGateway
         $now = date("Y-m-d H:i:s", time());
 
         // Add values to array that we use no matter what status
-<<<<<<< HEAD
-        $values = array(//'plan_id' => $id,
-                        'population' => $population,
-=======
+
         $values = array('population' => $population,
->>>>>>> 2c12ca3d2a141152cea0b03aeb9b7b85531cf317
+
                             'results' => $results,
                             'conclusions' => $conclusions,
                             'actions' => $actions,
@@ -118,10 +115,7 @@ class ReportTable extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         
         // Add values to array that go in regardless of status
-<<<<<<< HEAD
-        
-=======
->>>>>>> 2c12ca3d2a141152cea0b03aeb9b7b85531cf317
+
         $values = array('plan_id' => $id,
                                 'population' => $population,
                                 'results' => $results,

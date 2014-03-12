@@ -123,7 +123,7 @@ if(!$results){
 				    if(count($documents) > 0){
 					foreach($documents as $doc){
 				?>
-<<<<<<< HEAD
+
 					    <tr><td><a href="<?php echo $this->url('id',
 						    array('action'=>'download',
 						   'id' => $doc['id'],
@@ -137,20 +137,7 @@ if(!$results){
 				
 	?>
 	    </table>
-=======
-				<tr><td><a href="<?php echo $this->url('id',
-					array('action'=>'download',
-				       'id' => $doc['id'],
-				       ));
-					?>"><?php echo $doc['file_name']; ?></a></td><td>
-					<?php echo '&nbsp&nbsp' . $doc['file_description']; ?>
-					</td></tr>
-					<?php
-					}
-				    }
-				?>
-			    </table>
->>>>>>> 2c12ca3d2a141152cea0b03aeb9b7b85531cf317
+
 	    </br>
 	</div> <!-- controls -->
 	<button type="button" class="btn btn-primary" style="width:100px" onclick="window.print();">Print</button>&nbsp;
