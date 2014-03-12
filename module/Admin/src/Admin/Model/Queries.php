@@ -349,4 +349,5 @@ class Queries extends AbstractTableGateway
       
         return $result;
     }   
+    
 }
