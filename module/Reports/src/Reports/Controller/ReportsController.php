@@ -25,7 +25,11 @@ class ReportsController extends AbstractActionController
    protected $tableResults;
    
     // get these values from the session namespace
+<<<<<<< HEAD
    protected $userRole = 4;
+=======
+   protected $userRole = 1;
+>>>>>>> 2c12ca3d2a141152cea0b03aeb9b7b85531cf317
    protected $userID = 9;   
    
    /*
