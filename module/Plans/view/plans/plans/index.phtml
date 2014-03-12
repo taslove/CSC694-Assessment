@@ -40,7 +40,7 @@ $(document).ready(function() {
      $.rta(); // load rta features - simplest implementation
 
     // disable the submit button until all the selections are choosen
-//    $("#formListPlans").attr("disabled", "disabled");
+    $("#formListPlans").attr("disabled", "disabled");
     
     // load the actions selector
     var actions = <?php print json_encode($useractions); ?>;
@@ -61,7 +61,7 @@ $(document).on('change', '#action-menu', function () {
    $action = $('#action-menu option:selected').val();
    
     // disable the submit button until all the selections are choosen
-//    $("#formListPlans").attr("disabled", "disabled");
+    $("#formListPlans").attr("disabled", "disabled");
     
     // clear selectorlist before adding unit/department options
     var oldSelections = $('#unit-menu option');

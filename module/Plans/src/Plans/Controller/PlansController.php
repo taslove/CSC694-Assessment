@@ -87,16 +87,20 @@ class PlansController extends AbstractActionController
    }
       
       
-   /********** Security supporting functions **********/      
+   /********** Security supporting functions **********/
+   
+   /**
+    * Make sure the user is valid
+    */
    public function onDispatch(\Zend\Mvc\MvcEvent $e) 
    {
-//      $validUser = new AuthUser();
-//        if (!$validUser->Validate()){
-//            return $this->redirect()->toRoute('application');
-//        }
-//        else{
+      $validUser = new AuthUser();
+        if (!$validUser->Validate()){
+            return $this->redirect()->toRoute('application');
+        }
+        else{
             return parent::onDispatch( $e );
-//        }
+        }
    }
    
    
