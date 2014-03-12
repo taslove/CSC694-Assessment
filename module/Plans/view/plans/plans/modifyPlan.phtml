@@ -14,7 +14,7 @@
 
 <!-- create the right side of the page -->
 <div class="container">
-    <center><h3>Assessment Plans-MODIFY</h3></center>
+    <center><h3>Assessment Plans - Modify Specific Plan</h3></center>
     <p></p>  
     <div class="row">
 	<p></p>
@@ -26,7 +26,7 @@
 		    <div class="bs-example">
 			    <!-- create header line -->
 			    <?php
-				$label="MODIFY PLAN: ";
+				$label="";
 				echo "<h4>" . $label . $unit . ", " . $programs . ", " . $year . "</h4>";
 					
 				// prepare hidden elements to pass data between pages		
@@ -363,7 +363,7 @@
 					?>						    					
 						<p>
 						    <!-- Create a delete button for each row -->
-						    <a class="btn btn-primary btn-xs" id="deleteDocument" name="deleteDocument" value="<?php echo $planDocument['id'];?>"> 
+						    <a class="btn btn-warning btn-xs" id="deleteDocument" name="deleteDocument" value="<?php echo $planDocument['id'];?>"> 
 							Delete &raquo;
 						    </a>
 						    &nbsp;
@@ -401,7 +401,7 @@
 					$elem->setName('formSubmitPlan');
 					echo $this->formButton($elem);
 				    }
-				
+
 				    $elem = $form->get('formSubmitPlan');
 				    echo $this->formButton($elem);
 				?>
