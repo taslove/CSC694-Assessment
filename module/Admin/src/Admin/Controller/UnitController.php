@@ -26,12 +26,11 @@ class UnitController extends AbstractActionController {
         if (!$validUser->Validate()) {
             return $this->redirect()->toRoute('home');
         } else {
-            $namespace = new Container('user');
-            Debug::dump($namespace->role);
+          /*  $namespace = new Container('user');
             if($namespace->role != 1)
             {
               return $this->redirect()->toRoute('home');
-            }
+            }*/
             return parent::onDispatch($e);
         }
     }
