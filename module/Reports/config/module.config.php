@@ -75,19 +75,6 @@
                      ),
                  ),
              ),
-             
-             'plans' => array(
-                 'type'    => 'segment',
-                 'options' => array(
-                     'route'    => '/reports[/][:action][/][:pid][/][:year]',
-                     'constraints' => array(
-                     ),
-                     'defaults' => array(
-                         'controller' => 'Reports\Controller\Reports',
-                     ),
-                 ),
-             ),
-             
          ),
      ),
  );

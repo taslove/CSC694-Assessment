@@ -24,12 +24,15 @@ class UnitController extends AbstractActionController {
     public function onDispatch(\Zend\Mvc\MvcEvent $e) {
         $validUser = new AuthUser();
         if (!$validUser->Validate()) {
-            return $this->redirect()->toRoute('application');
+            return $this->redirect()->toRoute('home');
         } else {
+          /*  $namespace = new Container('user');
+            if($namespace->role != 1)
+            {
+              return $this->redirect()->toRoute('home');
+            }*/
             return parent::onDispatch($e);
         }
-        $namespace = new Container('user');
-        return parent::onDispatch($e);
     }
 
     /*

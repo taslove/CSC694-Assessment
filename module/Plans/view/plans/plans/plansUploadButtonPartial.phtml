@@ -1,0 +1,48 @@
+<?php    
+
+    // Configure Errors Helper
+    $errorsHelper  = $this->plugin('formelementerrors');
+    $errorsHelper
+	->setMessageOpenFormat('<div class="help-block">')
+	->setMessageSeparatorString('</div><div class="help-block">')
+	->setMessageCloseString('</div>');
+?>
+
+<!-- table used to display the upload description, upload buttons, and remove file hyperlink -->
+<table>
+    <tr><th>File Description</th></tr>
+    
+    <!-- enter the first upload row -->
+    <tr>
+	<td>
+	    <?php $elem = $form->get('textFileDescription0'); ?>
+	    <?php echo $this->formInput($elem); ?>
+	</td>
+	<td>
+	    <?php $elem = $form->get('fileUpload0'); ?>
+	    <?php echo $this->formFile($elem); ?>
+	    <?php echo $this->formElementErrors($elem); ?>
+	</td>
+
+	<td>
+	    <a href="#" id="removeFile0" name="removeFile0">Remove File</a>
+	</td>
+    </tr>
+    
+    <!-- enter the second upload row -->
+    <tr>
+	<td>
+	    <?php $elem = $form->get('textFileDescription1'); ?>
+	    <?php echo $this->formInput($elem); ?>
+	</td>
+	<td>
+	    <?php $elem = $form->get('fileUpload1'); ?>
+	    <?php echo $this->formFile($elem); ?>
+	    <?php echo $this->formElementErrors($elem); ?>
+	</td>
+
+	<td>
+	    <a href="#" id="removeFile1" name="removeFile1">Remove File</a>
+	</td>
+    </tr>
+</table>
