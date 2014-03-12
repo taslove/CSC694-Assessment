@@ -1,4 +1,4 @@
-<?php echo $this->partial('admin/admin/menu.phtml',array('active'=>'query')); ?>
+<?php //echo $this->partial('admin/admin/menu.phtml',array('active'=>'query')); ?>
 <center><h3>Administrator Queries</h3></center>
 <div class = "panel panel-default">
     <div class="panel-body">
@@ -94,6 +94,15 @@
              <button type="button" class="btn-primary" id="query9">Go</button>
             </dd>
         </dl>
+         <dl>
+            <dt>Query 10:<br/>
+            Todd's Test
+            </dt>
+            <dd>
+             <input type="text" class="span2" id="dp10">
+             <button type="button" class="btn-primary" id="query10">Go</button>
+            </dd>
+        </dl>
     </div><!--close column-->
 
 
@@ -103,17 +112,16 @@
             <table class="table table-bordered table-striped" id="resultsTable" name="resultsTable">
             </table>
         </div> <!-- end of table-responsive -->
-          
+        <!-- create a print button -->
+	<button id="printbutton" type="button" class="btn btn-primary" onclick="printPage()">Print</button>&nbsp;  <!--window.print()-->
+			  
     </div> <!-- end of col-md-8--> 
   </div>
 </div>
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="../js/bootstrap.min.js"></script> 
-<script src="../js/bootstrap-rta.min.js"></script>
-<script src="../js/bootstrap-select.js"></script>
-<script src="../js/bootstrap-datepicker.js"></script>
+
+
 <script>
 
 $(document).ready(function () {
@@ -163,6 +171,8 @@ $(document).ready(function () {
 	format: 'mm-dd-yyyy',
         date:''
     });
+    
+    $('#printbutton').hide();
 })
 
 
@@ -184,7 +194,7 @@ $(document).on('change', '#q1year', function () {
     var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery1')); ?>";
     urlform = urlform + '/' + year;
     ajaxCall(urlform);
-  
+    
 });
 
 
@@ -319,6 +329,15 @@ $(document).on('click', '#query9', function () {
     ajaxCall(urlform);
 });
 
+$(document).on('click', '#query10', function () {
+    // clear rhs of page
+    $('#resultsTable').html("");
+    
+    // create url for redirect url(route, array(controller, action))
+    var urlform = "<?php echo $this->url('query', array('controller'=>'queries', 'action'=>'getQuery10')); ?>";
+    ajaxCall(urlform);
+});
+
 function ajaxCall(urlform){
             // asynchronous ajax code to populate program/degree selector
         $.ajax({
@@ -332,8 +351,9 @@ function ajaxCall(urlform){
           success: function(results){
             // clear any existing html in the partial div
             $('#resultsTable').html("");
-            $('#resultsTable').html(results);        
-          },
+            $('#resultsTable').html(results);
+            $('#printbutton').show();
+        },
        });
 }
 
@@ -346,6 +366,29 @@ function resetDropDowns(){
     $('select[name=q8year]').val(1);
     $('.selectpicker').selectpicker('refresh');
 }
-   
+
+
+function printPage()
+{
+	/*var numDivs = 20;
+	for(i=1;i<numDivs;i++)
+	{
+            if(document.all['divNoPrint'+i])
+		{
+		document.all['divNoPrint'+i].style.display = 'none';
+		}
+	}
+        */
+	window.print();
+        /*
+	for(i=1;i<numDivs;i++)
+	{
+		if(document.all['divNoPrint'+i])
+		{
+			document.all['divNoPrint'+i].style.display = '';
+		}
+	}
+        */
+}   
 </script>
 

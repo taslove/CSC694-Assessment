@@ -10,12 +10,12 @@
     
     <!-- create the right side of the page -->
     <div class="container">
-	<center><h3>Assessment Plans-What type of plan are you adding?</h3></center>
+	<center><h3>Assessment Plans - What type of plan are you adding?</h3></center>
         <p></p>  
         <div class="row">
 	    <p></p>
 	    <!-- create header row -->
-	    <?php $label = "ADD PLAN FOR: " ?>
+	    <?php $label = "" ?>
 	    <?php echo $this->partial('plans/plans/displayAllPrograms.phtml', array('programs' => $programs,
 										    'label' => $label,
 										    'unit' => $unit,
@@ -68,7 +68,8 @@
 			echo $this->formLabel($elem); 
 			echo $this->formInput($elem);
 
-			//echo "<br>";
+			echo "&nbsp; &nbsp";
+			
 			$elem = $form->get('metaFlag');
 			$elem->setLabel("No");
 			$elem->setValue("no");
