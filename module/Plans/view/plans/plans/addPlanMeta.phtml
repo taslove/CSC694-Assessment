@@ -1,171 +1,69 @@
 <?php
 
-$title = 'Assessment Meta Plan';
-$this->headTitle($title);
+    $title = 'Assessment Meta Plan';
+    $this->headTitle($title);
+    
+    // Init Form
+    $form = $this->form;
+    $form->setAttribute('class', 'form-horizontal');
+    $form->setAttribute('enctype', 'multipart/form-data');
+    $form->setAttribute('action', $this->url('plans',array('action'=>'insertmeta')));
+    $form->prepare();
 ?>	
 
+    <!-- create the right side of the page -->
     <div class="container">
-	<center>
-	    <h3>Assessment Plans-ADD Meta</h3>	
-	</center>
-        <p></p>  
-        <div class="row">
-	    <!-- Build the left hand side of the page -->                                 				
-	    <?php echo $this->partial('plans/plans/plansLeftSidePartial.phtml', array()); ?>
-	    
-	    <!--column 2-->
-	    <p></p>
-	    <!-- create header row -->
-	    <?php $label = "ADD META PLAN FOR:" ?>
-	    <?php echo $this->partial('plans/plans/displayAllPrograms.phtml', array('programs' => $programs,
-										    'label' => $label,
-										    'unit' => $unit,
-										    'year' => $year,
-										    ))
-	    ?>
-		
-	    <form action="<?php echo $this->url('plans', array('action'=>'addplanmeta'));?>" method="post">
-		<input type="hidden" name="programId" id="programId" value="<?php echo $programId ?>">
-		<div class="col-md-6">
+	<center><h3>Assessment Plans-ADD Meta</h3></center>
+        <p></p>
+	
+	<!-- begin creating the form -->
+	<?php echo $this->form()->openTag($form); ?>
+	    <div class="row">
+		<p></p>
+		<!-- create header line -->
+		<?php
+		    $label = "ADD META PLAN FOR: ";
+		    echo "<h4>" . $label . $unit . ", " . $programs . ", " . $year . "</h4>";
+		    
+		    // prepare hidden elements to pass data between pages	
+		    $elem = $form->get('programs');
+		    $elem->setValue($programs);					    
+		    echo $this->formInput($elem);
+		    
+		    $elem = $form->get('year');
+		    $elem->setValue($year);					    
+		    echo $this->formInput($elem);
+		    
+		?>
+		    
+		<!-- create meta assessment block -->
+		<div class="col-md-8">
 		    <div class="controls">
 			<h4>Describe the Meta Assessment Plan & Rationale</h4>
 			<p></p>
-			
+			    
 			<div class="controls">
-			    <textarea rows="6" cols="60" class="rta" id="textMetaDescription" name="textMetaDescription" ></textarea>
-			</div> <!-- controls -->
-			<button type="submit" name="formSubmitMeta" value="formSaveDraft" class="btn btn-primary pull-left">Save Draft</button>
-			<button type="submit" name="formSubmitMeta" value="formSavePlan" class="btn btn-success pull-left">Submit</button>
+			    <?php
+				$elem = $form->get('textMetaDescription');
+				echo $this->formTextarea($elem);
+			    ?>
+		    
+			</div>
+			
+	    		<!-- use partials to load the upload buttons -->
+			<?php echo $this->partial('plans/plans/plansUploadButtonPartial.phtml', array('form' => $form,)); ?>
+    
+			<!-- add the save draft and submit buttons -->
+			<?php
+			    $elem = $form->get('formSavePlan');
+			    $elem->setName('formSubmitPlan');
+			    echo $this->formButton($elem);
+			    
+			    $elem = $form->get('formSubmitPlan');
+			    echo $this->formButton($elem);
+			?>
 		    </div>
 		</div>
-	    </form>
-	</div>
+	    </div>
+	<?php echo $this->form()->closeTag($form); ?>	
     </div>
-		
-		
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/bootstrap-rta.min.js"></script>
-<script src="../js/bootstrap-select.js"></script>
-
-
-<script>
-
-// load actions based on user privileges
-$(document).ready(function() {
-     $.rta(); // load rta features - simplest implementation
-  
-   var actions = <?php print json_encode($useractions); ?>;
-   for (var i = 0; i < actions.length; i++){
-      $('#action-menu').append('<option>' + actions[i] + '</option>');
-   }
-   
-   // call code to initialize the selectpicker
-   // this must come after the options are initialized
-   $('.selectpicker').selectpicker();
-});
-
-// update unit/department options based on actions
-$(document).on('change', '#action-menu', function () {
-   $action = $('#action-menu option:selected').val();
-   // clear selectorlist before adding unit/department options
-   var oldSelections = $('#unit-menu option');
-   for (var i = 0; i < oldSelections.length; i++){
-      oldSelections.remove();
-   }
-   // data-hidden="true" shows title on button
-   $('#unit-menu').append('<option  data-hidden="true"></option>');
-   $('#unit-menu').selectpicker('refresh');
-   
-   // create url for redirect
-   var urlform = "<?php echo $this->url('plans', array(
-                                    'controller'=>'plans',
-                                    'action'=>'getUnits')); ?>";
-   urlform = urlform + '/' + $action;
-     
-   // asynchronous ajax code to populate unit/department selector
-   $.ajax({
-      url: urlform,
-      type: "GET",
-      dataType: "json",
-      error : function(xhr, status, error) {
-         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
-      },
-      success: function(unitsJson){
-         for (var i = 0; i < unitsJson.length; i++){
-            $('#unit-menu').append('<option>' + unitsJson[i].id + '</option>');
-         }
-         $('#unit-menu').selectpicker('refresh');
-      },
-   });
-});
-
-// update program options based on unit/department
-$(document).on('change', '#unit-menu', function () {
-   $unit = $('#unit-menu option:selected').val();
-   // clear selectorlist before adding program/degree options
-   var oldSelections = $('#prog-menu option');
-   for (var i = 0; i < oldSelections.length; i++){
-      oldSelections.remove();
-   }
-   $('#prog-menu').selectpicker('refresh');
-   
-   // create url for redirect
-   var urlform = "<?php echo $this->url('plans', array(
-                                    'controller'=>'plans',
-                                    'action'=>'getPrograms')); ?>";
-   urlform = urlform + '/' + $unit;
-   
-   // asynchronous ajax code to populate program/degree selector
-   $.ajax({
-      url: urlform,
-      type: "GET",
-      dataType: "json",
-      error : function(xhr, status, error) {
-         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
-      },
-      success: function(programsJson){
-         for (var i = 0; i < programsJson.length; i++){
-            $('#prog-menu').append('<option>' + programsJson[i].name + '</option>');
-         }
-         $('#prog-menu').selectpicker('refresh');
-      },
-   });
-});
-
-// load all the year options after the unit/department & unit/department are selected
-$(document).on('change', '#prog-menu', function () {
-   // clear selectorlist before adding all the years
-   var oldSelections = $('#year-menu option');
-   for (var i = 0; i < oldSelections.length; i++){
-      oldSelections.remove();
-   }
-   
-   // data-hidden="true" shows title on button
-   $('#year-menu').append('<option  data-hidden="true"></option>');
-   $('#year-menu').selectpicker('refresh');
-   
-   // create url for redirect
-   var urlform = "<?php echo $this->url('plans', array(
-                                    'controller'=>'plans',
-                                    'action'=>'getYears')); ?>";
-   urlform = urlform;
-   
-   // asynchronous ajax code to populate program/degree selector
-   $.ajax({
-      url: urlform,
-      type: "GET",
-      dataType: "json",
-      error : function(xhr, status, error) {
-         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
-      },
-      success: function(programsJson){
-         for (var i = 0; i < programsJson.length; i++){
-            $('#year-menu').append('<option>' + programsJson[i].year + '</option>');
-         }
-         $('#year-menu').selectpicker('refresh');
-      },
-   });
-});
-</script>		

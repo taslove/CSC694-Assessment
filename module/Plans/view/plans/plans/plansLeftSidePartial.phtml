@@ -1,5 +1,5 @@
-<div class="col-md-4">		    
-    <form action="<?php echo $this->url('plans', array('action'=>'index'));?>" method="post"> 
+    <!-- create the left hand side of the page --> 
+    <div class="col-md-4" id="divNoPrint3">		    
         <div class="container">
             <br />
             <br />
@@ -18,7 +18,7 @@
             <br />
         
             <!-- Choose Program/Degree -->
-            <select class="selectpicker" id="prog-menu" name="prog-menu[]" data-style="btn-primary" title='Choose Program/Degree' multiple>
+            <select class="selectpicker" id="prog-menu" name="prog-menu" data-style="btn-primary" title='Choose Program/Degree' multiple>
                 <option data-hidden="true"></option>
             </select>
             <br />
@@ -32,13 +32,12 @@
             <br />
         
             <!-- Submit Button used to get the plan data from the database -->
-            <button type="submit" name="formListPlans" value="formListPlans" class="btn btn-success btn-md">Submit &raquo;</button>
+            <button type="submit" id="formListPlans" name="formListPlans" value="formListPlans" class="btn btn-success btn-md">Submit &raquo;</button>
             <p></p>
         
             <!-- Back to Main Button used to return to the main page -->
-            <a class="btn btn-primary btn-md" href="../mock">&laquo;<?php echo $this->translate ('Back to Main') ?>
+            <a class="btn btn-primary btn-md" href="<?php echo $this->url('application',array('action'=>'index')) ?>">&laquo;<?php echo $this->translate ('Back to Main') ?>
             </a>
             <p></p>
         </div><!--close container-->
-    </form>
-</div><!--close column-->
+    </div><!--close column-->
