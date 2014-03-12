@@ -27,6 +27,13 @@ class IndexController extends AbstractActionController
     
     public function indexAction()
     {
+        
+        $namespace = new Container('user');
+            $namespace->userID = '135';
+            $namespace->role = 1;
+            $namespace->userEmail = 'silahi@noctrl.edu';   
+            $namespace->datatelID = 'silahi';
+        
         //Render LoginForm
         $form = new LoginForm();
         return array('form' => $form);
