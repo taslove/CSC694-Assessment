@@ -99,7 +99,7 @@ class Plan extends Form
             'name' => 'modifyDelete',
             'attributes' => array(
                 'id' => 'modifyDelete',
-                'class' => 'btn btn-primary btn-xs',           
+                'class' => 'btn btn-warning btn-xs',           
             ),
             'options' => array(
                 'label' => 'Delete',
@@ -353,7 +353,7 @@ class Plan extends Form
                 'type'  => 'submit',
                 'value' => 'formSavePlan',
                 'id' => 'formSubmitPlan',
-                'class' => 'btn btn-success pull-left',               
+                'class' => 'btn btn-primary btn-md pull-left',               
             ),
             'options' => array(
                 'label' => 'Submit',
@@ -366,7 +366,7 @@ class Plan extends Form
                 'type'  => 'submit',
                 'value' => 'formSaveDraft',
                 'id' => 'formSavePlan',
-                'class' => 'btn btn-primary pull-left',
+                'class' => 'btn btn-primary btn-md pull-left',
             ),
             'options' => array(
                 'label' => 'Save Draft',

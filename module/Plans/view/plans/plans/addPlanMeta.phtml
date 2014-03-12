@@ -54,10 +54,11 @@
     
 			<!-- add the save draft and submit buttons -->
 			<?php
+			    
 			    $elem = $form->get('formSavePlan');
 			    $elem->setName('formSubmitPlan');
 			    echo $this->formButton($elem);
-			    
+
 			    $elem = $form->get('formSubmitPlan');
 			    echo $this->formButton($elem);
 			?>

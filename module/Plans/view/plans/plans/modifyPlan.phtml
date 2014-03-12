@@ -363,7 +363,7 @@
 					?>						    					
 						<p>
 						    <!-- Create a delete button for each row -->
-						    <a class="btn btn-primary btn-xs" id="deleteDocument" name="deleteDocument" value="<?php echo $planDocument['id'];?>"> 
+						    <a class="btn btn-warning btn-xs" id="deleteDocument" name="deleteDocument" value="<?php echo $planDocument['id'];?>"> 
 							Delete &raquo;
 						    </a>
 						    &nbsp;
@@ -401,7 +401,7 @@
 					$elem->setName('formSubmitPlan');
 					echo $this->formButton($elem);
 				    }
-				
+
 				    $elem = $form->get('formSubmitPlan');
 				    echo $this->formButton($elem);
 				?>

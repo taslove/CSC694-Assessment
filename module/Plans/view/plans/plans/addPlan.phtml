@@ -279,12 +279,14 @@
 		<!-- use partials to load the upload buttons -->
 		<?php echo $this->partial('plans/plans/plansUploadButtonPartial.phtml', array('form' => $form,)); ?>
 		    
-		<!-- create the save draft and submit buttons -->    
+		<!-- create the save draft and submit buttons -->
 		<?php
 		    $elem = $form->get('formSavePlan');
 		    $elem->setName('formSubmitPlan');
 		    echo $this->formButton($elem);
-			
+		?>
+		
+		<?php
 		    $elem = $form->get('formSubmitPlan');
 		    echo $this->formButton($elem);
 		?>
