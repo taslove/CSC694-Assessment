@@ -1,0 +1,15 @@
+<?php
+
+$title = 'Academic Assessment Portal';
+$this->headTitle($title);
+
+
+$form = $this->form;
+$form->prepare();
+
+echo '<br><br><br>';
+echo $this->form()->openTag($form);
+echo $this->formCollection($form);
+echo $this->form()->closeTag($form);
+
+?>
