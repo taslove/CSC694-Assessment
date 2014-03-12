@@ -74,10 +74,6 @@ class ProgramController extends AbstractActionController {
             $form->setInputFilter($program->getInputFilter());
             $form->setData($request->getPost());
 
-            //check if form is valid
-            if (!$form->isValid()) {
-                print_r($form->getMessages());
-            }
             if ($form->isValid()) {
                 $program->exchangeArray($form->getData());
 

@@ -75,7 +75,8 @@ class ProgramTable extends AbstractTableGateway {
         $data = array(
             'unit_id' => $program->unit_id,
             'name' => $program->name,
-            'active_flag' => ($program->active_flag) ? $program->active_flag : 0,
+            #'active_flag' => ($program->active_flag) ? $program->active_flag : 0, //removed active checkbox from form
+            'active_flag' => 1,
         );
 
         //deactivating an existing program

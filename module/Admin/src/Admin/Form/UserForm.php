@@ -53,7 +53,7 @@ class UserForm extends Form
                 'style' => 'width:60px;'
             ),
             'options' => array(
-                'label' => 'Middle Initial',
+                'label' => 'M.I.',
             ),
         ));
         $this->add(array(
