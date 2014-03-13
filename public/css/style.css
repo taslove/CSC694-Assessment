@@ -64,6 +64,12 @@ div.container a.brand {
     overflow:hidden;
     padding-top:15px;
 }
+
+.user-form .submit #submitbutton{
+    float: right;
+    margin-bottom: 10px;
+    margin-top: -12px;
+}
 .user-role-options-placeholder{
     margin-top:22px;
 }
@@ -74,9 +80,6 @@ div.container a.brand {
     margin-top:5px;
 }
 
-.user-table-wrapper{
-    
-}
 .user-content .table-bordered{
     border-radius: 5px;
 }
