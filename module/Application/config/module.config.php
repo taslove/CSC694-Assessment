@@ -77,7 +77,18 @@ return array(
                         'action'     => 'index',
                     ),
                 ),
-            ),            
+            ),
+            'choose' => array(
+                 'type'    => 'literal',
+                 'options' => array(
+                     'route'    => '/application/choose',
+                     'defaults' => array(
+                         '__NAMESPACE__' => 'Application\Controller',
+                         'controller' => 'Application',
+                         'action'     => 'choose',
+                     ),
+                 ),
+             ),
         ),
     ),
     'service_manager' => array(

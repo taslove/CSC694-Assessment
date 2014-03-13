@@ -32,6 +32,21 @@ class ApplicationController extends AbstractActionController
         $form = new ApplicationForm();
         return array('form' => $form);
     }
-    
+
+    public function chooseAction()
+    {
+        $request = $this->getRequest();
+        $choice = strtolower($request->getPost()['module']);
+        
+        var_dump($choice);
+        
+        //$url = $this->url($choice, array('controller' => $choice,
+        //                                 'action' => 'index'));
+        
+        $route = $choice;
+        return $this->redirect()->toRoute($choice);
+
+        exit();
+    }
 
 }
