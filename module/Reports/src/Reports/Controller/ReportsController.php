@@ -66,7 +66,6 @@ class ReportsController extends AbstractActionController
          return new ViewModel(array(
             'useractions' => array('View', 'Add', 'Modify')));
      }
-      return new ViewModel();
    }
     
     // Called to show all matching plans after selection is made on left nav

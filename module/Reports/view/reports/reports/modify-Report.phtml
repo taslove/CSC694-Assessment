@@ -13,6 +13,7 @@ if(!$results){
 		<col class="col-xs-8">
 	    </colgroup>
 	    <div class="bs-example">
+		<!-- Set up form -->
 		<?php
 		$form->setAttribute('action', $this->url('reports', array('action' => 'updateReport')));
 		$form->setAttribute('name', 'data');
@@ -27,6 +28,7 @@ if(!$results){
 		?>
 		<table class="table">
 		    <h6>Modify Report</h6>
+		    <!-- Show form info -->
 		    <h4><?php echo $report[0]['unit_id'] . ' - ' . $report[0]['name'] . ' - ' . $report[0]['year'];?></h4>
 		    <div class="controls">
 			<div class="panel-group" id="accordion">
@@ -41,7 +43,7 @@ if(!$results){
 				<div id="collapseOne" class="panel-collapse collapse">
 				  <div class="panel-body">
 				    <?php $ctr = 0;?>
-			    
+				    <!-- Show outcome/assessment text -->
 				    <?php foreach($descriptions as $description) : ?>
 					<?php $ctr++;?>
 					 <?php echo($ctr); ?>.<?php echo $description;?>
@@ -54,6 +56,7 @@ if(!$results){
 			    </br>
 			</div>
 		    </div>
+		    <!-- Other database fields -->
 		    <div class="panel panel-default">
 			<div class="panel-heading">
 			  <h4 class="panel-title">
@@ -114,6 +117,7 @@ if(!$results){
 			  <div class="panel-heading">
 			    <h4 class="panel-title">
 			      <a data-toggle="collapse" data-parent="#accordion" href="#collapseSeven">
+				<!-- Show feedback status and text -->
 				  <?php
 				      if($report[0]['feedback'] == 2){
 					  $flag = 2;
@@ -162,6 +166,7 @@ if(!$results){
 			</div>
 		    </div>
 		    <table>
+			<!-- Show existing documents -->
 			<?php
 			    if(count($documents) > 0){ ?>
 			    <th>File</th><th>&nbsp&nbspDescription</th><td>&nbsp&nbsp</td>
@@ -182,6 +187,8 @@ if(!$results){
 			?>
 		    </table>
 		<table>
+		    
+		    <!-- Add new documents, allows 2 new -->
 		    <th>Add Files</th>
 		
 		    <tr><td>File Description</td></tr>
@@ -230,6 +237,7 @@ if(!$results){
 		?>
 	    </table>
 	</table>
+	<!-- Close form -->
     <?php echo $this->form()->closeTag();?>
   </div><!-- /example -->
     <?php
