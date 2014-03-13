@@ -130,11 +130,11 @@ function editHandler(outcomeId, outcomeText, outcomeNumber){
 }
 
 // handle clicks on the delete button
-function deleteHandler(outcomeId, ot){
+function deleteHandler(outcomeId, outcomeText){
     var selectedProgram = <?php echo $this->escapeHtml($programId);?>;
     
     // if the user wants to go through with it
-    if (confirm("Are you sure you want to delete this outcome?\n\n\"" + ot + "\"\n")) {
+    if (confirm("Are you sure you want to delete this outcome?\n\n\"" + outcomeText + "\"\n")) {
    
         var urlform = "<?php echo $this->url('outcomes', array(
                                     'controller'=>'outcomes',
@@ -145,7 +145,7 @@ function deleteHandler(outcomeId, ot){
         $.ajax({
             url: urlform,
             type: "POST",
-            data: { oid: outcomeId }, 
+            data: { action: "delete", oid: outcomeId }, 
             dataType: "text",
             error : function(xhr, status, error) {
                 console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
