@@ -114,7 +114,7 @@ class UserController extends AbstractActionController {
                 // Redirect to list of users
                 return $this->redirect()->toRoute('user');
             }else{
-              Debug::dump($form->getMessages());
+              #Debug::dump($form->getMessages());
             }
         }
         return array(
