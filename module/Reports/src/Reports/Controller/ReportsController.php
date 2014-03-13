@@ -24,21 +24,17 @@ class ReportsController extends AbstractActionController
    // This holds table results for certain methods
    protected $tableResults;  
    
-<<<<<<< HEAD
+
     // get these values from the session namespace
 
    //protected $userRole = 4;
 
-   protected $userRole = 1;
-<<<<<<< HEAD
+  // protected $userRole = 1;
 
-=======
->>>>>>> feature
-   protected $userID = 9;   
+   protected $userID;   
    
-   /*
-=======
->>>>>>> fd6dc374841bdc992f78903d7ab7b6d33091c656
+ 
+
    public function onDispatch(\Zend\Mvc\MvcEvent $e) 
    {   $validUser = new AuthUser();
         if (!$validUser->Validate()){

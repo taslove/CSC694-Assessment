@@ -11,7 +11,7 @@ class ApplicationForm extends Form
         // we want to ignore the name passed
         parent::__construct('application');
         $this->setAttribute('method', 'post');
-        $this->setAttribute('action', 'application\choose');
+        $this->setAttribute('action', 'application/choose');
 
         $this->add(array(
             'name' => 'module',
