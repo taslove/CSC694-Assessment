@@ -866,8 +866,6 @@ from assessment.units un
 	on p.unit_id = un.id
     inner join assessment.outcomes o
 	on o.program_id = p.id
-    inner join assessment.plan_outcomes po
-	on po.outcome_id = o.id
 where un.id = 'CSC'
   and p.name = 'BS Computer Science'
 group by p.name, o.id, o.outcome_text
@@ -883,7 +881,6 @@ group by p.name, o.id, o.outcome_text
                       ->from('units')
 		      ->join('programs', 'programs.unit_id = units.id')
 		      ->join('outcomes', 'outcomes.program_id = programs.id')
-		      ->join('plan_outcomes', 'plan_outcomes.outcome_id = outcomes.id')
 		      ->where(array('units.id' => $unitId, 'programs.name' => $names))
 		      ->group (array('program' => new Expression('programs.name'),
                                      'outcomeId' => new Expression('outcomes.id'),
