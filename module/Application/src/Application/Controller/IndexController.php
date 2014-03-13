@@ -58,10 +58,41 @@ class IndexController extends AbstractActionController
             $namespace->message = 'Assessment Portal accessible to Faculty and Administration only';
             return $this->redirect()->toRoute('home');
         }
-        else if ($password == 'good') {
+        else if ($userName == 'role1') {
             $namespace->userID = 135;
             $namespace->role = 1;
             $namespace->userEmail = $userEmail;   
+            $namespace->datatelID = $userName;
+            $namespace->message = NULL;
+            return $this->redirect()->toRoute('application');
+        }
+        else if ($userName == 'role2') {
+            $namespace->userID = 135;
+            $namespace->role = 2;
+            $namespace->userEmail = $userEmail;   
+            $namespace->datatelID = $userName;
+            $namespace->message = NULL;
+            return $this->redirect()->toRoute('application');
+        }
+        else if ($userName == 'role3') {
+            $namespace->userID = 135;
+            $namespace->role = 3;
+            $namespace->userEmail = $userEmail;   
+            $namespace->datatelID = $userName;
+            $namespace->message = NULL;
+            return $this->redirect()->toRoute('application');
+        }
+        else if ($userName == 'role4') {
+            $namespace->userID = 135;
+            $namespace->role = 4;
+            $namespace->userEmail = $userEmail;   
+            $namespace->datatelID = $userName;
+            $namespace->message = NULL;
+            return $this->redirect()->toRoute('application');
+        }else if ($userName == 'user') {
+            $namespace->userID = NULL;
+            $namespace->role = NULL;
+            $namespace->userEmail = NULL;   
             $namespace->datatelID = $userName;
             $namespace->message = NULL;
             return $this->redirect()->toRoute('application');
