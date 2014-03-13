@@ -92,6 +92,7 @@ class AllTables extends AbstractTableGateway
         return $result;
     }
     
+    //retrieves the user id, email address, and datatelID from the DB
     public function getUserInformation($userID)
     {
         $sql = new Sql($this->adapter);
@@ -109,6 +110,7 @@ class AllTables extends AbstractTableGateway
         return $result;
     }
     
+    //retrieves the role of the user given their userID
     public function getUserRole($userID)
     {
         $sql = new Sql($this->adapter);

@@ -17,7 +17,7 @@ use Application\Authentication\AuthUser;
 
 class ApplicationController extends AbstractActionController
 {
-    
+    //if the user if not logged in and authenticated they are sent back to the the login screen
     public function onDispatch(\Zend\Mvc\MvcEvent $e)
     {
         $validUser = new AuthUser();
@@ -27,12 +27,14 @@ class ApplicationController extends AbstractActionController
         return parent::onDispatch($e);
     }
     
+    //the indexAction just renders the main screen giving the options of modules to choose from
     public function indexAction()
     {
         $form = new ApplicationForm();
         return array('form' => $form);
     }
 
+    //this method determines the choise the user made and directs them to the appropriate module
     public function chooseAction()
     {
         $request = $this->getRequest();
