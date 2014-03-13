@@ -64,9 +64,8 @@ class ReportsController extends AbstractActionController
          // user in table with role - show actions
          // wait to populate units until action chosen
          return new ViewModel(array(
-            'useractions' => array('View', 'Add', 'Modify')));
+            'useractions' => array('View', 'Add', 'Modify'), 'user' => $userID));
      }
-      return new ViewModel();
    }
     
     // Called to show all matching plans after selection is made on left nav
