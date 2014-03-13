@@ -89,36 +89,43 @@ class OutcomesController extends AbstractActionController
       // get program that's selected from id in url
       $programSelected = $this->params()->fromRoute('id', 0);
       $request = $this->getRequest();
-         
-      // this code will execute if an outcome was just added, edited or deactivated
-      if ($request->isPost()) {
-            
-         // handle an add
-         if ($request->getPost('action') == "add"){
-            // get outcome text from post data and use it to create outcome
-            $outcomeText = $request->getPost('outcomeText');
-            $this->getOutcomesQueries()->addOutcome($programSelected, $outcomeText, $userID);
-         }
-            
-         // handle an edit
-         else if ($request->getPost('action') == "edit"){
-            $oidToDeactivate = $request->getPost('oidToDeactivate');
-            $outcomeText = $request->getPost('outcomeText');
-            $this->getOutcomesQueries()->editOutcome($programSelected, $outcomeText, $oidToDeactivate, $userID); 
-         }
-            
-         // handle a delete / deactivate
-         else {
-            $outcomeId = $request->getPost('oid');
-            $this->getOutcomesQueries()->deactivateOutcome($outcomeId, $userID);
-         }
+      
+      // this gets flipped to 0 if no permissions are found when 'Submit' is clicked on the left side
+      $adminFlag = 1;
+      
+      // handle a left-side submit button click
+      if ($request->getPost('action') == "submitClick"){
+         $unitId = $request->getPost('unitId');
+         // set admin flag based on user's permissions
+         $adminFlag = $this->getOutcomesQueries()->checkPermissions($userID, $unitId);             
       }
+      // handle an add
+      else if ($request->getPost('action') == "add"){
+          // get outcome text from post data and use it to create outcome
+         $outcomeText = $request->getPost('outcomeText');
+         $this->getOutcomesQueries()->addOutcome($programSelected, $outcomeText, $userID);
+      }
+            
+      // handle an edit
+      else if ($request->getPost('action') == "edit"){
+         $oidToDeactivate = $request->getPost('oidToDeactivate');
+         $outcomeText = $request->getPost('outcomeText');
+         $this->getOutcomesQueries()->editOutcome($programSelected, $outcomeText, $oidToDeactivate, $userID);
+      }
+            
+      // handle a delete / deactivate
+      else if ($request->getPost('action') == "delete") {
+         $outcomeId = $request->getPost('oid');
+         $this->getOutcomesQueries()->deactivateOutcome($outcomeId, $userID);
+      }
+      
+      // handle the back button from the add or modify screen
+      else if ($request->getPost('action') == "back") {
+         // doesn't need to do anything but I wanted to include all the possible actions
+      }
+         
       // get outcomes for the selected program
       $results = $this->getOutcomesQueries()->getAllActiveOutcomesForProgram($programSelected);
-      
-      $unitId = $request->getPost('unitId');
-      $adminFlag = $this->getOutcomesQueries()->checkPermissions($userID, $unitId);
-      
       
       // pass in the selected program, its outcomes and whether or not the user has admin rights
       $partialView = new ViewModel(array(

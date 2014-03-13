@@ -59,7 +59,8 @@ $(document).ready(function()
 	  // asynchronous ajax code to populate program/degree selector
 	  $.ajax({
 	       url: urlform,
-	       type: "GET",
+	       type: "POST",
+	       data: { action: "back" }, 
 	       dataType: "text",
 	       error : function(xhr, status, error)
 	       {

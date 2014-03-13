@@ -118,7 +118,7 @@ $(document).ready(function()
         $.ajax({
             url: urlform,
             type: "POST",
-            data: { unitId: $('#unit-menu option:selected').val() }, // we need the unitId to check permissions
+            data: { action: "submitClick", unitId: $('#unit-menu option:selected').val() }, // we need the unitId to check permissions
             dataType: "text",
             error : function(xhr, status, error)
             {
