@@ -11,7 +11,7 @@ class LoginForm extends Form
         // we want to ignore the name passed
         parent::__construct('login');
         $this->setAttribute('method', 'post');
-        $this->setAttribute('action', 'authenticate');
+        //$this->setAttribute('action', 'authenticate');
         
         $this->add(array(
             'name' => 'userName',
@@ -19,7 +19,7 @@ class LoginForm extends Form
                 'type' => 'text',
             ),
             'options' => array(
-                'label' => 'User Name',                
+                'label' => 'User ID ',                
             ),
         ));
         $this->add(array(
@@ -28,7 +28,7 @@ class LoginForm extends Form
                 'type' => 'password',
             ),
             'options' => array(
-                'label' => 'Password',                
+                'label' => 'Password ',                
             ),
             
         ));
