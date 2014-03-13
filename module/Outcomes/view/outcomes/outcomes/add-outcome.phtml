@@ -1,19 +1,26 @@
-<textarea id="outcomeTextArea" rows="6" cols="90" placeholder=""></textarea>
-<br />
-<br />
-<button class="btn btn-primary btn-lg" id="back">Back to Outcomes</button>
-<button class="btn btn-primary btn-lg" id="add-button" value="Add">Add</button>
+<div style="width:100%;">  <!-- set width to keep left selectors from shifting-->
+     <br />
+     <br />
+     <div class="panel panel-default">
+     <!-- Default panel contents -->
+          <div class="panel-heading">Enter new outcome</div>
+          <textarea id="outcomeTextArea" rows="6" cols="90" style="width:100%; padding:7px;" placeholder=""></textarea>
+     </div>
+          <button class="btn btn-primary btn-md" id="back">&laquo; Back to Outcomes</button>
+          <button class="btn btn-primary btn-md" id="add-button" value="Add">Add &raquo;</button>
+</div>
 <br />
 <br />
 
 <script>
-     $(document).ready(function(){
- 
+$(document).ready(function()
+{
      var program = <?php echo $this->escapeHtml($programChosen);?>;
+     $("#outcomeTextArea").focus(); // select the text area from the get-go
    
      //  handle add button click
-     $("#add-button").click(function (){
-
+     $("#add-button").click(function ()
+     {
 	  var text = $('#outcomeTextArea').val();
      
 	  // create url for redirect
@@ -28,10 +35,12 @@
 	       type: "POST",
 	       data: { action: "add", pid: program, outcomeText: text  }, 
 	       dataType: "text",
-	       error : function(xhr, status, error) {
-	       console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+	       error : function(xhr, status, error)
+	       {
+		    console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
 	       },
-	       success: function(partialHtml){
+	       success: function(partialHtml)
+	       {
 		    // clear any existing html in the partial div
 		    $('#partialHolder').html(partialHtml);
 	       },
@@ -39,8 +48,8 @@
      });
 
      //  handle back button click
-     $("#back").click(function (){
-  
+     $("#back").click(function ()
+     {
 	  // create url for redirect
 	  var urlform = "<?php echo $this->url('outcomes', array(
                                     'controller'=>'outcomes',
@@ -52,10 +61,12 @@
 	       url: urlform,
 	       type: "GET",
 	       dataType: "text",
-	       error : function(xhr, status, error) {
+	       error : function(xhr, status, error)
+	       {
 	       console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
 	       },
-	       success: function(partialHtml){
+	       success: function(partialHtml)
+	       {
 		    // clear any existing html in the partial div
 		    $('#partialHolder').html(partialHtml);
 	       },

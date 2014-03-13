@@ -49,7 +49,7 @@ class OutcomesTable extends AbstractTableGateway
     {
         $sql = new Sql($this->adapter);
         
-        // store data from the outcome object that was passed in    
+        // store data from the outcome object that was passed in - timestamp works on its own   
         $data = array('program_id' => $programId,
 		      'outcome_text' => $outcomeText,
                       'active_flag' => 1,
@@ -66,12 +66,16 @@ class OutcomesTable extends AbstractTableGateway
     // swaps an existing outcome's active flag from 1 to 0
     public function deactivateOutcome($outcomeId, $userId)
     {
+        // Get current time for deactivated timestamp
+        $now = date("Y-m-d H:i:s", time());
+        
         $sql = new Sql($this->adapter);
         // switch the active flag from 0 to 1 then update only for the id passed in
 	$update = $sql->update()
 			->table('outcomes')
 			->set(array('active_flag' => 0,
                                     'deactivated_user' => $userId,
+                                    'deactivated_ts' => $now,
 			))
 			->where(array('id' => $outcomeId
         ));                    
@@ -85,5 +89,65 @@ class OutcomesTable extends AbstractTableGateway
         $sql = new Sql($this->adapter);       
         $this->addOutcome($programId, $newOutcomeText, $userId);
         $this->deactivateOutcome($deactivatedOutcomeId, $userId);       
+    }
+    
+    // return 1 if the user has permission to modify the unit
+    public function checkPermissions($userID, $unitID)
+    {
+        $sql = new Sql($this->adapter);
+        $where = new Where();
+        
+        // check the unit privs table to see is the user exists with the correct unit priv
+        $select1 = $sql->select()
+                      ->from('unit_privs')
+                      ->columns(array('id'))
+                      ->where(array('unit_privs.user_id' => $userID))
+                      ->where(array('unit_privs.unit_id' => $unitID))                   
+        ;
+        
+        $statement = $sql->prepareStatementForSqlObject($select1);
+        $result = $statement->execute();
+        
+        // if $result not empty return true
+        if ($result->count() > 0)
+        {
+            return true;
+        } 
+      
+        // check the liason privs table to see if the user exists with the correct unit priv
+        $select2 = $sql->select()
+                      ->from('liaison_privs')
+                      ->columns(array('id'))
+                      ->where(array('liaison_privs.user_id' => $userID))
+                      ->where(array('liaison_privs.unit_id' => $unitID))
+                      
+        ;
+       $statement = $sql->prepareStatementForSqlObject($select2);
+        $result = $statement->execute();
+        
+        // if $result not empty return true
+        if ($result->count() > 0)
+        {
+            return true;
+        } 
+        
+        // check is the user's role gives him / her access to modify every unit
+        $select2 = $sql->select()
+                      ->from('user_roles')
+                      ->columns(array('id'))
+                      ->where(array('user_roles.user_id' => $userID))
+                      ->where(array('user_roles.role' => 1))
+                      
+        ;
+       $statement = $sql->prepareStatementForSqlObject($select2);
+        $result = $statement->execute();
+        // if $result not empty return true
+        if ($result->count() > 0)
+        {
+            return true;
+        } else {
+            // if you get to this point, the user isn't allowed to make any changes
+            return false;
+        }
     }
 }
