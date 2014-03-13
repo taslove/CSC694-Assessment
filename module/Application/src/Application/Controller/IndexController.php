@@ -61,31 +61,31 @@ class IndexController extends AbstractActionController
         else if ($userName == 'role1') {
             $namespace->userID = 135;
             $namespace->role = 1;
-            $namespace->userEmail = $userEmail;   
+            $namespace->userEmail = NULL;   
             $namespace->datatelID = $userName;
             $namespace->message = NULL;
             return $this->redirect()->toRoute('application');
         }
         else if ($userName == 'role2') {
-            $namespace->userID = 135;
+            $namespace->userID = 9;
             $namespace->role = 2;
-            $namespace->userEmail = $userEmail;   
+            $namespace->userEmail = NULL;   
             $namespace->datatelID = $userName;
             $namespace->message = NULL;
             return $this->redirect()->toRoute('application');
         }
         else if ($userName == 'role3') {
-            $namespace->userID = 135;
+            $namespace->userID = 1;
             $namespace->role = 3;
-            $namespace->userEmail = $userEmail;   
+            $namespace->userEmail = NULL;   
             $namespace->datatelID = $userName;
             $namespace->message = NULL;
             return $this->redirect()->toRoute('application');
         }
         else if ($userName == 'role4') {
-            $namespace->userID = 135;
+            $namespace->userID = 21;
             $namespace->role = 4;
-            $namespace->userEmail = $userEmail;   
+            $namespace->userEmail = NULL;   
             $namespace->datatelID = $userName;
             $namespace->message = NULL;
             return $this->redirect()->toRoute('application');
