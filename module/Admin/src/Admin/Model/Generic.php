@@ -54,7 +54,7 @@ class Generic extends AbstractTableGateway
     /*
      * Assigns a role id to a term
      */
-    public function getRoleTerms(){
+    public function getRoleTerms($admin = true){
         $roles = array(
           '1' => 'Admin',
           '2' => 'Liason',
@@ -62,6 +62,11 @@ class Generic extends AbstractTableGateway
           '4' => 'Assessor',
           '5' => 'User',
         );
+        if(!$admin)
+        {
+            unset($roles[1]);
+        }
+        
         return $roles;
     }
 

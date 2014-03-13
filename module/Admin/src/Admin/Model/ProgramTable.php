@@ -28,8 +28,11 @@ class ProgramTable extends AbstractTableGateway {
     public function fetchAll($paginated = false) {
         if ($paginated) {
             // create a new Select object for the table album
-            $select = new Select('programs');
-            // create a new result set based on the Album entity
+            $select = new Select();
+            $select->from('programs')
+                    ->columns(array('prog_id' => 'id','unit_id','name','created_ts','active_flag'))
+                    ->join(array('u' => 'users'), 'u.id = created_user');
+            // create a new result set based on the Program entity
             $resultSetPrototype = new ResultSet();
             $resultSetPrototype->setArrayObjectPrototype(new Program());
             // create a new pagination adapter object
@@ -75,12 +78,13 @@ class ProgramTable extends AbstractTableGateway {
         $data = array(
             'unit_id' => $program->unit_id,
             'name' => $program->name,
-            'active_flag' => ($program->active_flag) ? $program->active_flag : 0,
+            #'active_flag' => ($program->active_flag) ? $program->active_flag : 0, //removed active checkbox from form
+            'active_flag' => 1,
         );
 
         //deactivating an existing program
         if (!$program->active_flag) {
-            $data['deactivated_ts'] = date('Y-m-d g:i:s', time());
+            $data['deactivated_ts'] = date('Y-m-d h:i:s', time());
             $data['deactivated_user'] = $namespace->userID;
         }
 
@@ -89,7 +93,7 @@ class ProgramTable extends AbstractTableGateway {
 
         //if program doesn't exists
         if ($id == 0) {
-            $data['created_ts'] = date('Y-m-d g:i:s', time());
+            $data['created_ts'] = date('Y-m-d h:i:s', time());
             $data['created_user'] = $namespace->userID;
             $this->insert($data);
         } else {

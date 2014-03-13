@@ -13,7 +13,7 @@
              'Admin\Controller\Admin' => 'Admin\Controller\AdminController',
              'Admin\Controller\User' => 'Admin\Controller\UserController',
              'Admin\Controller\Program' => 'Admin\Controller\ProgramController',
-             'Admin\Controller\Unit' => 'Admin\Controller\UnitController',
+            # 'Admin\Controller\Unit' => 'Admin\Controller\UnitController',
              'Admin\Controller\Queries' => 'Admin\Controller\QueriesController',
          ),
      ),
@@ -66,7 +66,7 @@
                      ),
                  ),
              ),
-             'unit' => array(
+          /*   'unit' => array(
                  'type'    => 'segment',
                  'options' => array(
                      'route'    => '/admin/units[/][page/:page][:action][/:id]',
@@ -80,7 +80,7 @@
                          'action'     => 'index',
                      ),
                  ),
-             ),
+             ),*/
              'query' => array(
                  'type'    => 'segment',
                  'options' => array(

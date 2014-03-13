@@ -37,6 +37,8 @@ class Program implements InputFilterAwareInterface
      */
     public function getInputFilter()
     {
+        
+        
       if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
             $factory = new InputFactory();

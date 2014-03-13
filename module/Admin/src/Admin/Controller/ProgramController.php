@@ -17,6 +17,7 @@ use Zend\session\container;
 class ProgramController extends AbstractActionController {
 
     protected $tableResults;
+    protected $unittableResults;
 
     public function onDispatch(\Zend\Mvc\MvcEvent $e) {
       /*  $validUser = new AuthUser();
@@ -46,7 +47,8 @@ class ProgramController extends AbstractActionController {
         $paginator->setItemCountPerPage(10);
 
         //add program form
-        $form = new ProgramForm();
+        $units = $this->getUnitQueries()->getUnitsForSelect();
+        $form = new ProgramForm($units);
         $form->get('submit')->setValue('Add');
 
         //send paginator and form to index view
@@ -62,7 +64,8 @@ class ProgramController extends AbstractActionController {
 
     public function addAction() {
         //the add program form
-        $form = new ProgramForm();
+        $units = $this->getUnitQueries()->getUnitsForSelect();
+        $form = new ProgramForm($units);
         $form->get('submit')->setValue('Add');
 
         //if form is returned with post
@@ -74,10 +77,6 @@ class ProgramController extends AbstractActionController {
             $form->setInputFilter($program->getInputFilter());
             $form->setData($request->getPost());
 
-            //check if form is valid
-            if (!$form->isValid()) {
-                print_r($form->getMessages());
-            }
             if ($form->isValid()) {
                 $program->exchangeArray($form->getData());
 
@@ -109,7 +108,8 @@ class ProgramController extends AbstractActionController {
         $program = $this->getProgramQueries()->getProgram($id);
 
         //the program edit form, bind with values from database
-        $form = new ProgramForm();
+        $units = $this->getUnitQueries()->getUnitsForSelect();
+        $form = new ProgramForm($units);
         $form->bind($program);
         $form->get('submit')->setAttribute('value', 'Save');
 
@@ -162,7 +162,6 @@ class ProgramController extends AbstractActionController {
     /*
      * Method to get the ProgramTable
      */
-
     public function getProgramQueries() {
         if (!$this->tableResults) {
             $this->tableResults = $this->getServiceLocator()
@@ -174,7 +173,6 @@ class ProgramController extends AbstractActionController {
     /*
      * Method to get the UserTable
      */
-
     public function getUserQueries() {
         if (!$this->tableResults) {
             $this->tableResults = $this->getServiceLocator()
@@ -182,5 +180,15 @@ class ProgramController extends AbstractActionController {
         }
         return $this->tableResults;
     }
-
+    
+    /*
+     * Method to get UnitTable()
+     */
+    public function getUnitQueries() {
+        if (!$this->unittableResults) {
+            $this->unittableResults = $this->getServiceLocator()
+                    ->get('Admin\Model\UnitTable');
+        }
+        return $this->unittableResults;
+    }
 }

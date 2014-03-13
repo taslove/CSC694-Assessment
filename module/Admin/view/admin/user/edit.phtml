@@ -1,16 +1,21 @@
-<div class="row user-content">
-    <?php
-// module/Admin/view/user/edit.phtml:
-
+<?php echo $this->partial('admin/admin/menu.phtml',array('active'=>'user')); ?>
+<?php
     $title = 'Modify User';
     $this->headTitle($title);
-    ?>
+?>
+<div class="row user-content">
     <div class="title col-md-12">
         <h1><?php echo $this->escapeHtml($title); ?></h1>
     </div>
     <div class="user-form-wrapper col-md-12" style="overflow:hidden;">
        <div class="user-form" style="overflow:hidden;">
-            <?php echo $this->partial('admin/user/form.phtml', array('form' => $this->form, 'action' => 'edit','submitVal' =>'Modify User','id' => $this->id)); ?>
+            <?php echo $this->partial('admin/user/form.phtml', array(
+                'form' => $this->form,
+                'action' => 'edit',
+                'submitVal' =>'Modify User',
+                'id' => $this->id,
+                'count'=>$this->count,
+                'disabledPrivs'=>$this->disabledPrivs)); ?>
        </div>
     </div>
 </div>
