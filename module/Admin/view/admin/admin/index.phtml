@@ -1,12 +1,37 @@
 <?php echo $this->partial('admin/admin/menu.phtml',array('active'=>'admin')); ?>
-<div class="jumbotron">
-    <h1><?php echo sprintf($this->translate('Administration'), '<span class="zf-green">', '</span>') ?></h1>
-</div>
+<?php
+$title = 'Administration';
+$this->headTitle($title);
+?>
+<div class="row admin-home">
+    <div class="title col-md-12">
+        <h1><?php echo $this->escapeHtml($title); ?></h1>
+    </div>
 
-<div class="row">
-<p>
-    <a href="<?php echo $this->url('user', array('action'=>'add'));?>">Add new User</a>
-</p>
-
-
+    <div class="admin-home-users col-md-10" style="overflow:hidden;">
+        <div class="admin-home-users col-md-12" tyle="overflow:hidden;">
+            <div class=" col-md-6">
+               <h2>Manage Users</h2>
+            </div>
+            <div class="col-md-6">
+                <a role="button" class="btn btn-primary btn-lg" href="<?php echo $this->url('user');?>">Go</a>
+            </div>
+        </div>
+        <div class="admin-home-programs  col-md-12" style="overflow:hidden;">
+           <div class=" col-md-6">
+               <h2>Manage Programs</h2>
+            </div>
+            <div class=" col-md-6">
+                <a role="button" class="btn btn-primary btn-lg" href="<?php echo $this->url('program');?>">Go</a>
+            </div>
+        </div>
+        <div class="admin-home-queries col-md-12" style="overflow:hidden;">
+            <div class=" col-md-6">
+                <h2>Run Queries</h2>
+            </div>
+            <div class=" col-md-6">
+                <a role="button" class="btn btn-primary btn-lg" href="<?php echo $this->url('query');?>">Go</a>
+            </div>
+        </div>
+    </div>
 </div>

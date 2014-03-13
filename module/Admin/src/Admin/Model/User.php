@@ -115,6 +115,24 @@ class User implements InputFilterAwareInterface
                     ),
                 ),
             )));
+            
+         for($i=0; $i<4; $i++)
+         {
+           $inputFilter->add($factory->createInput(array(
+                'name' => 'role_'.$i,
+                'required' => false,
+               )));
+         }  
+           $inputFilter->add($factory->createInput(array(
+                'name' => 'unit_privs',
+                'required' => false,
+               )));
+                    
+           $inputFilter->add($factory->createInput(array(
+                'name' => 'liaison_privs',
+                'required' => false,
+               )));
+         
 
             $this->inputFilter = $inputFilter;
         }

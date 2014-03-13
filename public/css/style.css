@@ -52,8 +52,9 @@ div.container a.brand {
     margin-bottom: 2%;
 }
 .user-form .user-roles .head-label{
-    padding:5px 5px 5px 0px;
-    margin-right:20px;
+    padding: 0px 5px 5px 0px;
+    margin-right: 20px;
+    margin-bottom: 12px;
 }
 
 .user-form .user-roles .user-role-options{
@@ -64,9 +65,21 @@ div.container a.brand {
     padding-top:15px;
 }
 
-.user-table-wrapper{
-    
+.user-form .submit #submitbutton{
+    float: right;
+    margin-bottom: 10px;
+    margin-top: -12px;
 }
+.user-role-options-placeholder{
+    margin-top:22px;
+}
+.user-roles{
+    margin-bottom: 5px;
+}
+#unit_privs{
+    margin-top:5px;
+}
+
 .user-content .table-bordered{
     border-radius: 5px;
 }

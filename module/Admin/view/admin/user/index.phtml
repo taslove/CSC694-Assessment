@@ -1,6 +1,6 @@
 <?php
 // module/Admin/view/admin/user/index.phtml:
-$title = 'Users';
+$title = 'Manage Users';
 $this->headTitle($title);
 ?>
 <?php echo $this->partial('admin/admin/menu.phtml',array('active'=>'user')); ?>
@@ -11,7 +11,13 @@ $this->headTitle($title);
 
     <div class="user-form-wrapper col-md-12">
         <div class="user-form" style="overflow:hidden;">
-            <?php echo $this->partial('admin/user/form.phtml', array('form' => $this->form, 'action' => 'add','submitVal' =>'Add User', 'id' => $this->id)); ?>
+            <?php echo $this->partial('admin/user/form.phtml', array(
+                            'form' => $this->form, 
+                            'action' => 'add',
+                            'submitVal' =>'Add User', 
+                            'id' => $this->id,
+                            'count'=>1,
+                            'disabledPrivs'=>$this->disabledPrivs)); ?>
         </div>    
     </div>
 
@@ -26,7 +32,7 @@ $this->headTitle($title);
                         <th>ID</th>
                         <th>First Name</th>
                         <th>Last Name</th>
-                        <th>Middle Int.</th>
+                        <th>M.I.</th>
                         <th>Email</th>
                         <th>Role(s)</th>
                         <th>Action</th>
@@ -49,8 +55,9 @@ $this->headTitle($title);
                             <td>
                                 <a class="btn btn-primary btn-xs" href="<?php echo $this->url('user', array('action' => 'edit', 'id' => $user->id));
     ?>"><?php echo $this->translate('Modify') ?> &raquo;</a>
-                                <a class="btn btn-warning btn-xs" href="<?php echo $this->url('user', array('action' => 'delete', 'id' => $user->id));
+                                <a class="btn btn-warning btn-xs" onclick="if (confirm('Are you sure you want to delete  <?php echo $user->first_name .' '.$user->last_name;?>?')) { document.location = this.href; } return false;"href="<?php echo $this->url('user', array('action' => 'delete', 'id' => $user->id));
     ?>"><?php echo $this->translate('Delete') ?> &raquo;</a>
+
                             </td>
                         </tr>
 <?php endforeach; ?>

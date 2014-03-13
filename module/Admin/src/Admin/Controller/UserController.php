@@ -23,6 +23,7 @@ class UserController extends AbstractActionController {
 
     protected $tableResults;
     protected $generictableResults;
+    protected $unittableResults;
 
     public function onDispatch(\Zend\Mvc\MvcEvent $e) {
       /*  $validUser = new AuthUser();
@@ -60,18 +61,23 @@ class UserController extends AbstractActionController {
                 ->setPageRange(7);
 
         //get role terms for user form
-        $args['roles'] = $this->getGenericQueries()->getRoleTerms();
+        $args['roles'] = $this->getGenericQueries()->getRoleTerms(false);
 
         //create user form
+        $args['count'] = 1;
+        $args['liaison_privs'] = $this->getUnitQueries()->getUnitsForSelect();//unlimited liaisons
+        $args['unit_privs'] = $this->getUnitQueries()->getUnitsForSelectAssessors();//two assessors
         $form = new UserForm(null, $args);
         $form->get('submit')->setValue('Add');
 
 
+        $disabledPrivs = $this->getUnitQueries()->getDisablePrivUnits();
         //send paginator,and form to page
         return new ViewModel(array(
             'page' => $page,
             'paginator' => $paginator,
-            'form' => $form
+            'form' => $form,
+            'disabledPrivs' =>$disabledPrivs
         ));
     }
 
@@ -81,7 +87,11 @@ class UserController extends AbstractActionController {
 
     public function addAction() {
         //get role terms for form and build form
-        $args['roles'] = $this->getGenericQueries()->getRoleTerms();
+        $args['count'] = 4;
+        $args['liaison_privs'] = $this->getUnitQueries()->getUnitsForSelect();//unlimited liaisons
+        $args['unit_privs'] = $this->getUnitQueries()->getUnitsForSelectAssessors();//two assessors
+        $args['roles'] = $this->getGenericQueries()->getRoleTerms(false);
+        $disabledPrivs = $this->getUnitQueries()->getDisablePrivUnits();
         $form = new UserForm(null, $args);
         $form->get('submit')->setValue('Add');
 
@@ -93,6 +103,7 @@ class UserController extends AbstractActionController {
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
+
                 $user->exchangeArray($form->getData());
 
                 //TODO: something to check it email exists
@@ -102,9 +113,14 @@ class UserController extends AbstractActionController {
 
                 // Redirect to list of users
                 return $this->redirect()->toRoute('user');
+            }else{
+              #Debug::dump($form->getMessages());
             }
         }
-        return array('form' => $form);
+        return array(
+            'form' => $form,
+            'count' => 4,
+            'disabledPrivs' =>$disabledPrivs);
     }
 
     /*
@@ -123,18 +139,26 @@ class UserController extends AbstractActionController {
         //get the user object from the database
         $user = $this->getUserQueries()->getUser($id);
 
-        //get that users roles
-        $user->dbroles = $user->user_roles;
-
-        //load those roles into the user object to inject in the form
-        foreach ($user->user_roles as $role => $value) {
-            $user->user_roles[] = $role;
+        $count = 0;
+        foreach($user->user_roles as $key =>$value)
+        {
+            $name = 'role_'.$count;
+            $user->$name = $key;
+            $count++;        
         }
+                
+        //get unit and liasion privs
+        $user->unit_privs = $this->getUserQueries()->getUserUnitPrivs($id,'unit_privs');
+        $user->liaison_privs = $this->getUserQueries()->getUserUnitPrivs($id,'liaison_privs');
 
         //build form
-        $args['roles'] = $this->getGenericQueries()->getRoleTerms();
+        $args['count'] = 4;
+        $args['roles'] = $this->getGenericQueries()->getRoleTerms(false);
         $args['action'] = 'edit';
         $args['user_id'] = $id;
+        $args['liaison_privs'] = $this->getUnitQueries()->getUnitsForSelect();//unlimited liaisons
+        $args['unit_privs'] = $this->getUnitQueries()->getUnitsForSelectAssessors();//two assessors
+        $disabledPrivs = $this->getUnitQueries()->getDisablePrivUnits();
         $form = new UserForm(null, $args);
         $form->bind($user);
         $form->get('submit')->setAttribute('value', 'Save');
@@ -155,6 +179,8 @@ class UserController extends AbstractActionController {
         return array(
             'id' => $id,
             'form' => $form,
+            'count' => 4,
+            'disabledPrivs' =>$disabledPrivs
         );
     }
 
@@ -209,6 +235,17 @@ class UserController extends AbstractActionController {
                     ->get('Admin\Model\UserTable');
         }
         return $this->tableResults;
+    }
+    
+    /*
+     * Method to get UnitTable()
+     */
+    public function getUnitQueries() {
+        if (!$this->unittableResults) {
+            $this->unittableResults = $this->getServiceLocator()
+                    ->get('Admin\Model\UnitTable');
+        }
+        return $this->unittableResults;
     }
 
     /* not working but would have been awesome

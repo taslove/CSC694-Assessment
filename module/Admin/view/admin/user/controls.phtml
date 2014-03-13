@@ -1,42 +1,44 @@
 <?php if ($this->pageCount): ?>
-    <div class="paginationControl">
-        <?php echo $this->firstItemNumber; ?> - <?php echo $this->lastItemNumber; ?>
-        of <?php echo $this->totalItemCount; ?>
+    <div class="paginationControl pagination pagination-centered">
 
         <!-- First page link -->
         <?php if (isset($this->previous)): ?>
-            <a href="<?php echo $this->url($this->route, array('page' => $this->first)); ?>">
+        <li> <a href="<?php echo $this->url($this->route, array('page' => $this->first)); ?>">
                 First
-            </a> |
+            </a> </li>
         <?php else: ?>
-            <span class="disabled">First</span> |
+            <li> <span class="disabled">First</span></li> 
         <?php endif; ?>
 
         <!-- Previous page link -->
         <?php if (isset($this->previous)): ?>
-            <a href="<?php echo $this->url($this->route, array('page' => $this->previous)); ?>">
+            <li><a href="<?php echo $this->url($this->route, array('page' => $this->previous)); ?>">
                 &lt; Previous
-            </a> |
+            </a> </li> 
         <?php else: ?>
-            <span class="disabled">&lt; Previous</span> |
+            <li><span class="disabled">&lt; Previous</span> 
         <?php endif; ?>
-
+          
+       <!-- Page count -->       
+       <li><span class="disabled">  <?php echo $this->firstItemNumber; ?> - <?php echo $this->lastItemNumber; ?>
+        of <?php echo $this->totalItemCount; ?></span></li>
+  
         <!-- Next page link -->
         <?php if (isset($this->next)): ?>
-            <a href="<?php echo $this->url($this->route, array('page' => $this->next)); ?>">
+           <li> <a href="<?php echo $this->url($this->route, array('page' => $this->next)); ?>">
                 Next &gt;
-            </a> |
+            </a> </li> 
         <?php else: ?>
-            <span class="disabled">Next &gt;</span> |
+           <li> <span class="disabled">Next &gt;</span></li>  
         <?php endif; ?>
 
         <!-- Last page link -->
         <?php if (isset($this->next)): ?>
-            <a href="<?php echo $this->url($this->route, array('page' => $this->last)); ?>">
+          <li>  <a href="<?php echo $this->url($this->route, array('page' => $this->last)); ?>">
                 Last
-            </a>
+            </a></li> 
         <?php else: ?>
-            <span class="disabled">Last</span>
+           <li> <span class="disabled">Last</span></li> 
         <?php endif; ?>
 
     </div>
