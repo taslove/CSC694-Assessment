@@ -281,6 +281,8 @@ class UserTable extends AbstractTableGateway
      */
     public function saveUser(User $user)
     {
+        Debug::dump($user);
+        exit;
         //build the data array to add to users table
         $data = array(
             'first_name' => $user->first_name,

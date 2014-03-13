@@ -52,8 +52,9 @@ div.container a.brand {
     margin-bottom: 2%;
 }
 .user-form .user-roles .head-label{
-    padding:5px 5px 5px 0px;
-    margin-right:20px;
+    padding: 0px 5px 5px 0px;
+    margin-right: 20px;
+    margin-bottom: 12px;
 }
 
 .user-form .user-roles .user-role-options{
