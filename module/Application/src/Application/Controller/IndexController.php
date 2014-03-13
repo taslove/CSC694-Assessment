@@ -42,8 +42,6 @@ class IndexController extends AbstractActionController
         //Get POST data
         $request = $this->getRequest();
         
-        
-        //This is for the demo only
         if ($request->isPost()) {
             $userName = $request->getPost('userName', null);
             $password = $request->getPost('password', null);
@@ -53,7 +51,7 @@ class IndexController extends AbstractActionController
             return $this->redirect()->toRoute('home');
         }
         
-          //THIS IS THE DEMO LOGIN  ACTION
+        //THIS IS THE DEMO LOGIN  ACTION
         if ($userName == 'student') {
             $namespace->message = 'Assessment Portal accessible to Faculty and Administration only';
             return $this->redirect()->toRoute('home');
@@ -179,6 +177,7 @@ class IndexController extends AbstractActionController
         */
     }
     
+    //this method gives access to the DB queries in Applications\AllTables
     public function getAllTables()
     {
         if (!$this->tableResults) {
@@ -188,6 +187,7 @@ class IndexController extends AbstractActionController
         return $this->tableResults;
     }
     
+    //logout clears the namespace variables and send the user back to the login screen
     public function logoutAction()
     {
         $namespace = new Container('user');
