@@ -1,69 +1,80 @@
-<textarea id="outcomeTextArea" rows="6" cols="90" placeholder=""><?php echo $this->escapeHtml($outcomeText);?></textarea>
+<div style="width:100%;">  <!-- set width to keep left selectors from shifting-->
+     <br />
+     <br />
+     <div class="panel panel-default">
+     <!-- Default panel contents -->
+          <div class="panel-heading">Outcome <?php echo $this->escapeHtml($outcomeNumber);?></div>
+          <textarea id="outcomeTextArea" rows="6" cols="90" style="width:100%; padding:7px;" placeholder=""><?php echo $this->escapeHtml($outcomeText);?></textarea>
+     </div>
+          <button class="btn btn-primary btn-md" id="back">&laquo; Back to Outcomes</button>
+          <button class="btn btn-primary btn-md" id="edit-button" value="Add">Modify &raquo;</button>
+</div>
 <br />
 <br />
-<button class="btn btn-primary btn-lg" id="back">Back to Outcomes</button>
-<button class="btn btn-primary btn-lg" id="edit-button" value="Add">Edit</button>
-<br />
-<br />
-
-<script>
- $(document).ready(function() {
- 
- var program = <?php echo $this->escapeHtml($programChosen);?>;
- var outcomeId = <?php echo $this->escapeHtml($outcomeId);?>;
-   
-//  handle edit button click
-$("#edit-button").click(function (){
-
-     var text = $('#outcomeTextArea').val();
      
-   // create url for redirect
-   var urlform = "<?php echo $this->url('outcomes', array(
-                                    'controller'=>'outcomes',
-                                    'action'=>'getOutcomes')); ?>";
-   urlform = urlform + '/' + program;
+<script>
+$(document).ready(function()
+{
+   var program = <?php echo $this->escapeHtml($programChosen);?>;
+   var outcomeId = <?php echo $this->escapeHtml($outcomeId);?>;
+
+   // set focus on text area and set the cursor at the end
+   $("#outcomeTextArea").focus();
+   var textArea = $("#outcomeTextArea");
+   var outcomeLength = textArea.html().length;
+   textArea[0].setSelectionRange(outcomeLength, outcomeLength); // select the text area from the get-go
       
-   // asynchronous ajax code to populate program/degree selector
-   $.ajax({
-      url: urlform,
-      type: "POST",
-      data: { action: "edit", pid: program, oidToDeactivate: outcomeId, outcomeText: text  }, 
-      dataType: "text",
-      error : function(xhr, status, error) {
-         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
-      },
-      success: function(partialHtml){
-        // clear any existing html in the partial div
-        $('#partialHolder').html(partialHtml);
-      },
+   //  handle edit button click
+   $("#edit-button").click(function ()
+   {
+      var text = $('#outcomeTextArea').val();
+        
+      // create url for redirect
+      var urlform = "<?php echo $this->url('outcomes', array(
+                                       'controller'=>'outcomes',
+                                       'action'=>'getOutcomes')); ?>";
+      urlform = urlform + '/' + program;
+         
+      // asynchronous ajax code to populate program/degree selector
+      $.ajax({
+         url: urlform,
+         type: "POST",
+         data: { action: "edit", pid: program, oidToDeactivate: outcomeId, outcomeText: text  }, 
+         dataType: "text",
+         error : function(xhr, status, error) {
+            console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+         },
+         success: function(partialHtml){
+           // clear any existing html in the partial div
+           $('#partialHolder').html(partialHtml);
+         },
+      });
    });
-});
 
-
-//  handle back button click
-$("#back").click(function (){
-  
-   // create url for redirect
-   var urlform = "<?php echo $this->url('outcomes', array(
-                                    'controller'=>'outcomes',
-                                    'action'=>'getOutcomes')); ?>";
-   urlform = urlform + '/' + program;
-      
-   // asynchronous ajax code to populate program/degree selector
-   $.ajax({
-      url: urlform,
-      type: "GET",
-      dataType: "text",
-      error : function(xhr, status, error) {
-         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
-      },
-      success: function(partialHtml){
-        // clear any existing html in the partial div
-        $('#partialHolder').html(partialHtml);
-      },
+   //  handle back button click
+   $("#back").click(function ()
+   {
+      // create url for redirect
+        var urlform = "<?php echo $this->url('outcomes', array(
+                                       'controller'=>'outcomes',
+                                       'action'=>'getOutcomes')); ?>";
+      urlform = urlform + '/' + program;
+         
+      // asynchronous ajax code to populate program/degree selector
+      $.ajax({
+         url: urlform,
+         type: "GET",
+         dataType: "text",
+         error : function(xhr, status, error)
+         {
+            console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+         },
+         success: function(partialHtml)
+         {
+           // clear any existing html in the partial div
+           $('#partialHolder').html(partialHtml);
+         },
+      });
    });
-});
-
-
 });
 </script>

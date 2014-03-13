@@ -16,16 +16,19 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Adapter\Adapter;
 use Zend\View\Model\JsonModel;
 use Zend\Session\Container;
+use Application\Authentication\AuthUser;
 
-use Outcomes\Form\OutcomesForm;
-use Outcomes\Model\Outcomes;
+
 
 class OutcomesController extends AbstractActionController
 { 
-    protected $tableResults;
-    // get these values from the session namespace
-    protected $userRole = 3;
-    protected $userID = 9;
+   protected $tableResults;
+   protected $sessionContainer;
+   
+   
+   // get these values from the session namespace
+ //  protected $userRole = 3;
+   protected $userID = 9;
     
    /*
    $namespace = new Container('user');  
@@ -39,22 +42,35 @@ class OutcomesController extends AbstractActionController
     
    */
         
-   public function indexAction(){
+   public function indexAction()
+   {
+      // get the session variables
+      $namespace = new Container('user');
+      $userID = $namespace->userID;
+      $userEmail = $namespace->userEmail;
+      $role = $namespace->role;
+      $datatelID = $namespace->datatelID;
+      
+      
+      
+      
       $results = $this->getGenericQueries()->getUnits();
       // iterate over database results forming a php array
       foreach ($results as $result){
          $unitarray[] = $result;
       }
+      
       return new ViewModel(array(
                 'units' => $unitarray,
-                'userRole' => $this->userRole,
-                'userID' => $this->userID,
+          //      'userRole' => $this->userRole,
+                  'userID' => userID,
       ));      
    }
     
    // Creates list of available units (departments/programs)
    // based on user role and privileges.
-   public function getUnitsAction(){      
+   public function getUnitsAction()
+   {      
       // get action from id in url
       $actionChosen = $this->params()->fromRoute('id', 0);
      
@@ -63,7 +79,7 @@ class OutcomesController extends AbstractActionController
          $results = $this->getGenericQueries()->getUnits();
       }
       else{
-         $results = $this->getGenericQueries()->getUnitsByPrivId($this->userID);
+         $results = $this->getGenericQueries()->getUnitsByPrivId($userID);
       }  
       // iterate through results forming a php array
       foreach ($results as $result){
@@ -75,7 +91,8 @@ class OutcomesController extends AbstractActionController
       return $jsonData;
    }
     
-   public function getProgramsAction(){
+   public function getProgramsAction()
+   {
       // get unit from id in url
       $unitChosen = $this->params()->fromRoute('id', 0);
       // get programs for that unit
@@ -90,7 +107,8 @@ class OutcomesController extends AbstractActionController
       return $jsonData;
    }
     
-   public function getOutcomesAction(){
+   public function getOutcomesAction()
+   {
       // get program that's selected from id in url
       $programSelected = $this->params()->fromRoute('id', 0);
       $request = $this->getRequest();
@@ -121,15 +139,22 @@ class OutcomesController extends AbstractActionController
       // get outcomes for the selected program
       $results = $this->getOutcomesQueries()->getAllActiveOutcomesForProgram($programSelected);
       
+      $unitId = $request->getPost('unitId');
+      $adminFlag = $this->getOutcomesQueries()->checkPermissions($this->userID, $unitId);
+      
+      
+      
       $partialView = new ViewModel(array(
          'outcomes' => $results,
          'programId' => $programSelected,
+         'adminFlag' => $adminFlag, 
+         'userId' => $this->userID,
+   //      'unitId' => $unitId,
       ));
       // ignore the layout template
       $partialView->setTerminal(true);
       return $partialView;
    }
-   
    
    public function addOutcomeAction()
    {
@@ -145,7 +170,8 @@ class OutcomesController extends AbstractActionController
       return $partialView;
    }
    
-   public function editOutcomeAction(){
+   public function editOutcomeAction()
+   {
       // get programs from id in url
       $programChosen = $this->params()->fromRoute('id', 0);
       
@@ -155,11 +181,13 @@ class OutcomesController extends AbstractActionController
       // get the outcome id from post data then get the outcome from the id
       $outcomeId = $request->getPost('oid');
       $outcomeText = $request->getPost('text');
+      $outcomeNumber = $request->getPost('number');
 
       $partialView = new ViewModel(array(
          'outcomeId' => $outcomeId,
          'outcomeText' => $outcomeText,
          'programChosen' => $programChosen,
+         'outcomeNumber' => $outcomeNumber,
       ));
       
       // ignore the layout template
@@ -167,7 +195,18 @@ class OutcomesController extends AbstractActionController
       return $partialView;
    }
    
-
+   public function onDispatch(\Zend\Mvc\MvcEvent $e) 
+   {
+      $validUser = new AuthUser();
+         if (!$validUser->Validate()){
+            return $this->redirect()->toRoute('application');
+         }
+         else{
+            return parent::onDispatch( $e );
+         }
+   }
+   
+   
    public function getGenericQueries()
    {
       if (!$this->tableResults){
