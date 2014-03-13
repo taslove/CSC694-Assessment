@@ -3,9 +3,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-
-        <?php echo $this->headTitle('NCC '. $this->translate('NCC Academic Assessment Portal'))->setSeparator(' - ')->setAutoEscape(false) ?>
-
+        <?php echo $this->headTitle('NCC '. $this->translate('Academic Assessments'))->setSeparator(' - ')->setAutoEscape(false) ?>
 
         <?php echo $this->headMeta()
             ->appendName('viewport', 'width=device-width, initial-scale=1.0')
@@ -23,23 +21,11 @@
                         ?>
 
         <!-- Scripts -->
-  <?php echo $this->headScript()
+        <?php echo $this->headScript()
             ->prependFile($this->basePath() . '/js/bootstrap-datepicker.js')
             ->prependFile($this->basePath() . '/js/bootstrap-select.js')
-<<<<<<< HEAD
-<<<<<<< HEAD
-        
-=======
->>>>>>> cdbb2ecabe072b6652adc9e9c3657d9092d52f05
             ->prependFile($this->basePath() . '/js/bootstrap.js')
             ->prependFile($this->basePath() . '/js/jquery.min.js')
-=======
-            ->prependFile($this->basePath() . '/js/bootstrap.js')
-           
-            
-            
-            ->prependFile($this->basePath() . '/js/jquery-1.11.0.min.js')
->>>>>>> feature
             ->prependFile($this->basePath() . '/js/respond.min.js', 'text/javascript', array('conditional' => 'lt IE 9',))
             ->prependFile($this->basePath() . '/js/html5shiv.js',   'text/javascript', array('conditional' => 'lt IE 9',))
             ; ?>
@@ -55,9 +41,19 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-
-                    <a class="navbar-brand" href="<?php echo $this->url('mock') ?>"><img src="<?php echo $this->basePath('img/ncctower.jpg') ?>" alt="Zend Framework 2"/>&nbsp;<?php echo $this->translate('NCC Academic Assessment Portal') ?></a>
-
+                    <a class="navbar-brand" href=<?php echo $this->url('application'); ?>><img src="<?php echo $this->basePath('img/ncctower.jpg') ?>" alt="Zend Framework 2"/>&nbsp;<?php echo $this->translate('NCC Academic Assessment') ?></a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="http://noctrl.edu"><?php echo $this->translate('NCC Home') ?></a></li>
+                        <li class="active"><a href="http://its.noctrl.edu"><?php echo $this->translate('Contact IT') ?></a></li>
+                        <li class="active"><a href="mailto:silahi@noctrl.edu"><?php echo $this->translate('Contact Admin') ?></a></li>
+                        <li class="active"><a href="./img/userguide.pdf" ><?php echo $this->translate('User Guide') ?></a></li>
+                        <li class="active"><a href ="https://cardinalnet.northcentralcollege.edu/faculty/committees/assessment/"><?php echo $this->translate('Assessment Website') ?></a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div>
+        </nav> 
 =======
         <div id="divNoPrint2"> <!-- needed so the view page print button doesn't print the header -->
             <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -68,7 +64,7 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="<?php echo $this->url('application'); ?>"><img src="<?php echo $this->basePath('img/ncctower.jpg') ?>" alt="Zend Framework 2"/>&nbsp;<?php echo $this->translate('NCC Academic Assessment') ?></a>
+                        <a class="navbar-brand" href=""><img src="<?php echo $this->basePath('img/ncctower.jpg') ?>" alt="Zend Framework 2"/>&nbsp;<?php echo $this->translate('NCC Academic Assessment') ?></a>
                     </div>
                     <div class="collapse navbar-collapse">
                         <ul class="nav navbar-nav">
@@ -76,19 +72,20 @@
                             <li class="active"><a href="http://its.noctrl.edu"><?php echo $this->translate('Contact IT') ?></a></li>
                             <li class="active"><a href="mailto:silahi@noctrl.edu"><?php echo $this->translate('Contact Admin') ?></a></li>
                             <li class="active"><a href="./img/userguide.pdf" ><?php echo $this->translate('User Guide') ?></a></li>
-                            <li class="active"><a href ="https://cardinalnet.northcentralcollege.edu/faculty/committees/assessment/"><?php echo $this->translate('Assessment Website') ?></a></li>
-                            <li class="active"><a href ="<?php echo $this->url('logout'); ?>"><?php echo $this->translate('Logout') ?></a></li>
-                            
+                            <li class="active"><a href ="https://cardinalnet.northcentralcollege.edu/faculty/committees/assessment/"><?php echo $this->translate('Assessment Committee') ?></a></li>
                         </ul>
                     </div><!--/.nav-collapse -->
->>>>>>> cdbb2ecabe072b6652adc9e9c3657d9092d52f05
                 </div>
             </nav>
         </div>
+>>>>>>> master
         <div class="container">
             
             <?php echo $this->content; ?>
             <hr>
+            <footer>
+                <p>&copy; 1876 - <?php echo date('Y') ?> by CSCCapstone Technologies Ltd. <?php echo $this->translate('All rights reserved.') ?></p>
+            </footer>
         </div> <!-- /container -->
         <?php echo $this->inlineScript() ?>
     </body>

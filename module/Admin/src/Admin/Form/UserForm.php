@@ -53,7 +53,7 @@ class UserForm extends Form
                 'style' => 'width:60px;'
             ),
             'options' => array(
-                'label' => 'Middle Initial',
+                'label' => 'M.I.',
             ),
         ));
         $this->add(array(
@@ -78,17 +78,51 @@ class UserForm extends Form
                 'label' => 'Last Name',
             ),
         ));
-         $this->add(array(
-            'name' => 'user_roles',
-            'type' => 'Zend\Form\Element\MultiCheckbox',
+     
+     $count = $args['count'];   
+     for($i=0; $i< $count; $i++)
+     {
+        $this->add(array(
+            'name' => 'role_'.$i,
+            'type' => 'Zend\Form\Element\Select',
             'attributes' => array(
-                'id' => 'user_roles',
+                'class'=> 'form-control user-roles',
+                'id' => 'role_'.$i,
             ),
             'options' => array(
+                'empty_option' => 'Choose Role',
                 'value_options' => $args['roles'],
             ),
-        ));      
-                 
+        ));  
+     }  
+       $this->add(array(
+            'name' => 'liaison_privs',
+            'type' => 'Zend\Form\Element\Select',
+            'attributes' => array(
+                'class'=> 'form-control hide',
+                'id' => 'liaison_privs',
+                'multiple' => 'multiple',
+                'disabled' => 'disabled'
+            ),
+            'options' => array(
+                'value_options' => $args['liaison_privs'],
+            ),
+        ));  
+        $this->add(array(
+            'name' => 'unit_privs',
+            'type' => 'Zend\Form\Element\Select',
+            'attributes' => array(
+                'class'=> 'form-control hide',
+                'id' => 'unit_privs',
+                'multiple' => 'multiple',
+                'disabled' => 'disabled'
+            ),
+            'options' => array(
+                'value_options' => $args['unit_privs'],
+            ),
+        ));  
+
+         
         $this->add(array(
             'name' => 'submit',
             'attributes' => array(

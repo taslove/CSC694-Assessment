@@ -57,14 +57,9 @@ $this->headTitle($title);
      <br />
      <br />
    
-
-
-
-<a class="btn btn-primary btn-md" href=""><?php echo
-	    $this->translate ('Back to Main') ?> </a>
 	  <!-- Get Button trigger modal -->
-<a class="btn btn-primary btn-md" id="submit">
-  Submit
+<a class="btn btn-primary btn-md" id="submit" name="submit" disabled>
+  Submit&nbsp&nbsp&raquo
 </a><p></p>
                     </div><!--close container-->
                 </div><!--close column-->
@@ -77,6 +72,7 @@ $this->headTitle($title);
 	                    
     </body>
 </html>
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
@@ -84,6 +80,8 @@ $this->headTitle($title);
 
 >>>>>>> feature
 
+=======
+>>>>>>> fd6dc374841bdc992f78903d7ab7b6d33091c656
 <script>
 function getReports(action, id) {
     var urlform = "<?php echo $this->url('default', array(
@@ -129,30 +127,29 @@ $(document).on('click', '#submit', function () {
     var programs = $('[name=prog-menu]').val();
     var year = document.getElementById('year-menu').value;
     
-    if (!action || !unit || !programs || !year) {
-	alert('Please fill out all criteria')
-    }else{
-	var json = '{"action" : "' + action + '", "unit" : "' + unit + '", "year" : "' + year + '", "programs" : ' + JSON.stringify(programs) + ' }';
-	// asynchronous ajax code to get plans
-	var urlform = "<?php echo $this->url('default', array(
-                                    'controller'=>'reports',
-                                    'action'=>'viewPlans')); ?>";
-	$.ajax({
-	   url: urlform,
-     
-	   type: "POST",
-	   data: json,
-	   dataType: "text",
-	   error : function(xhr, status, error) {
-	    alert(error);
-	    console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+    
+    
+    var json = '{"action" : "' + action + '", "unit" : "' + unit + '", "year" : "' + year + '", "programs" : ' + JSON.stringify(programs) + ' }';
+    // asynchronous ajax code to get plans
+    var urlform = "<?php echo $this->url('default', array(
+				'controller'=>'reports',
+				'action'=>'viewPlans')); ?>";
+    $.ajax({
+       url: urlform,
+ 
+       type: "POST",
+       data: json,
+       dataType: "text",
+       error : function(xhr, status, error) {
+	alert(error);
+	console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
 
-	   },
-	   success: function(html){
-	     document.getElementById('content').innerHTML = html;
-	   },
-	});
-    }
+       },
+       success: function(html){
+	 document.getElementById('content').innerHTML = html;
+       },
+    });
+    
 });
 
 // load actions based on user privileges
@@ -178,6 +175,19 @@ $(document).ready(function() {
 
 // update unit/department options based on actions
 $(document).on('change', '#action-menu', function () {
+    
+    // Added this block because class voted to disable submit button
+    var action = document.getElementById('action-menu').value;
+    var unit = document.getElementById('unit-menu').value;
+    var programs = $('[name=prog-menu]').val();
+    var year = document.getElementById('year-menu').value;
+    
+    if (!action || !unit || !programs || !year) {
+	$("#submit").attr('disabled','disabled');
+    }else{
+	$("#submit").removeAttr('disabled');;
+    }
+    
    $action = $('#action-menu option:selected').val();
    // clear selectorlist before adding unit/department options
    var oldSelections = $('#unit-menu option');
@@ -215,6 +225,19 @@ $(document).on('change', '#action-menu', function () {
 
 // update program options based on unit/department
 $(document).on('change', '#unit-menu', function () {
+    
+    // Added this block because class voted to disable submit button
+    var action = document.getElementById('action-menu').value;
+    var unit = document.getElementById('unit-menu').value;
+    var programs = $('[name=prog-menu]').val();
+    var year = document.getElementById('year-menu').value;
+    
+    if (!action || !unit || !programs || !year) {
+	$("#submit").attr('disabled','disabled');
+    }else{
+	$("#submit").removeAttr('disabled');;
+    }
+    
    $unit = $('#unit-menu option:selected').val();
    // clear selectorlist before adding program/degree options
    var oldSelections = $('#prog-menu option');
@@ -252,6 +275,35 @@ $(document).on('change', '#unit-menu', function () {
       },
    });
 });
+
+// Added this method because class voted to disable submit button
+$(document).on('change', '#year-menu', function () {
+    var action = document.getElementById('action-menu').value;
+    var unit = document.getElementById('unit-menu').value;
+    var programs = $('[name=prog-menu]').val();
+    var year = document.getElementById('year-menu').value;
+    
+    if (!action || !unit || !programs || !year) {
+	$("#submit").attr('disabled','disabled');
+    }else{
+	$("#submit").removeAttr('disabled');;
+    }
+});
+
+// Added this method because class voted to disable submit button
+$(document).on('change', '#prog-menu', function () {
+    var action = document.getElementById('action-menu').value;
+    var unit = document.getElementById('unit-menu').value;
+    var programs = $('[name=prog-menu]').val();
+    var year = document.getElementById('year-menu').value;
+    
+    if (!action || !unit || !programs || !year) {
+	$("#submit").attr('disabled','disabled');
+    }else{
+	$("#submit").removeAttr('disabled');;
+    }
+});
+
 
 </script>
                      

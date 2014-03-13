@@ -92,18 +92,33 @@ class AllTables extends AbstractTableGateway
         return $result;
     }
     
+    //retrieves the user id, email address, and datatelID from the DB
     public function getUserInformation($userID)
     {
         $sql = new Sql($this->adapter);
         
         $select = $sql->select()
                       ->from('users')
-                      ->columns(array('users.id',
-                                      'users.datatel_id',
-                                      'users.email',
-                                      'user_roles.role',))
-                      ->join('user_roles','users.id = user_roles.user_id', array('role'))
-                      ->where(array('datatel_id' => $userid));
+                      ->columns(array('id' => 'id',
+                                      'datatel_id' => 'datatel_id',
+                                      'email' => 'email'))
+                      ->where(array('datatel_id' => $userID));
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        
+        return $result;
+    }
+    
+    //retrieves the role of the user given their userID
+    public function getUserRole($userID)
+    {
+        $sql = new Sql($this->adapter);
+        
+        $select = $sql->select()
+                      ->from('user_roles')
+                      ->columns(array('role' => 'role'))                                      
+                      ->where(array('user_id' => $userID));
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

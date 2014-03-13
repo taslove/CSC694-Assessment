@@ -17,84 +17,78 @@ return array(
         'Review',
         'Mock',
     ),
-'module_listener_options' => array(
-        'config_glob_paths'    => array(
-            'config/autoload/{,*.}{global,local}.php',
-        ),
-        'module_paths' => array(
-            './module',
-            './vendor',
-        ),
-),
+    'module_listener_options' => array(
+            'config_glob_paths'    => array(
+                'config/autoload/{,*.}{global,local}.php',
+            ),
+            'module_paths' => array(
+                './module',
+                './vendor',
+            ),
+    ),
 
     'router' => array(
         'routes' => array(
             'home' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'literal',
                 'options' => array(
-                    'route'    => '/',
+                    'route'    => '/index',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\Index',
+                        '__NAMESPACE__' => 'Application\Controller',                        
+                        'controller' => 'Index',
                         'action'     => 'index',
+                        'message' => '',
                     ),
-                ),
-            ),
-            // The following is a route to simplify getting started creating
-            // new controllers and actions without needing to create a new
-            // module. Simply drop new controllers in, and you can access them
-            // using the path /application/:controller/:action
-            'application' => array(
-                'type'    => 'Literal',
-                'options' => array(
-                    'route'    => '/application',
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Application\Controller',
-                        'controller'    => 'Index',
-                        'action'        => 'index',
-                    ),
-                ),
-                'may_terminate' => true,
-                'child_routes' => array(
-                    'default' => array(
-                        'type'    => 'Segment',
-                        'options' => array(
-                            'route'    => '/[:controller[/:action]]',
-                            'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
-                            ),
-                        ),
+                    'constraints' => array(
+                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                         'message' => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ),
                 ),
             ),
             'authenticate' => array(
-                'type'    => 'Literal',
+                 'type'    => 'literal',
+                 'options' => array(
+                     'route'    => '/index/authenticate',
+                     'defaults' => array(
+                         '__NAMESPACE__' => 'Application\Controller',
+                         'controller' => 'Index',
+                         'action'     => 'authenticate',
+                     ),
+                 ),
+             ),
+            'logout' => array(
+                 'type'    => 'literal',
+                 'options' => array(
+                     'route'    => '/index/logout',
+                     'defaults' => array(
+                         '__NAMESPACE__' => 'Application\Controller',
+                         'controller' => 'Index',
+                         'action'     => 'logout',
+                     ),
+                 ),
+             ),
+            'application' => array(
+                'type' => 'literal',
                 'options' => array(
                     'route'    => '/application',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Application\Controller',
-                        'controller'    => 'Index',
-                        'action'        => 'authenticate',
-                    ),
-                ),
-                'may_terminate' => true,
-                'child_routes' => array(
-                    'default' => array(
-                        'type'    => 'Segment',
-                        'options' => array(
-                            'route'    => '/[:controller[/:action]]',
-                            'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
-                            ),
-                        ),
+                        'controller' => 'Application',
+                        'action'     => 'index',
                     ),
                 ),
             ),
+            'choose' => array(
+                 'type'    => 'literal',
+                 'options' => array(
+                     'route'    => '/application/choose',
+                     'defaults' => array(
+                         '__NAMESPACE__' => 'Application\Controller',
+                         'controller' => 'Application',
+                         'action'     => 'choose',
+                     ),
+                 ),
+             ),
         ),
     ),
     'service_manager' => array(
@@ -118,7 +112,8 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'Application\Controller\Index' => 'Application\Controller\IndexController',           
+            'Application\Controller\Index'       => 'Application\Controller\IndexController',
+            'Application\Controller\Application' => 'Application\Controller\ApplicationController',
         ),
     ),
     'view_manager' => array(
@@ -128,10 +123,12 @@ return array(
         'not_found_template'       => 'error/404',
         'exception_template'       => 'error/index',
         'template_map' => array(
-            'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
-            'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
-            'error/404'               => __DIR__ . '/../view/error/404.phtml',
-            'error/index'             => __DIR__ . '/../view/error/index.phtml',
+            'layout/layout'                  => __DIR__ . '/../view/layout/layout.phtml',
+            'application/index/index'        => __DIR__ . '/../view/application/index/index.phtml',
+            'application/index/authenticate' => __DIR__ . '/../view/application/index/authenticate.phtml',
+            'application/application/index ' => __DIR__ . '/../view/application/application/index.phtml',
+            'error/404'                      => __DIR__ . '/../view/error/404.phtml',
+            'error/index'                    => __DIR__ . '/../view/error/index.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',

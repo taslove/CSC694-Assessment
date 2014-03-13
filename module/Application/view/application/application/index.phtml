@@ -1,21 +1,16 @@
 <?php
 
-$title = 'Academic Assessment Login';
+$title = 'Academic Assessment Portal';
 $this->headTitle($title);
 
 
 $form = $this->form;
-$form->setAttribute('action', 'index/authenticate');
 $form->prepare();
 ?>
-
-<center>
 <br>
-<?php echo $message; ?>
-<br><br>
-Please log in with your NCC user ID and password
 <br><br><br>
-
+<center>
+<h3>Please make a selection</h3><br>
 <?php
 echo $this->form()->openTag($form);
 echo $this->formCollection($form);
