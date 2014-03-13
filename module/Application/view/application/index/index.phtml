@@ -9,6 +9,7 @@ $form->setAttribute('action', 'index/authenticate');
 $form->prepare();
 ?>
 
+<center>
 <br>
 <?php echo $message; ?>
 <br><br>
@@ -20,3 +21,4 @@ echo $this->form()->openTag($form);
 echo $this->formCollection($form);
 echo $this->form()->closeTag($form);
 ?>
+</center>
