@@ -37,16 +37,8 @@ class ApplicationController extends AbstractActionController
     {
         $request = $this->getRequest();
         $choice = strtolower($request->getPost()['module']);
-        
-        var_dump($choice);
-        
-        //$url = $this->url($choice, array('controller' => $choice,
-        //                                 'action' => 'index'));
-        
-        $route = $choice;
-        return $this->redirect()->toRoute($choice);
 
-        exit();
+        return $this->redirect()->toRoute($choice);
     }
 
 }
