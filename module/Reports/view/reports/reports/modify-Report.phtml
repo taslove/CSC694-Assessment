@@ -40,7 +40,6 @@ if(!$results){
 				</div>
 				<div id="collapseOne" class="panel-collapse collapse">
 				  <div class="panel-body">
-				    <div>
 				    <?php $ctr = 0;?>
 			    
 				    <?php foreach($descriptions as $description) : ?>
@@ -49,12 +48,10 @@ if(!$results){
 					</br>
 					
 					<?php endforeach; ?>
-				    </div>
 				  </div>
 				</div>
 			    </div>
 			    </br>
-			    </div><!-- /.col-lg-6 -->      </div>
 			</div>
 		    </div>
 		    <div class="panel panel-default">
@@ -124,14 +121,14 @@ if(!$results){
 					  $flag = 1;
 				      }
 				  ?>
-				 Feedback -
+				 Feedback - &nbsp
 				 <?php
 			      if($role < 4){
 				  $read = '';		      
 			      }else{
 				  $read = 'readonly';
 				  if($report[0]['feedback'] == 2){
-				      $feedback = 'Final Version';
+				      $feedback = 'Approved';
 				  }else{
 				      $feedback = 'In need of revision';
 				  }
