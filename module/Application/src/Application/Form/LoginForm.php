@@ -2,9 +2,6 @@
 
 namespace Application\Form;
 
-use Zend\Form\Element;
-use Zend\Form\Form;
-
 class LoginForm extends Form
 {
     public function __construct($name = null)
@@ -24,6 +21,7 @@ class LoginForm extends Form
                 'label' => 'User ID ',                
             ),
         ));
+        
         $this->add(array(
             'name' => 'password',
             'attributes' => array(
@@ -33,9 +31,9 @@ class LoginForm extends Form
             ),
             'options' => array(
                 'label' => 'Password ',                
-            ),
-            
+            ),            
         ));
+        
         $this->add(array(
             'name' => 'submit',
             'attributes' => array(
