@@ -16,7 +16,7 @@ class ReportForm extends Form
                 'id' => 'actions',
                 'class' => 'textbox',
                 'rows' => '10',
-                'cols' => '60',
+                'cols' => '100',
             ),
         ));
         
@@ -28,7 +28,7 @@ class ReportForm extends Form
                 'id' => 'conclusions',
                 'class' => 'textbox',
                 'rows' => '10',
-                'cols' => '60',
+                'cols' => '100',
             ),
         ));
         
@@ -40,7 +40,7 @@ class ReportForm extends Form
                 'id' => 'results',
                 'class' => 'textbox',
                 'rows' => '10',
-                'cols' => '60',
+                'cols' => '100',
             ),
         ));
         
@@ -52,7 +52,7 @@ class ReportForm extends Form
                 'id' => 'population',
                 'class' => 'textbox',
                 'rows' => '10',
-                'cols' => '60',
+                'cols' => '100',
             ),
         ));
         
@@ -74,7 +74,7 @@ class ReportForm extends Form
                 'id' => 'method',
                 'class' => 'textbox',
                 'rows' => '10',
-                'cols' => '60',
+                'cols' => '100',
             ),
         ));
         
@@ -86,7 +86,7 @@ class ReportForm extends Form
                 'id' => 'feedbackText',
                 'class' => 'textbox',
                 'rows' => '10',
-                'cols' => '60',
+                'cols' => '100',
             ),
         ));
         
@@ -98,7 +98,7 @@ class ReportForm extends Form
             'options' => array(               
                 'value_options' => array(
                     '1' => 'In Need of Revision',
-                    '2' => 'Ready to be Carried Out',
+                    '2' => 'Approved',
                 ),
             )
         ));
@@ -160,7 +160,7 @@ class ReportForm extends Form
                 'id' => 'id',
                 'class' => 'textbox',
                 'rows' => '10',
-                'cols' => '60',
+                'cols' => '100',
             ),
         ));
     }

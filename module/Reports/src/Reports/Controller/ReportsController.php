@@ -17,18 +17,13 @@ use Reports\Model\PlanData;
 use Reports\Forms\ReportForm;
 use Zend\View\Model\JsonModel;
 use Zend\Session\Container;
-//use Application\Authentication\AuthUser;
+use Application\Authentication\AuthUser;
 
 class ReportsController extends AbstractActionController
 {
    // This holds table results for certain methods
-   protected $tableResults;
+   protected $tableResults;  
    
-    // get these values from the session namespace
-   protected $userRole = 1;
-   protected $userID = 9;   
-   
-   /*
    public function onDispatch(\Zend\Mvc\MvcEvent $e) 
    {   $validUser = new AuthUser();
         if (!$validUser->Validate()){
@@ -38,18 +33,23 @@ class ReportsController extends AbstractActionController
             return parent::onDispatch( $e );
         }
    }
-   */
    
    // Returns main index with left select options and blank right side
    public function indexAction()
    {
 
+      // get the session variables
+      $namespace = new Container('user');
+      $userID = $namespace->userID;
+      $role = $namespace->role;
+   
+      
       // Get select form for passing selected data
       $sl = $this->getServiceLocator();
 
       // if general user - only view
      // get all units, since only view option is displayed
-     if ($this->userRole == null){
+     if ($role == null){
          $results = $this->getGenericQueries()->getUnits();
          // iterate over database results forming a php array
          foreach ($results as $result){
@@ -224,6 +224,11 @@ class ReportsController extends AbstractActionController
    // Displays report data associated with user selected plan 
    public function modifyReportAction()
    {
+      
+      // get the session variables
+      $namespace = new Container('user');
+      $role = $namespace->role;
+      
       // Get plan id from post data
       $planId = $this->params()->fromPost('id');
       
@@ -256,7 +261,7 @@ class ReportsController extends AbstractActionController
          // Create view, give it data
          $partialView = new ViewModel(array(
             'report' => $reportArray, 'descriptions' => $descriptions, 'form' => $form, 'results' => true,
-            'role' => $this->userRole, 'documents' => $documentArray,
+            'role' => $role, 'documents' => $documentArray,
          ));
          
          
@@ -276,6 +281,11 @@ class ReportsController extends AbstractActionController
    // wants to send it to the database
    public function updateReportAction()
    {
+      
+      // get the session variables
+      $namespace = new Container('user');
+      $userID = $namespace->userID;
+      
       // Call method to update report, give arguments from post data
       // This receives a status of 0 for submit, 1 for draft, 2 for delete
       // ReportTable object handles the difference
@@ -286,7 +296,7 @@ class ReportsController extends AbstractActionController
                   $this->params()->fromPost('conclusions'),
                   $this->params()->fromPost('actions'),
                   $this->params()->fromPost('status'),
-                  $this->userID,
+                  $userID,
                   $this->params()->fromPost('feedbackText'),
                   $this->params()->fromPost('feedbackFlag'));
       
@@ -318,7 +328,7 @@ class ReportsController extends AbstractActionController
       if(count($files) > 0){
          $this->getServiceLocator()->get('ReportTable')->saveFiles($files,
                                                                 $this->params()->fromPost('id'),
-                                                                $this->userID);
+                                                                $userID);
       }
       
       // Get all files checked for deletion
@@ -345,7 +355,7 @@ class ReportsController extends AbstractActionController
                   $this->params()->fromPost('conclusions'),
                   $this->params()->fromPost('actions'),
                   $this->params()->fromPost('status'),
-                  $this->userID);
+                  $userID);
 
       $ctr = 0;
       $files = array();
@@ -374,7 +384,7 @@ class ReportsController extends AbstractActionController
       if(count($files) > 0){
          $this->getServiceLocator()->get('ReportTable')->saveFiles($files,
                                                                 $id,
-                                                                $this->userID);
+                                                                $userID);
       }
       
       // When done, redirect to blank index page
@@ -404,15 +414,21 @@ class ReportsController extends AbstractActionController
    // based on user role and privileges.
    public function getUnitsAction()
    {
+      
+      // get the session variables
+      $namespace = new Container('user');
+      $userID = $namespace->userID;
+      $role = $namespace->role;
+      
       // get action from id in url
       $actionChosen = $this->params()->fromRoute('id', 0);
    
       // get units for that action
-      if ($actionChosen == 'View' || $this->userRole == 1){
+      if ($actionChosen == 'View' || $role == 1){
           $results = $this->getGenericQueries()->getUnits();
       }
       else{
-          $results = $this->getGenericQueries()->getUnitsByPrivId($this->userID);
+          $results = $this->getGenericQueries()->getUnitsByPrivId($userID);
       }
     
       // iterate through results forming a php array
