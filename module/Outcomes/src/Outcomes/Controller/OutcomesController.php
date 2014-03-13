@@ -19,51 +19,21 @@ use Zend\Session\Container;
 use Application\Authentication\AuthUser;
 
 
-
 class OutcomesController extends AbstractActionController
 { 
    protected $tableResults;
-   protected $sessionContainer;
-   
-   
-   // get these values from the session namespace
- //  protected $userRole = 3;
-   protected $userID = 9;
-    
-   /*
-   $namespace = new Container('user');  
-   $namespace->userID;   
-             ->userEmail;
-             ->role;            if 0, no admin abilities
-             ->datatelID;     if null, redirect to login screen
-    
-    do this check on every page
-    if (datatelID == null) redirect to Application
-    
-   */
-        
+           
    public function indexAction()
    {
-      // get the session variables
-      $namespace = new Container('user');
-      $userID = $namespace->userID;
-      $userEmail = $namespace->userEmail;
-      $role = $namespace->role;
-      $datatelID = $namespace->datatelID;
-      
-      
-      
-      
       $results = $this->getGenericQueries()->getUnits();
       // iterate over database results forming a php array
       foreach ($results as $result){
          $unitarray[] = $result;
       }
       
+      // pass all the units into the view
       return new ViewModel(array(
                 'units' => $unitarray,
-          //      'userRole' => $this->userRole,
-                  'userID' => userID,
       ));      
    }
     
@@ -109,6 +79,13 @@ class OutcomesController extends AbstractActionController
     
    public function getOutcomesAction()
    {
+      // get the session variables
+      $namespace = new Container('user');
+      $userID = $namespace->userID;
+      $userEmail = $namespace->userEmail;
+      $role = $namespace->role;
+      $datatelID = $namespace->datatelID;
+      
       // get program that's selected from id in url
       $programSelected = $this->params()->fromRoute('id', 0);
       $request = $this->getRequest();
@@ -120,36 +97,34 @@ class OutcomesController extends AbstractActionController
          if ($request->getPost('action') == "add"){
             // get outcome text from post data and use it to create outcome
             $outcomeText = $request->getPost('outcomeText');
-            $this->getOutcomesQueries()->addOutcome($programSelected, $outcomeText, $this->userID);
+            $this->getOutcomesQueries()->addOutcome($programSelected, $outcomeText, $userID);
          }
             
          // handle an edit
          else if ($request->getPost('action') == "edit"){
             $oidToDeactivate = $request->getPost('oidToDeactivate');
             $outcomeText = $request->getPost('outcomeText');
-            $this->getOutcomesQueries()->editOutcome($programSelected, $outcomeText, $oidToDeactivate, $this->userID); 
+            $this->getOutcomesQueries()->editOutcome($programSelected, $outcomeText, $oidToDeactivate, $userID); 
          }
             
          // handle a delete / deactivate
          else {
             $outcomeId = $request->getPost('oid');
-            $this->getOutcomesQueries()->deactivateOutcome($outcomeId, $this->userID);
+            $this->getOutcomesQueries()->deactivateOutcome($outcomeId, $userID);
          }
       }
       // get outcomes for the selected program
       $results = $this->getOutcomesQueries()->getAllActiveOutcomesForProgram($programSelected);
       
       $unitId = $request->getPost('unitId');
-      $adminFlag = $this->getOutcomesQueries()->checkPermissions($this->userID, $unitId);
+      $adminFlag = $this->getOutcomesQueries()->checkPermissions($userID, $unitId);
       
       
-      
+      // pass in the selected program, its outcomes and whether or not the user has admin rights
       $partialView = new ViewModel(array(
          'outcomes' => $results,
          'programId' => $programSelected,
          'adminFlag' => $adminFlag, 
-         'userId' => $this->userID,
-   //      'unitId' => $unitId,
       ));
       // ignore the layout template
       $partialView->setTerminal(true);
@@ -198,14 +173,13 @@ class OutcomesController extends AbstractActionController
    public function onDispatch(\Zend\Mvc\MvcEvent $e) 
    {
       $validUser = new AuthUser();
-         if (!$validUser->Validate()){
-            return $this->redirect()->toRoute('application');
-         }
-         else{
-            return parent::onDispatch( $e );
-         }
+      if (!$validUser->Validate()){
+         return $this->redirect()->toRoute('application');
+      }
+      else{
+         return parent::onDispatch( $e );
+      }
    }
-   
    
    public function getGenericQueries()
    {

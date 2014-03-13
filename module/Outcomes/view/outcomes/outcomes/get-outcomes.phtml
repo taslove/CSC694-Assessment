@@ -24,10 +24,11 @@
                 if ($hasOutcomes == true){
                     echo("<th>#</th>");
                     echo("<th>Description</th>");
-                }
-                // only add the actions column if it's an admin
-                if ($adminFlag == true){
-                    echo("<th></th>");
+                    
+                    // only add the extra column for buttons if it's an admin
+                    if ($adminFlag == true){
+                        echo("<th></th>");
+                    }
                 }
                 ?>    
             </tr>
@@ -75,7 +76,7 @@
 $(document).ready(function() {
 
 
-<?php echo("alert('User id is " . $userId . " and admin flag is " . $adminFlag . "');"); ?>
+
 
     // store the id of the selected program
     var selectedProgram = <?php echo $this->escapeHtml($programId);?>;

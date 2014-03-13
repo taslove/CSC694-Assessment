@@ -49,7 +49,7 @@ class OutcomesTable extends AbstractTableGateway
     {
         $sql = new Sql($this->adapter);
         
-        // store data from the outcome object that was passed in    
+        // store data from the outcome object that was passed in - timestamp works on its own   
         $data = array('program_id' => $programId,
 		      'outcome_text' => $outcomeText,
                       'active_flag' => 1,
@@ -91,7 +91,7 @@ class OutcomesTable extends AbstractTableGateway
         $this->deactivateOutcome($deactivatedOutcomeId, $userId);       
     }
     
-    // query 10
+    // return 1 if the user has permission to modify the unit
     public function checkPermissions($userID, $unitID)
     {
         $sql = new Sql($this->adapter);
@@ -105,7 +105,6 @@ class OutcomesTable extends AbstractTableGateway
                       ->where(array('unit_privs.unit_id' => $unitID))                   
         ;
         
-        
         $statement = $sql->prepareStatementForSqlObject($select1);
         $result = $statement->execute();
         
@@ -115,6 +114,7 @@ class OutcomesTable extends AbstractTableGateway
             return true;
         } 
       
+        // check the liason privs table to see if the user exists with the correct unit priv
         $select2 = $sql->select()
                       ->from('liaison_privs')
                       ->columns(array('id'))
@@ -124,12 +124,14 @@ class OutcomesTable extends AbstractTableGateway
         ;
        $statement = $sql->prepareStatementForSqlObject($select2);
         $result = $statement->execute();
+        
         // if $result not empty return true
         if ($result->count() > 0)
         {
             return true;
         } 
         
+        // check is the user's role gives him / her access to modify every unit
         $select2 = $sql->select()
                       ->from('user_roles')
                       ->columns(array('id'))
@@ -144,8 +146,8 @@ class OutcomesTable extends AbstractTableGateway
         {
             return true;
         } else {
+            // if you get to this point, the user isn't allowed to make any changes
             return false;
         }
     }
-    
 }
