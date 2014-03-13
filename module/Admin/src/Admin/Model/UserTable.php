@@ -275,14 +275,37 @@ class UserTable extends AbstractTableGateway
         $user->exchangeArray($row);
         return $user;
     }
+    
+    /*
+     * Get unit privs
+     */
+    public function getUserUnitPrivs($user,$table)
+    {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select()
+                    ->from($table)
+                    ->columns(array('unit_id'))
+                    ->where(array(
+                        'user_id' => $user,
+                        'active_flag' => 1));
+        
+        
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $privs = array();
+        foreach($result as $row){
+            $privs[] = $row['unit_id'];
+        }
+        return $privs;
+        
+    }
+    
 
     /*
      * Saves a user
      */
     public function saveUser(User $user)
     {
-        Debug::dump($user);
-        exit;
         //build the data array to add to users table
         $data = array(
             'first_name' => $user->first_name,
@@ -292,8 +315,23 @@ class UserTable extends AbstractTableGateway
             'datatel_id' => 0
         );
         
-        //just put users roles into a new array
-        $roles = $user->user_roles;
+        //just put users roles into a new array  
+        if(isset($user->role_0) && $user->role_0 != '')
+        {
+            $roles[] = $user->role_0;
+        }
+        if(isset($user->role_1) && $user->role_1 != '')
+        {
+            $roles[] = $user->role_1;
+        }
+        if(isset($user->role_2) && $user->role_2 != '')
+        {
+            $roles[] = $user->role_2;
+        }
+        if(isset($user->role_3) && $user->role_3 != '')
+        {
+            $roles[] = $user->role_3;
+        }
         
         //get the user id
         $id = (int)$user->id;
@@ -306,14 +344,30 @@ class UserTable extends AbstractTableGateway
                 $this->insert($data);
             } catch (\Exception $e)  {
                 var_dump($e->getMessage());
-                echo 'User already exists!'; 
             }
             
             //get the new user id
             $id = $this->adapter->getDriver()->getLastGeneratedValue();
-
+            
             //add role(s)
             $this->addRoles($id,$roles);
+            
+            //add any liaison or unit privs
+            if(isset($user->unit_privs) && !empty($user->unit_privs))
+            {
+                foreach($user->unit_privs as $key => $value)
+                {
+                   $this->UnitTable()->addPriv($value,$id,'unit_privs');
+                }
+            }
+            if(isset($user->liaison_privs) && !empty($user->liaison_privs))
+            {
+                foreach($user->liaison_privs as $key => $value)
+                {
+                    $this->UnitTable()->addPriv($value,$id,'liaison_privs');
+                }
+            }            
+            
         } else {
             if ($this->getUser($id)) {
                 
@@ -322,6 +376,24 @@ class UserTable extends AbstractTableGateway
                 
                 //update and add roles
                 $this->updateRoles($user->id,$roles);
+                
+                
+                //update unit and liaison privs
+                if(isset($user->unit_privs) && !empty($user->unit_privs))
+                {
+                    foreach($user->unit_privs as $key => $value)
+                    {
+                        $this->UnitTable()->updatePrivs($value,array($id),'unit_privs');
+                    }
+                }
+                if(isset($user->liaison_privs) && !empty($user->liaison_privs))
+                {
+                    foreach($user->unit_privs as $key => $value)
+                    {
+                        $this->UnitTable()->updatePrivs($value,array($id),'liaison_privs');
+                    }
+                }
+                
   
             } else {
                 throw new \Exception('Form id does not exist');
@@ -338,6 +410,10 @@ class UserTable extends AbstractTableGateway
        //delete user roles first
        $this->deleteRoles($id);
        
+       //delete unit privs
+       $this->UnitTable()->deletePriv($id,'unit_privs');
+       $this->UnitTable()->deletePriv($id,'liaison_privs');
+       
        //delete the user
        $sql = new Sql($this->adapter);
        $delete = $sql->delete('users')
@@ -353,4 +429,13 @@ class UserTable extends AbstractTableGateway
     {
         return new Generic($this->adapter);
     }
+    
+    /*
+     * Instantiate UnitTable Class
+     */
+    public function UnitTable()
+    {
+        return new UnitTable($this->adapter);
+    }
+    
 }

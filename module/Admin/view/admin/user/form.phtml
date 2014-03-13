@@ -2,7 +2,6 @@
     $form = $this->form;
     $form->setAttribute('action', $this->url('user', array('action' => $action,'id'=>$this->id)));
     $form->prepare();
-
     echo $this->form()->openTag($form);
   ?>
 <div class="control-group col-md-12">  
@@ -66,10 +65,14 @@
 
 <script>
   $( document ).ready(function() {
+      //run init functions
       initPrivs();
       initRoles();
+      initDisabledPrivs();
 
-      
+      /*
+       * adds role select field is user clicks on button
+       */
       $('.add-new-role').click(function(){
          if($('#role_1').hasClass('hide')){
               $('#role_1').removeClass('hide');
@@ -77,16 +80,21 @@
               $('#role_2').removeClass('hide');
           }else{
               $('#role_3').removeClass('hide');
+              $('.add-new-role').addClass('hide');
           }
       });
       
+      /*
+       * displays or hides the unit priv multi selects based on user role 
+       * selection
+       */
       $('.user-roles').on("change", function () { 
           var roles = [];
           $('.user-roles').each(function(){
             var role= $(this);
             roles.push(role.val());
           });
-           if(jQuery.inArray( "2", roles) > -1){
+           if(jQuery.inArray( "4", roles) > -1){
                 $('#unit_privs').removeClass('hide');
                 $('#unit_privs').prop("disabled",false);
             }else{
@@ -94,7 +102,7 @@
                 $('#unit_privs').prop("disabled",true);
                 $('#unit_privs:selected').removeAttr("selected");
             }
-            if(jQuery.inArray( "4", roles)  > -1 ){
+            if(jQuery.inArray( "2", roles)  > -1  || jQuery.inArray( "3", roles)  > -1 ){
                 $('#liaison_privs').removeClass('hide');
                 $('#liaison_privs').prop("disabled",false);
             }else{
@@ -106,6 +114,11 @@
           
       });
       
+      
+      /*
+       * Determines whether or not the unit privs multi selects should be displayed
+       * by default
+       */
       function initPrivs()
       {
          var roles = [];
@@ -115,7 +128,7 @@
             roles.push(role.val());
           });
           
-           if(jQuery.inArray( "2", roles) > -1){
+           if(jQuery.inArray( "4", roles) > -1){
                 $('#unit_privs').removeClass('hide');
                 $('#unit_privs').prop("disabled",false);
             }else{
@@ -123,7 +136,7 @@
                 $('#unit_privs').prop("disabled",true);
                 $('#unit_privs:selected').removeAttr("selected");
             }
-            if(jQuery.inArray( "4", roles)  > -1 ){
+            if(jQuery.inArray( "2", roles)  > -1  || jQuery.inArray( "3", roles)  > -1 ){
                 $('#liaison_privs').removeClass('hide');
                 $('#liaison_privs').prop("disabled",false);
             }else{
@@ -133,6 +146,10 @@
             }
       }
       
+      
+      /*
+       * determines which role text fields to show
+       */
       function initRoles()
       {
           if(!$('#role_1').val()){
@@ -146,6 +163,23 @@
           }
       }
       
+      /*
+       * disabled units from being selected if their is already 2 assessors 
+       * assigned to them
+       */
+      function initDisabledPrivs()
+      {
+        $("#unit_privs > option").each(function(){
+            disArr = [];
+                <?php foreach($disabledPrivs as $key => $value): ?>
+                        disArr.push("<?php echo $value;?>");
+                <?php endforeach; ?>
+            if(jQuery.inArray( this.value, disArr)  > -1 )
+            {
+                this.disabled = true;
+            }
+        });
+      }   
 }); 
     
 </script>

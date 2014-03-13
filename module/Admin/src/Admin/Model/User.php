@@ -119,7 +119,7 @@ class User implements InputFilterAwareInterface
          for($i=0; $i<4; $i++)
          {
            $inputFilter->add($factory->createInput(array(
-                'name' => 'roles['.$i.']',
+                'name' => 'role_'.$i,
                 'required' => false,
                )));
          }  

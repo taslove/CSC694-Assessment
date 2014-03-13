@@ -61,20 +61,23 @@ class UserController extends AbstractActionController {
                 ->setPageRange(7);
 
         //get role terms for user form
-        $args['roles'] = $this->getGenericQueries()->getRoleTerms();
+        $args['roles'] = $this->getGenericQueries()->getRoleTerms(false);
 
         //create user form
         $args['count'] = 1;
-        $args['units'] = $this->getUnitQueries()->getUnitsForSelect();
+        $args['liaison_privs'] = $this->getUnitQueries()->getUnitsForSelect();//unlimited liaisons
+        $args['unit_privs'] = $this->getUnitQueries()->getUnitsForSelectAssessors();//two assessors
         $form = new UserForm(null, $args);
         $form->get('submit')->setValue('Add');
 
 
+        $disabledPrivs = $this->getUnitQueries()->getDisablePrivUnits();
         //send paginator,and form to page
         return new ViewModel(array(
             'page' => $page,
             'paginator' => $paginator,
-            'form' => $form
+            'form' => $form,
+            'disabledPrivs' =>$disabledPrivs
         ));
     }
 
@@ -85,8 +88,10 @@ class UserController extends AbstractActionController {
     public function addAction() {
         //get role terms for form and build form
         $args['count'] = 4;
-        $args['units'] = $this->getUnitQueries()->getUnitsForSelect();
-        $args['roles'] = $this->getGenericQueries()->getRoleTerms();
+        $args['liaison_privs'] = $this->getUnitQueries()->getUnitsForSelect();//unlimited liaisons
+        $args['unit_privs'] = $this->getUnitQueries()->getUnitsForSelectAssessors();//two assessors
+        $args['roles'] = $this->getGenericQueries()->getRoleTerms(false);
+        $disabledPrivs = $this->getUnitQueries()->getDisablePrivUnits();
         $form = new UserForm(null, $args);
         $form->get('submit')->setValue('Add');
 
@@ -112,7 +117,10 @@ class UserController extends AbstractActionController {
               Debug::dump($form->getMessages());
             }
         }
-        return array('form' => $form);
+        return array(
+            'form' => $form,
+            'count' => 4,
+            'disabledPrivs' =>$disabledPrivs);
     }
 
     /*
@@ -139,14 +147,18 @@ class UserController extends AbstractActionController {
             $count++;        
         }
                 
+        //get unit and liasion privs
+        $user->unit_privs = $this->getUserQueries()->getUserUnitPrivs($id,'unit_privs');
+        $user->liaison_privs = $this->getUserQueries()->getUserUnitPrivs($id,'liaison_privs');
 
         //build form
         $args['count'] = 4;
-        $args['roles'] = $this->getGenericQueries()->getRoleTerms();
+        $args['roles'] = $this->getGenericQueries()->getRoleTerms(false);
         $args['action'] = 'edit';
         $args['user_id'] = $id;
-        $args['units'] = $this->getUnitQueries()->getUnitsForSelect();
-        Debug::dump($user);
+        $args['liaison_privs'] = $this->getUnitQueries()->getUnitsForSelect();//unlimited liaisons
+        $args['unit_privs'] = $this->getUnitQueries()->getUnitsForSelectAssessors();//two assessors
+        $disabledPrivs = $this->getUnitQueries()->getDisablePrivUnits();
         $form = new UserForm(null, $args);
         $form->bind($user);
         $form->get('submit')->setAttribute('value', 'Save');
@@ -167,7 +179,8 @@ class UserController extends AbstractActionController {
         return array(
             'id' => $id,
             'form' => $form,
-            'count' => 4
+            'count' => 4,
+            'disabledPrivs' =>$disabledPrivs
         );
     }
 

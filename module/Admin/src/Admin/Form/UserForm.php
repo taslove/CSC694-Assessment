@@ -105,7 +105,7 @@ class UserForm extends Form
                 'disabled' => 'disabled'
             ),
             'options' => array(
-                'value_options' => $args['units'],
+                'value_options' => $args['liaison_privs'],
             ),
         ));  
         $this->add(array(
@@ -118,7 +118,7 @@ class UserForm extends Form
                 'disabled' => 'disabled'
             ),
             'options' => array(
-                'value_options' => $args['units'],
+                'value_options' => $args['unit_privs'],
             ),
         ));  
 

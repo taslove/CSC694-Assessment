@@ -64,6 +64,15 @@ div.container a.brand {
     overflow:hidden;
     padding-top:15px;
 }
+.user-role-options-placeholder{
+    margin-top:22px;
+}
+.user-roles{
+    margin-bottom: 5px;
+}
+#unit_privs{
+    margin-top:5px;
+}
 
 .user-table-wrapper{
     
