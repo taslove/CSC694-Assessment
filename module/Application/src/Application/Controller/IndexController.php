@@ -25,17 +25,10 @@ use Application\Model\AllTables;
 class IndexController extends AbstractActionController
 {
     protected $tableResults;
-    public $message;
     
     public function indexAction()
     {
         $namespace = new Container('user');
-        /*
-        $namespace->userID = '40';
-        $namespace->role = 1;
-        $namespace->userEmail = 'akalelkar@noctrl.edu';   
-        $namespace->datatelID = 'akalelkar';
-        */
         
         //Render LoginForm        
         $form = new LoginForm();
@@ -49,11 +42,39 @@ class IndexController extends AbstractActionController
         //Get POST data
         $request = $this->getRequest();
         
+        
+       
         if ($request->isPost()) {
             $userName = $request->getPost('userName', null);
             $password = $request->getPost('password', null);
         }
-     
+        if ($password == NULL || $userName == NULL) {
+            $namespace->message = 'Invalid login: missing user ID or password';
+            return $this->redirect()->toRoute('home');
+        }
+        
+          //THIS IS THE DEMO LOGIN  ACTION
+        if ($userName == 'student') {
+            $namespace->message = 'Assessment Portal accessible to Faculty and Administration only';
+            return $this->redirect()->toRoute('home');
+        }
+        else if ($password == 'good') {
+            $namespace->userID = 135;
+            $namespace->role = 1;
+            $namespace->userEmail = $userEmail;   
+            $namespace->datatelID = $userName;
+            $namespace->message = NULL;
+            return $this->redirect()->toRoute('application');
+        }
+        else {
+            $namespace->message = 'Invalid login: incorrect user ID or password';
+            return $this->redirect()->toRoute('home');
+        }
+        
+        
+        
+        /* //UNCOMMENT THIS WHOLE BLOCK TO MAKE THE REAL LOGIN WORK
+        
         //this code reads the configuration file for the LDAP server
         $configReader = new ConfigReader();
         $configData = $configReader->fromFile('ldap-config.ini');
@@ -91,7 +112,7 @@ class IndexController extends AbstractActionController
             $messages2 = $result2->getMessages();
             
             //if it was a student logging in, send them back otherwise continue
-            if (strpos($messages2[3], 'stdnts') == FALSE) {
+            if (strpos($messages2[3], 'stdnts') == TRUE) {
                 $namespace->message = 'Assessment Portal accessible to Faculty and Administration only';
                 return $this->redirect()->toRoute('home');
             }
@@ -120,9 +141,10 @@ class IndexController extends AbstractActionController
             return $this->redirect()->toRoute('application');        
         }
         else {            
-            $namespace->message = 'Login failed';
+            $namespace->message = 'Invalid login: incorrect user ID or password';
             return $this->redirect()->toRoute('home');
-        }   
+        }
+        */
     }
     
     public function getAllTables()
