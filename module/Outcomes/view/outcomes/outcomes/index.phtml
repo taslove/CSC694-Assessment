@@ -3,157 +3,139 @@
    $title = 'Review Assessment Plans and Reports';
    $this->headTitle($title);
 ?>      
-<center><h3 id="outcomesTitle">Assessment Outcomes</h3>
+<center><h3 id="outcomesTitle">Assessment Outcomes</h3></center>
 
 <div class="row">
    <div class="col-md-4">
-   <div class="container">
+        <div class="container">
    
-     <br />
-     <br />
+            <br />
+            <br />
    
-      <!-- Choose Department/Unit -->
-      <select class="selectpicker" id="unit-menu" data-style="btn-primary" title='Choose Department/Unit'>
-         <option data-hidden="true"></option>
-      </select>  
-     <br />
-     <br />
+            <!-- Choose Department/Unit -->
+            <select class="selectpicker" id="unit-menu" data-style="btn-primary" title='Choose Department/Unit'>
+               <option data-hidden="true"></option>
+            </select>  
+            <br />
+            <br />
    
-      <!-- Choose Program/Degree -->
-      <select class="selectpicker" id="prog-menu" data-style="btn-primary" title='Choose Program/Degree'>
-         <option data-hidden="true"></option>
-      </select>
-     <br />
-     <br />
-   
-     
-      <p></p>
-      <!-- the 'Submit' button -->
-      <a class="btn btn-primary btn-lg" id="submit-button" disabled><?php echo $this->translate
-      ('Submit') ?> &raquo;</a>
-      <br />
-      <br /> <!-- add some space in case the right side is forced below-->
-      </div><!--close container-->
-</div><!--close column-->
+            <!-- Choose Program/Degree -->
+            <select class="selectpicker" id="prog-menu" data-style="btn-primary" title='Choose Program/Degree'>
+                <option data-hidden="true"></option>
+            </select>
+            <br />
+            <br />
+            <!-- the 'Submit' button -->
+            <a class="btn btn-primary btn-md" id="submit-button" disabled><?php echo $this->translate('Submit') ?> &raquo;</a>
+            <br />
+            <br /> <!-- add some space in case the right side is forced below-->
+        </div><!--close container-->
+    </div><!--close column-->
 
 
-<!--column 2 - this holds the partial-->
-  <div class="col-md-8" id="partialHolder">
+    <!--column 2 - this holds the partial-->
+    <div class="col-md-8" id="partialHolder"></div>
     
-  </div> <!-- end of col-md-8--> 
-
-
-
-
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/bootstrap-rta.min.js"></script>
-<script src="js/bootstrap-select.js"></script>
-
+</div> <!-- end of row--> 
 
 <script>
-
 // wait until the html document is totally loaded to begin executing JavaScript
-$(document).ready(function() {  
+$(document).ready(function()
+{  
     // load all the units
-   var units = <?php print json_encode($units); ?>;
-   for (var i = 0; i < units.length; i++){
-      $('#unit-menu').append('<option>' + units[i].id + '</option>');
-   }
+    var units = <?php print json_encode($units); ?>;
+    for (var i = 0; i < units.length; i++)
+    {
+        $('#unit-menu').append('<option>' + units[i].id + '</option>');
+    }
    // call code to initialize the selectpicker
    // this must come after the options are initialized
    $('.selectpicker').selectpicker();   
    
 
-// handle changes on the first selector
-$(document).on('change', '#unit-menu', function () {
+    // handle changes on the first selector
+    $(document).on('change', '#unit-menu', function()
+    {
+        // disable the submit button until a specific program is chosen
+        $("#submit-button").attr("disabled", "disabled");
     
-    // disable the submit button until a specific program is chosen
-    $("#submit-button").attr("disabled", "disabled");
-    
-   var unit = $('#unit-menu option:selected').val();
+        var unit = $('#unit-menu option:selected').val();
    
-   // clear selectorlist before adding program/degree options
-   var oldSelections = $('#prog-menu option');
-   for (var i = 0; i < oldSelections.length; i++){
-   // don't remove the default message
-   if (!oldSelections.value == "Choose Program/Degree"){
-    oldSelections.remove();
-   }
-   
-         // clear selectorlist before adding unit/department options
-   var oldProgSelections = $('#prog-menu option');
-   for (var i = 0; i < oldProgSelections.length; i++){
-      oldProgSelections.remove();
-   }
-   // data-hidden="true" shows title on button
-   $('#prog-menu').append('<option  data-hidden="true"></option>');
-   $('#prog-menu').selectpicker('refresh');   
-   }
+        // clear all the existing program options 
+        var oldProgSelections = $('#prog-menu option');
+        for (var i = 0; i < oldProgSelections.length; i++)
+        {
+            oldProgSelections.remove();  // this is actually removing
+        }
+        // data-hidden="true" shows title on button
+        $('#prog-menu').append('<option  data-hidden="true"></option>');
+        $('#prog-menu').selectpicker('refresh');   
+        
 
-   // create url for redirect
-   var urlform = "<?php echo $this->url('outcomes', array(
+        // create url for redirect
+        var urlform = "<?php echo $this->url('outcomes', array(
                                     'controller'=>'outcomes',
                                     'action'=>'getPrograms')); ?>";
-   urlform = urlform + '/' + unit;
+        urlform = urlform + '/' + unit;
    
-   $.ajax({
-      url: urlform,
-      type: "GET",
-      dataType: "json",
-      error : function(xhr, status, error) {
-         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
-      },
-      success: function(programsJson){
-         for (var i = 0; i < programsJson.length; i++){
-            // need to include value in the option so that the id is accessible from the url
-            $('#prog-menu').append('<option value="' + programsJson[i].id + '">' + programsJson[i].name + '</option>');
-         }
-         $('#prog-menu').selectpicker('refresh');
-      },
-   });
-});
+        $.ajax({
+            url: urlform,
+            type: "GET",
+            dataType: "json",
+            error : function(xhr, status, error)
+            {
+                console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+            },
+            success: function(programsJson)
+            {
+            for (var i = 0; i < programsJson.length; i++){
+                // need to include value in the option so that the id is accessible from the url
+                $('#prog-menu').append('<option value="' + programsJson[i].id + '">' + programsJson[i].name + '</option>');
+            }
+            $('#prog-menu').selectpicker('refresh');
+            },
+        });
+    });
 
-// handle changes on the second selector
-$(document).on('change', '#prog-menu', function () {
+    // handle changes on the second selector
+    $(document).on('change', '#prog-menu', function ()
+    {
         $("#submit-button").removeAttr("disabled");
-});
+    });
     
-//  handle button clicks
-$(document).on('click', '#submit-button', function () {
-   var program = $('#prog-menu option:selected').val();
+        //  handle button clicks
+    $(document).on('click', '#submit-button', function ()
+    {
+        var program = $('#prog-menu option:selected').val();
 
-   // create url for redirect
-   var urlform = "<?php echo $this->url('outcomes', array(
+        // create url for redirect
+        var urlform = "<?php echo $this->url('outcomes', array(
                                     'controller'=>'outcomes',
                                     'action'=>'getOutcomes')); ?>";
-   urlform = urlform + '/' + program;
+        urlform = urlform + '/' + program;
       
-   // asynchronous ajax code to populate program/degree selector
-   $.ajax({
-      url: urlform,
-      type: "GET",
-      dataType: "text",
-      error : function(xhr, status, error) {
-         console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
-      },
-      success: function(partialHtml){
-        // clear any existing html in the partial div
-        $('#partialHolder').html(partialHtml);
+        // asynchronous ajax code to populate program/degree selector
+        $.ajax({
+            url: urlform,
+            type: "POST",
+            data: { unitId: $('#unit-menu option:selected').val() }, // we need the unitId to check permissions
+            dataType: "text",
+            error : function(xhr, status, error)
+            {
+                console.log("ERROR: ", xhr, xhr.status, xhr.getAllResponseHeaders());
+            },
+            success: function(partialHtml)
+            {
+                // clear any existing html in the partial div
+                $('#partialHolder').html(partialHtml);
         
-        // set the title to reflect the selected program
-        var programTitle = $('#prog-menu option:selected').text();
-        $("#outcomesTitle").html("Assessment Outcomes - " + programTitle);
-      },
-   });
+                // set the title to reflect the selected program
+                var programTitle = $('#prog-menu option:selected').text();
+                $("#outcomesTitle").html("Assessment Outcomes - " + programTitle);
+            },
+        });
+    });
 });
-});
-
-// notes
-// document.ready should encapsulate all the other jquery stuff
-// need a break below bottom button on left side
 
 </script>
 
