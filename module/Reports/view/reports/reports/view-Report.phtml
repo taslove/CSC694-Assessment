@@ -16,7 +16,7 @@ if(!$results){
 		    <h4><?php echo $report[0]['unit_id'] . ' - ' . $report[0]['name'] . ' - ' . $report[0]['year'];?></h4>
 		    <div class="controls">
 			<div class="panel-group" id="accordion">
-			    
+			    <!-- Show meta or outcomes -->
 			    <div class="panel panel-default">
 				<div class="panel-heading">
 				    <h4 class="panel-title">
@@ -45,7 +45,8 @@ if(!$results){
 				    </div>
 				</div>
 			    </div>
-			
+				<!-- Database fields -->
+
 			    <div class="panel panel-default">
 				<div class="panel-heading">
 				    <h4 class="panel-title">
@@ -103,10 +104,11 @@ if(!$results){
 			    
 			    <div class="panel panel-default">
 				<div class="panel-heading">
+				    <!-- Feedback flag -->
 				    <h4 class="panel-title">
 					<?php
 					    if($report[0]['feedback'] == 2){
-						$feedback = 'Final Version';
+						$feedback = 'Approved';
 					    }else{
 						$feedback = 'In need of revision';
 					    }
@@ -122,6 +124,7 @@ if(!$results){
 			    </div>
 			</div>
 			    <table>
+				<!-- Show existing documents -->
 				<th>File</th><th>&nbsp&nbspDescription</th>
 				<?php
 				    if(count($documents) > 0){
